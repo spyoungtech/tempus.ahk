@@ -1,0 +1,15 @@
+[package]
+name = "tempus-ahk"
+version = "0.2.2"
+edition = "2021"
+license = "MIT"
+description = "A DateTime library for AutoHotkey, wrapped around jiff"
+repository = "https://github.com/spyoungtech/tempus.ahk"
+readme = "README.md"
+include = ["src/**/*.rs", "Cargo.toml", "LICENSE"]
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+jiff = { version="0.2" }
