@@ -1,12 +1,23 @@
 #DllLoad target\Debug\tempus_ahk.dll
 
 
-TempusCall(func_name, args*) {
+_TempusCall(func_name, args*) {
     return DllCall("target\Debug\tempus_ahk.dll\" . func_name, args*)
 }
 
 
-Unit := {Nanosecond: 0, Microsecond: 1, Millisecond: 2, Second: 3, Minute: 4, Hour: 5, Day: 6, Week: 7, Month: 8, Year: 9}
+Unit := {
+    Nanosecond: 0, 
+    Microsecond: 1, 
+    Millisecond: 2, 
+    Second: 3, 
+    Minute: 4, 
+    Hour: 5, 
+    Day: 6, 
+    Week: 7, 
+    Month: 8, 
+    Year: 9
+}
 
 RoundMode := {
     Ceil: 1,
@@ -21,14 +32,14 @@ RoundMode := {
 }
 
 _get_last_error() {
-    length := TempusCall("get_last_error_length", "UInt")
+    length := _TempusCall("get_last_error_length", "UInt")
     MsgBox(length)
     if (length > 0)
     {
         ; Allocate a buffer of length+1 for the null terminator
         buff := Buffer(length + 1, 0)
 
-        success := TempusCall("get_last_error"
+        success := _TempusCall("get_last_error"
                              , "Ptr", buff
                              , "UInt", buff.Size
                              , "UInt")
@@ -49,17 +60,17 @@ class Zoned {
     }
 
     __Delete() {
-        TempusCall("free_zoned", "Ptr", this.pointer, "Int64")
+        _TempusCall("free_zoned", "Ptr", this.pointer, "Int64")
     }
 
     static now() {
-        ptr := TempusCall("zoned_now", "Ptr")
+        ptr := _TempusCall("zoned_now", "Ptr")
         return Zoned(ptr)
     }
 
     static parse(time_string) {
         ts_out := Buffer(A_PtrSize)
-        retcode := TempusCall("zoned_parse", "WStr", time_string, "Ptr", ts_out, "Int64")
+        retcode := _TempusCall("zoned_parse", "WStr", time_string, "Ptr", ts_out, "Int64")
 
         if (retcode = 0) {
             handle := NumGet(ts_out, 0, "Ptr")
@@ -83,18 +94,18 @@ class Timestamp {
     }
 
     __Delete() {
-        TempusCall("free_timestamp", "Ptr", this.pointer, "Int64")
+        _TempusCall("free_timestamp", "Ptr", this.pointer, "Int64")
     }
 
     static now() {
-        ptr := TempusCall("timestamp_now", "Ptr")
+        ptr := _TempusCall("timestamp_now", "Ptr")
         return TimeStamp(ptr)
     }
 
 
     static parse(time_string) {
         ts_out := Buffer(A_PtrSize)
-        retcode := TempusCall("timestamp_parse", "WStr", time_string, "Ptr", ts_out, "Int64")
+        retcode := _TempusCall("timestamp_parse", "WStr", time_string, "Ptr", ts_out, "Int64")
 
         if (retcode = 0) {
             handle := NumGet(ts_out, 0, "Ptr")
@@ -112,16 +123,16 @@ class Timestamp {
     }
 
     as_millisecond() {
-        return TempusCall("timestamp_as_millisecond", "Ptr", this.pointer, "Int64")
+        return _TempusCall("timestamp_as_millisecond", "Ptr", this.pointer, "Int64")
     }
 
     as_second() {
-        return TempusCall("timestamp_as_second", "Ptr", this.pointer, "Int64")
+        return _TempusCall("timestamp_as_second", "Ptr", this.pointer, "Int64")
     }
 
     in_tz(timezone) {
         zoned_ptr := Buffer(A_PtrSize)
-        retcode := TempusCall("timestamp_parse", "WStr", timezone, "Ptr", this.pointer, "Ptr", zoned_ptr, "Int64")
+        retcode := _TempusCall("timestamp_parse", "WStr", timezone, "Ptr", this.pointer, "Ptr", zoned_ptr, "Int64")
         if (retcode = 0) {
             handle := NumGet(zoned_ptr, 0, "Ptr")
         } else {
