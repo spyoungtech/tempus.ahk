@@ -226,8 +226,11 @@ class Timestamp {
         retcode := _TempusCall("timestamp_parse", "WStr", timezone, "Ptr", this.pointer, "Ptr", zoned_ptr, "Int64")
         if (retcode = 0) {
             handle := NumGet(zoned_ptr, 0, "Ptr")
+        } else if (retcode = -2) {
+            message := _get_last_error()
+            throw Format("error {}", message)
         } else {
-            throw Format("error {}", retcode)
+            throw "Unexpected error"
         }
 
         if (handle = 0) {
