@@ -155,6 +155,10 @@ class Timestamp {
         return _TempusCall("timestamp_as_millisecond", "Ptr", this.pointer, "Int64")
     }
 
+    as_microsecond() {
+        return _TempusCall("timestamp_as_microsecond", "Ptr", this.pointer, "Int64")
+    }
+
     as_second() {
         return _TempusCall("timestamp_as_second", "Ptr", this.pointer, "Int64")
     }

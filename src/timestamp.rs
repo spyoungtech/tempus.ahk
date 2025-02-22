@@ -43,6 +43,11 @@ impl TempusTimestamp {
         self.ts.as_second()
     }
 
+    fn as_microsecond(&self) -> i64 {
+        self.ts.as_microsecond()
+    }
+
+
     fn in_tz(&self, tz: &str) -> Result<TempusZoned, Error> {
         let zoned = self.ts.in_tz(tz)?;
         Ok(TempusZoned{zoned})
@@ -77,6 +82,13 @@ pub extern "C" fn timestamp_as_millisecond(t: &TempusTimestamp) -> c_longlong {
 pub extern "C" fn timestamp_as_second(t: &TempusTimestamp) -> c_longlong {
     t.as_second()
 }
+
+#[no_mangle]
+pub extern "C" fn timestamp_as_microsecond(t: &TempusTimestamp) -> c_longlong {
+    t.as_microsecond()
+}
+
+
 
 #[no_mangle]
 pub extern "C" fn timestamp_now() -> Box<TempusTimestamp> {
