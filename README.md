@@ -46,7 +46,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 ## Timestamp
 
 - [x] [now](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.now)
-- [x] `parse` (e.g. equivalent of `let ts: Timestamp = "2024-07-11T01:14:00Z".parse()`) -- `Timestamp.parse(mystring)` in AHK
+- [x] `parse` (equivalent of `let ts: Timestamp = "2024-07-11T01:14:00Z".parse()`) -- `Timestamp.parse(mystring)` in AHK
 - [ ] [new](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.new)
 - [ ] [from_second](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_second)
 - [ ] [from_millisecond](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_millisecond)
@@ -84,6 +84,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 ## Zoned
 
 - [x] [now](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.now)
+- [x] `parse` (equivalent of `let ts: Zoned = "2024-07-11T01:14:00Z".parse()`) -- `Zoned.parse(mystring)` in AHK
 - [ ] [new](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.new)
 - [ ] [with](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.with)
 - [ ] [with_time_zone](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.with_time_zone)
