@@ -1,6 +1,8 @@
-use jiff::{Error, Span, Timestamp, Zoned};
+use jiff::{Error, SignedDuration, Span, Timestamp, Zoned};
 
-use std::ffi::{c_longlong};
+use std::ffi::{c_char, c_longlong};
+use std::fmt::{Display, Formatter};
+use std::ptr;
 use std::str::FromStr;
 
 use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message};
@@ -22,6 +24,12 @@ impl FromStr for TempusTimestamp {
     }
 }
 
+impl Display for TempusTimestamp {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        self.ts.fmt(f)
+    }
+}
+
 impl TempusTimestamp {
     fn now() -> Self {
         TempusTimestamp {ts: Timestamp::now()}
@@ -38,6 +46,17 @@ impl TempusTimestamp {
     fn in_tz(&self, tz: &str) -> Result<TempusZoned, Error> {
         let zoned = self.ts.in_tz(tz)?;
         Ok(TempusZoned{zoned})
+    }
+
+    fn from_second(second: i64) -> Result<TempusTimestamp, Error> {
+        let ts = Timestamp::from_second(second)?;
+        Ok(TempusTimestamp{ts})
+    }
+
+    // TODO: from_milli/micro/nano
+
+    fn from_duration(duration: SignedDuration) -> Result<TempusTimestamp, Error> {
+        todo!()
     }
 
     pub(crate) fn stuff_into(self, pointer: *mut *mut TempusTimestamp) {
@@ -62,6 +81,24 @@ pub extern "C" fn timestamp_as_second(t: &TempusTimestamp) -> c_longlong {
 #[no_mangle]
 pub extern "C" fn timestamp_now() -> Box<TempusTimestamp> {
     Box::new(TempusTimestamp::now())
+}
+
+
+#[no_mangle]
+pub extern "C" fn timestamp_string_length(tts: &TempusTimestamp) -> usize {
+    tts.to_string().len()
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_to_string(tts: &TempusTimestamp, out_buff: *mut c_char, buff_len: usize) -> c_longlong {
+    let ret = tts.to_string();
+    let ret_bytes = ret.as_bytes();
+    let copy_len = ret_bytes.len().min(buff_len - 1);
+    unsafe {
+        ptr::copy_nonoverlapping(ret_bytes.as_ptr(), out_buff as *mut u8, copy_len);
+        *out_buff.add(copy_len) = 0;
+    }
+    0
 }
 
 #[no_mangle]

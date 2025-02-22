@@ -175,5 +175,12 @@ class Timestamp {
 
     }
 
+    to_string() {
+        buff_length := _TempusCall("timestamp_string_length", "Ptr", this.pointer, "UInt64")
+        buff := Buffer(buff_length+1, 0)
+        retcode := _TempusCall("timestamp_to_string", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size)
+        ret := StrGet(buff, "UTF-8")
+        return ret
+    }
 }
 
