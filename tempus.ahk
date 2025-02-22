@@ -54,6 +54,35 @@ _get_last_error() {
 }
 
 
+class SignedDuration {
+    __New(pointer) {
+        this.pointer := pointer
+    }
+
+    __Delete() {
+        _TempusCall("free_signed_duration", "Ptr", this.pointer, "Int64")
+    }
+
+    static parse(duration_string) {
+        duration_out := Buffer(A_PtrSize)
+        retcode := _TempusCall("signed_duration_parse", "WStr", duration_string, "Ptr", duration_out, "Int64")
+
+        if (retcode = 0) {
+            handle := NumGet(duration_out, 0, "Ptr")
+        } else if (retcode = -2) {
+            message := _get_last_error()
+            throw Error(Format("error {}", message), -2)
+        } else {
+            throw "Unexpected error"
+        }
+
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+}
+
 class Zoned {
     __New(pointer) {
         this.pointer := pointer
@@ -84,7 +113,7 @@ class Zoned {
         if (handle = 0) {
             throw "unexpected error"
         }
-        return TimeStamp(handle)
+        return Zoned(handle)
     }
 }
 
