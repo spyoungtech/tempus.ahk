@@ -188,3 +188,26 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [ ] [system_until](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.system_until)
 - [ ] [round](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.round)
 
+
+## TimeZone
+
+- [ ] [system](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.system)
+- [ ] [try_system](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.try_system)
+- [ ] [get](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.get)
+- [ ] [fixed](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.fixed)
+- [ ] [posix](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.posix)
+- [ ] [tzif](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.tzif)
+- [ ] [unknown](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.unknown)
+- [ ] [iana_name](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.iana_name)
+- [ ] [is_unknown](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.is_unknown)
+- [ ] [to_datetime](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.to_datetime)
+- [ ] [to_offset](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.to_offset)
+- [ ] [to_offset_info](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.to_offset_info)
+- [ ] [to_fixed_offset](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.to_fixed_offset)
+- [ ] [to_zoned](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.to_zoned)
+- [ ] [to_ambiguous_zoned](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.to_ambiguous_zoned)
+- [ ] [into_ambiguous_zoned](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.into_ambiguous_zoned)
+- [ ] [to_timestamp](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.to_timestamp)
+- [ ] [to_ambiguous_timestamp](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.to_ambiguous_timestamp)
+- [ ] [preceding](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.preceding)
+- [ ] [following](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.following)
