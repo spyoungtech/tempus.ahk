@@ -76,7 +76,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [ ] [round](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.round)
 - [ ] [series](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.series)
 - [ ] [strptime](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.strptime)
-- [ ] [strftime](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.strftime)
+- [x] [strftime](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.strftime)
 - [ ] [display_with_offset](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.display_with_offset)
 - [x] `to_string` (`Display` trait impl)
 - [ ] Others (trait impls, arithmetic, comparisons)

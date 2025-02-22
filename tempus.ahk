@@ -33,7 +33,6 @@ RoundMode := {
 
 _get_last_error() {
     length := _TempusCall("get_last_error_length", "UInt")
-    MsgBox(length)
     if (length > 0)
     {
         ; Allocate a buffer of length+1 for the null terminator
@@ -228,7 +227,7 @@ class Timestamp {
             handle := NumGet(zoned_ptr, 0, "Ptr")
         } else if (retcode = -2) {
             message := _get_last_error()
-            throw Format("error {}", message)
+            throw Error(Format("error {}", message), -2)
         } else {
             throw "Unexpected error"
         }
@@ -246,6 +245,29 @@ class Timestamp {
         retcode := _TempusCall("timestamp_to_string", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size)
         ret := StrGet(buff, "UTF-8")
         return ret
+    }
+
+    strftime(format_str) {
+        buff_length := _TempusCall("timestamp_strftime_length", "Ptr", this.pointer, "WStr", format_str, "Int64")
+        if buff_length < 0 {
+            error_code := buff_length
+            if (error_code = -2 || error_code = -3) {
+                message := _get_last_error()
+                throw Error(Format("error {}", message), -2)
+            }
+            else {
+                throw "unexpected error getting buff length"
+            }
+        }
+        buff := Buffer(buff_length+1, 0)
+        retcode := _TempusCall("timestamp_strftime", "Ptr", this.pointer, "WStr", format_str, "Ptr", buff, "UInt64", buff.Size, "Int64")
+        if (retcode = 0) {
+            ret := StrGet(buff, "UTF-8")
+            return ret
+        } else {
+            message := _get_last_error()
+            throw Error(Format("error: {}", message), -2)
+        }
     }
 }
 

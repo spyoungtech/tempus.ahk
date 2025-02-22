@@ -4,7 +4,7 @@ use std::ffi::{c_char, c_longlong};
 use std::fmt::{Display, Formatter};
 use std::ptr;
 use std::str::FromStr;
-
+use jiff::fmt::strtime::BrokenDownTime;
 use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message};
 use crate::zoned::TempusZoned;
 
@@ -159,6 +159,68 @@ pub extern "C" fn timestamp_to_string(tts: &TempusTimestamp, out_buff: *mut c_ch
     }
     0
 }
+
+#[no_mangle]
+pub extern "C" fn timestamp_strftime_length(tts: &TempusTimestamp, ahk_format_str: AHKWstr) -> isize {
+    match ahk_str_to_string(ahk_format_str) {
+        Err(_) => {
+            -1
+        }
+        Ok(format_str) => {
+            let bdt = BrokenDownTime::from(tts.ts);
+            let mut buf = String::new();
+            match bdt.format(format_str, &mut buf) {
+                Err(e) => {
+                    set_last_error_message(e.to_string());
+                    -2
+                }
+                Ok(_) => {
+                    match isize::try_from(buf.len()) {
+                        Err(e) => {
+                            set_last_error_message(e.to_string());
+                            -3
+                        }
+                        Ok(ret) => {
+                            ret
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_strftime(tts: &TempusTimestamp, ahk_format_str: AHKWstr, out_buff: *mut c_char, buff_len: usize) -> c_longlong {
+    if buff_len == 0 {
+        return -1
+    }
+    match ahk_str_to_string(ahk_format_str) {
+        Err(_) => {
+            -1
+        }
+        Ok(format_str) => {
+            let bdt = BrokenDownTime::from(tts.ts);
+            let mut buf = String::new();
+            match bdt.format(format_str, &mut buf) {
+                Err(e) => {
+                    set_last_error_message(e.to_string());
+                    -2
+                }
+                Ok(_) => {
+                    let ret_bytes = buf.as_bytes();
+                    let copy_len = ret_bytes.len().min(buff_len - 1);
+                    unsafe {
+                        ptr::copy_nonoverlapping(ret_bytes.as_ptr(), out_buff as *mut u8, copy_len);
+                        *out_buff.add(copy_len) = 0;
+                    }
+                    0
+                }
+            }
+        }
+    }
+}
+
 
 #[no_mangle]
 pub extern "C" fn timestamp_in_tz(ahk_time_str: AHKWstr, tts: &TempusTimestamp, out_zoned: *mut *mut TempusZoned) -> c_longlong {
