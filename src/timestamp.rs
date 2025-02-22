@@ -5,7 +5,7 @@ use std::fmt::{Display, Formatter};
 use std::ptr;
 use std::str::FromStr;
 use jiff::fmt::strtime::BrokenDownTime;
-use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message};
+use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer};
 use crate::zoned::TempusZoned;
 
 #[repr(C)]
@@ -149,14 +149,9 @@ pub extern "C" fn timestamp_string_length(tts: &TempusTimestamp) -> usize {
 }
 
 #[no_mangle]
-pub extern "C" fn timestamp_to_string(tts: &TempusTimestamp, out_buff: *mut c_char, buff_len: usize) -> c_longlong {
+pub extern "C" fn timestamp_to_string(tts: &TempusTimestamp, out_buff: AHKStringBuffer, buff_len: usize) -> c_longlong {
     let ret = tts.to_string();
-    let ret_bytes = ret.as_bytes();
-    let copy_len = ret_bytes.len().min(buff_len - 1);
-    unsafe {
-        ptr::copy_nonoverlapping(ret_bytes.as_ptr(), out_buff as *mut u8, copy_len);
-        *out_buff.add(copy_len) = 0;
-    }
+    string_into_ahk_buff(ret, out_buff, buff_len);
     0
 }
 
@@ -191,7 +186,7 @@ pub extern "C" fn timestamp_strftime_length(tts: &TempusTimestamp, ahk_format_st
 }
 
 #[no_mangle]
-pub extern "C" fn timestamp_strftime(tts: &TempusTimestamp, ahk_format_str: AHKWstr, out_buff: *mut c_char, buff_len: usize) -> c_longlong {
+pub extern "C" fn timestamp_strftime(tts: &TempusTimestamp, ahk_format_str: AHKWstr, out_buff: AHKStringBuffer, buff_len: usize) -> c_longlong {
     if buff_len == 0 {
         return -1
     }
@@ -208,12 +203,7 @@ pub extern "C" fn timestamp_strftime(tts: &TempusTimestamp, ahk_format_str: AHKW
                     -2
                 }
                 Ok(_) => {
-                    let ret_bytes = buf.as_bytes();
-                    let copy_len = ret_bytes.len().min(buff_len - 1);
-                    unsafe {
-                        ptr::copy_nonoverlapping(ret_bytes.as_ptr(), out_buff as *mut u8, copy_len);
-                        *out_buff.add(copy_len) = 0;
-                    }
+                    string_into_ahk_buff(buf, out_buff, buff_len);
                     0
                 }
             }

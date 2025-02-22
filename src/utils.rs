@@ -1,8 +1,9 @@
 pub(crate) type AHKWstr = *const u16;
-
+pub(crate) type AHKStringBuffer = *mut c_char;
 
 use std::ffi::{c_char, c_longlong};
 use std::borrow::BorrowMut;
+use std::ptr;
 use std::sync::{Mutex, Once};
 
 static mut STD_ONCE_COUNTER: Option<Mutex<String>> = None;
@@ -72,6 +73,16 @@ pub(crate) fn ahk_str_to_string(ahk_str: AHKWstr) -> Result<String, i64> {
 
     let slice = unsafe { std::slice::from_raw_parts(ahk_str, length) };
     Ok(String::from_utf16_lossy(slice))
+}
+
+
+pub(crate) fn string_into_ahk_buff(s: String, out_buff: AHKStringBuffer, buff_len: usize) {
+    let ret_bytes = s.as_bytes();
+    let copy_len = ret_bytes.len().min(buff_len - 1);
+    unsafe {
+        ptr::copy_nonoverlapping(ret_bytes.as_ptr(), out_buff as *mut u8, copy_len);
+        *out_buff.add(copy_len) = 0;
+    }
 }
 
 
