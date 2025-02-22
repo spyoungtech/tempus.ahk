@@ -53,14 +53,22 @@ impl TempusTimestamp {
         Ok(TempusZoned{zoned})
     }
 
-    fn from_second(second: i64) -> Result<TempusTimestamp, Error> {
+    fn from_second(second: i64) -> Result<Self, Error> {
         let ts = Timestamp::from_second(second)?;
         Ok(TempusTimestamp{ts})
     }
 
-    // TODO: from_milli/micro/nano
+    fn from_millisecond(second: i64) -> Result<Self, Error> {
+        let ts = Timestamp::from_millisecond(second)?;
+        Ok(TempusTimestamp{ts})
+    }
 
-    fn from_duration(duration: SignedDuration) -> Result<TempusTimestamp, Error> {
+    fn from_microsecond(second: i64) -> Result<Self, Error> {
+        let ts = Timestamp::from_microsecond(second)?;
+        Ok(TempusTimestamp{ts})
+    }
+
+    fn from_duration(duration: SignedDuration) -> Result<Self, Error> {
         todo!()
     }
 
@@ -88,6 +96,45 @@ pub extern "C" fn timestamp_as_microsecond(t: &TempusTimestamp) -> c_longlong {
     t.as_microsecond()
 }
 
+pub extern "C" fn timestamp_from_second(s: i64, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    let maybe_ts = TempusTimestamp::from_second(s);
+    match maybe_ts {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -2
+        }
+        Ok(ts) => {
+            ts.stuff_into(out_ts);
+            0
+        }
+    }
+}
+pub extern "C" fn timestamp_from_millisecond(s: i64, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    let maybe_ts = TempusTimestamp::from_millisecond(s);
+    match maybe_ts {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -2
+        }
+        Ok(ts) => {
+            ts.stuff_into(out_ts);
+            0
+        }
+    }
+}
+pub extern "C" fn timestamp_from_microsecond(s: i64, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    let maybe_ts = TempusTimestamp::from_microsecond(s);
+    match maybe_ts {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -2
+        }
+        Ok(ts) => {
+            ts.stuff_into(out_ts);
+            0
+        }
+    }
+}
 
 
 #[no_mangle]

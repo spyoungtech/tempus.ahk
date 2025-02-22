@@ -48,10 +48,10 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [now](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.now)
 - [x] `parse` (equivalent of `let ts: Timestamp = "2024-07-11T01:14:00Z".parse()`) -- `Timestamp.parse(mystring)` in AHK
 - [ ] [new](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.new)
-- [ ] [from_second](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_second)
-- [ ] [from_millisecond](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_millisecond)
-- [ ] [from_microsecond](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_microsecond)
-- [ ] [from_nanosecond](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_nanosecond)
+- [x] [from_second](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_second)
+- [x] [from_millisecond](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_millisecond)
+- [x] [from_microsecond](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_microsecond)
+- [ ] ~~[from_nanosecond](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_nanosecond)~~ Not supported
 - [ ] [from_duration](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_duration)
 - [x] [as_second](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.as_second)
 - [x] [as_millisecond](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.as_millisecond)

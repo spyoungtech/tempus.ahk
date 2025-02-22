@@ -163,6 +163,64 @@ class Timestamp {
         return _TempusCall("timestamp_as_second", "Ptr", this.pointer, "Int64")
     }
 
+    static from_second(s) {
+        out_ts := Buffer(A_PtrSize)
+        retcode := _TempusCall("timestamp_from_second", "Int64", s, "Ptr", out_ts, "Int64")
+        if (retcode = 0) {
+            handle := NumGet(out_ts, 0, "Ptr")
+        } else if (retcode = -2) {
+            message := _get_last_error()
+            throw Error(Format("Error: {}", message), -2)
+        } else {
+            throw "unexpected error"
+        }
+
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+
+        return Timestamp(handle)
+
+    }
+    static from_millisecond(s) {
+        out_ts := Buffer(A_PtrSize)
+        retcode := _TempusCall("timestamp_from_millisecond", "Int64", s, "Ptr", out_ts, "Int64")
+        if (retcode = 0) {
+            handle := NumGet(out_ts, 0, "Ptr")
+        } else if (retcode = -2) {
+            message := _get_last_error()
+            throw Error(Format("Error: {}", message), -2)
+        } else {
+            throw "unexpected error"
+        }
+
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+
+        return Timestamp(handle)
+
+    }
+    static from_microsecond(s) {
+        out_ts := Buffer(A_PtrSize)
+        retcode := _TempusCall("timestamp_from_microsecond", "Int64", s, "Ptr", out_ts, "Int64")
+        if (retcode = 0) {
+            handle := NumGet(out_ts, 0, "Ptr")
+        } else if (retcode = -2) {
+            message := _get_last_error()
+            throw Error(Format("Error: {}", message), -2)
+        } else {
+            throw "unexpected error"
+        }
+
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+
+        return Timestamp(handle)
+
+    }
+
     in_tz(timezone) {
         zoned_ptr := Buffer(A_PtrSize)
         retcode := _TempusCall("timestamp_parse", "WStr", timezone, "Ptr", this.pointer, "Ptr", zoned_ptr, "Int64")
