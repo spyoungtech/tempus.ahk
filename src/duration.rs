@@ -1,5 +1,6 @@
 use std::ffi::c_longlong;
-use jiff::SignedDuration;
+use std::str::FromStr;
+use jiff::{SignedDuration, Error};
 use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message};
 #[repr(C)]
 struct TempusSignedDuration {
@@ -12,6 +13,15 @@ impl TempusSignedDuration {
         unsafe {
             *pointer = Box::into_raw(handle);
         }
+    }
+}
+
+impl FromStr for TempusSignedDuration {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let duration: SignedDuration = s.parse()?;
+        Ok(TempusSignedDuration{duration})
     }
 }
 
@@ -39,7 +49,7 @@ pub extern "C" fn signed_duration_parse(ahk_duration_str: AHKWstr, duration_out:
 
 
 #[no_mangle]
-pub extern "C" fn free_timestamp(ts: Box<TempusSignedDuration>) -> c_longlong {
+pub extern "C" fn free_signed_duration(ts: Box<TempusSignedDuration>) -> c_longlong {
     let raw = Box::into_raw(ts);
     unsafe {
         drop(Box::from_raw(raw))
