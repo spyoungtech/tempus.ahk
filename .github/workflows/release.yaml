@@ -53,9 +53,20 @@ jobs:
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256
 
+      - name: package_release_zip
+        run: |
+          mkdir dist
+          copy target\release\tempus_ahk.dll dist\
+          copy tempus.ahk dist\
+          7z a -tzip tempus_ahk.zip ${{ github.workspace }}\dist\*
+          
+
       - name: Release GitHub
         uses: softprops/action-gh-release@v1
         with:
-          files: "target/release/tempus_ahk.dll"
+          files: |
+            target/release/tempus_ahk.dll
+            tempus.ahk
+            tempus_ahk.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
