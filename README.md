@@ -136,7 +136,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [ ] [duration_since](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.duration_since)
 - [ ] [round](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.round)
 - [ ] [series](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.series)
-- [ ] [strptime](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.strptime)
+- [x] [strptime](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.strptime)
 - [x] [strftime](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.strftime)
 - [ ] [display_with_offset](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.display_with_offset)
 - [x] `to_string` (`Display` trait impl)
