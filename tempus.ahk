@@ -1,7 +1,10 @@
 ; the DLL is expected to be on PATH somewhere... Not sure if there's a better way to do this than to trust the user
 ; to put it in the right place.
-#DllLoad "tempus_ahk"
+#DllLoad "*i tempus_ahk"
 
+if !DllCall("GetModuleHandle", "str", "tempus_ahk") {
+    throw Error("Cannot load tempus_ahk.dll -- please ensure it is on PATH or use #DllLoad to load it in your script before your #Inlude of tempus.ahk")
+}
 
 
 Unit := {
