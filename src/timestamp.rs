@@ -208,6 +208,7 @@ pub extern "C" fn timestamp_strftime(tts: &TempusTimestamp, ahk_format_str: AHKW
     }
 }
 
+#[no_mangle]
 pub extern "C" fn timestamp_strptime(ahk_format_str: AHKWstr, ahk_time_str: AHKWstr, out_ts: *mut *mut TempusTimestamp) -> i64 {
     match ahk_str_to_string(ahk_format_str) {
         Err(_) => {

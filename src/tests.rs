@@ -58,6 +58,14 @@ fn test_timestamp_parse() {
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert_eq!(stdout.to_string(), String::from("2024-01-01T00:00:00Z"));
     assert!(output.status.success());
-
 }
 
+
+#[test]
+fn test_timestamp_strptime() {
+    let script = make_script("ts := Timestamp.strptime(\"%F %H:%M %:z\", \"2024-07-14 21:14 -04:00\")\nwritestdout(ts.as_second())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert_eq!(stdout.to_string(), String::from("1721006040"));
+    assert!(output.status.success());
+}
