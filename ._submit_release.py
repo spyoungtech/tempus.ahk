@@ -53,4 +53,4 @@ for fname in os.listdir("dist"):
     print(f"- {fname} SHA256: {sha256_hash}")
     print(f"- {fname} MD5: {md5_hash}")
 
-print(f"\n\n[virus total link](https://www.virustotal.com/gui/file/{vt_sha_256}")
+print(f"\n\n[virus total link](https://www.virustotal.com/gui/file/{vt_sha_256})")
