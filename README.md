@@ -49,6 +49,30 @@ time := Timestamp.parse("2024-07-11T01:14:00Z")
 MsgBox(time.as_second())
 ```
 
+## Examples
+
+`Timestamp.strptime` / `Timestamp.as_second`
+
+```AutoHotkey
+ts := Timestamp.strptime("%F %H:%M %:z", "2024-07-14 21:14 -04:00")
+MsgBox(ts.as_second()) ; 1721006040
+```
+
+`Timestamp.parse` / `Timestamp.to_string`
+
+```AutoHotkey
+ts := Timestamp.parse("2024-01-01T00:00:00Z")
+MsgBox(ts.to_string()) ; 2024-01-01T00:00:00Z
+```
+
+`Timestamp.strftime` / `Timestamp.from_second`
+
+```AutoHotkey
+ts := Timestamp.from_second(86400)
+MsgBox(ts.strftime("%a %b %e %I:%M:%S %p UTC %Y")) ; Fri Jan  2 12:00:00 AM UTC 1970
+```
+
+
 
 ## Binary Security
 
