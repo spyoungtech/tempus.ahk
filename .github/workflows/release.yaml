@@ -56,6 +56,8 @@ jobs:
           timestamp-digest: SHA256
 
       - name: package_release_zip
+        env:
+          VIRUS_TOTAL_KEY: ${{ secrets.VIRUS_TOTAL_KEY }}
         run: |
           mkdir dist
           copy target\x86_64-pc-windows-gnu\release\tempus_ahk.dll dist\
