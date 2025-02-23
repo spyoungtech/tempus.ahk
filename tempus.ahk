@@ -267,5 +267,19 @@ class Timestamp {
             throw Error(Format("error: {}", message), -2)
         }
     }
+
+    static strptime(format_str, time_str) {
+        out_ts := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\timestamp_strptime", "WStr", format_str, "WStr", time_str, "Ptr", out_ts)
+        if (retcode < 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_ts, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Timestamp(handle)
+    }
 }
 
