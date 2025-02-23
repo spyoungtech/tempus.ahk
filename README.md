@@ -12,6 +12,16 @@ So, to know what _tempus_ is about, is to know what _jiff_ is about:
 Right now, not much of the API is implemented.
 
 
+## Installation
+
+From the [releases page](https://github.com/spyoungtech/tempus.ahk/releases) you can download the compiled
+`tempus_ahk.dll` file and `tempus.ahk` file (or the `tempus_ahk.zip` containing these). To ensure Dll loading works correctly, you should ensure that 
+`tempus_ahk.dll` is somewhere on the Dll Library load search path, such as in the working directory, or 
+a directory on `PATH`. Alternatively, you may edit the `DllLoad` directive in `tempus.ahk` to hardcode the path. See 
+[DllLoad](https://www.autohotkey.com/docs/v2/lib/_DllLoad.htm) for more information.
+
+See also: [Binary security](#binary-security).
+
 # Usage
 
 The exposed AHK API aims to mirror, as much as is reasonable, the API of `jiff`. Most of the usage is a straightforward 
@@ -36,6 +46,52 @@ MsgBox(time.as_second())
 ```
 
 
+# Binary Security
+
+DLL files are software compiled in binary form. Because these files are not human-readable, it is important
+that you can trust the authors that produce them and that you verify the authenticity of the file you downloaded.
+
+For this project, the DLL binaries in the [releases page](https://github.com/spyoungtech/tempus.ahk/releases) are
+digitally signed as part of the GitHub Action where they are built. This digital signature can be used to verify that
+you are receiving an authentic copy of `tempus_ahk.dll` that has not been tampered with.
+
+You can view the digital signature by right-clicking the `tempus_ahk.dll` file, selecting "**properties**", clicking the "**Digital Signatures**" tab
+and locating the digital signature of "Young Enterprise Solutions LLC" whose signing certificate is issued by Microsoft.
+If you do not see the "Digital Signatures" tab or the signature shows as invalid or is signed by any other entity,
+that means you do not have an authentic signed copy of the `tempus_ahk.dll` binary.
+
+Moreover, the releases page also contains the hashes of all release files for each release. These can be used to verify 
+their integrity. We also proactively submit our DLLs to VirusTotal to ensure our files are free of unexpected detections. 
+You can find the links in the releases page.
+
+Alternatively, you may build this binary yourself from source using Rust. See the _Building_ notes below.
+
+# Building
+
+Building this project is fairly simple. But I will try to explain the steps for those who may not have prior experience 
+building Rust projects.
+
+It's expected you already have [Rust installed](https://www.rust-lang.org/tools/install) (e.g., you can run `rustup`, `cargo`, etc.).
+
+Prerequisites:
+
+This project uses the GNU toolchain by default, so you will need this installed and ensure you add the target with `rustup`:
+
+- Add the `x86_64-pc-windows-gnu` target: `rustup target add x86_64-pc-windows-gnu`
+- Ensure you have the compatible linker on PATH (e.g. you can run `x86_64-w64-mingw32-gcc --version` to verify this). 
+  For example, you can install [`MSYS2`](https://www.msys2.org/) and have the toolchain bin directory (`C:\msys64\mingw64\bin`) on `PATH`. If you don't
+  see files in this directory, you must install the toolchain by opening the mingw bash shell (`C:\msys64\Mingw64.exe`) and running 
+  the command `pacman -S --needed base-devel mingw-w64-x86_64-toolchain`
+
+Build:
+
+- run `cargo build --release` which should produce the DLL  located at `target/x86_64-pc-windows-gnu/release/tempus_ahk.dll`
+
+
+If you struggle with building on the GNU toolchain with MSYS2, you can build against the default Windows target
+by running `cargo build --target x86_64-pc-windows-msvc`. Though note that the produced DLL will have a dependency 
+on `vcruntime140.dll`, so target machines you run this on will need the [VC redistributable package](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170) 
+installed (which, in all likelihood, many users already have due to this being a fairly ubiquitous dependency).
 
 
 # API progress

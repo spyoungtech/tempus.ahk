@@ -56,19 +56,25 @@ jobs:
           timestamp-digest: SHA256
 
       - name: package_release_zip
+        env:
+          VIRUS_TOTAL_KEY: ${{ secrets.VIRUS_TOTAL_KEY }}
         run: |
           mkdir dist
           copy target\x86_64-pc-windows-gnu\release\tempus_ahk.dll dist\
           copy tempus.ahk dist\
           7z a -tzip tempus_ahk.zip ${{ github.workspace }}\dist\*
+          move tempus_ahk.zip dist\
           
+          py -m venv venv
+          venv\Scripts\activate
+          pip install requests
+          python .\._submit_release.py > output.txt
 
       - name: Release GitHub
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            target/x86_64-pc-windows-gnu/release/tempus_ahk.dll
-            tempus.ahk
-            tempus_ahk.zip
+          body_path: output.txt
+          append_body: true
+          files: dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
