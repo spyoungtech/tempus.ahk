@@ -1,26 +1,29 @@
-use std::io::Write;
+use std::io::{Read, Write};
+use std::os::windows::process::CommandExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio, Output};
 
 
 fn run_script(script_text: String) -> Output {
-    let mut proc = Command::new("autohotkeyv2.exe")
+    let mut child = Command::new("autohotkeyv2.exe")
         .arg("/CP65001")
-        .arg("/ErrorStdout")
+        .arg("/ErrorStdout=UTF-8")
         .arg("*")
+        .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
-        .stdin(Stdio::piped())
         .spawn()
-        .expect("failed to spawn autohotkeyv2");
-    let mut stdin = proc.stdin.take().expect("failed to open stdin");
-    std::thread::scope(|s| {
-        s.spawn(|| {
-            stdin.write_all(&script_text.as_bytes()).expect("failed to write to stdin");
-            stdin.flush().expect("failed to flush stdin");
-        });
+        .expect("Failed to spawn child process");
+
+    let mut stdin = child.stdin.take().expect("Failed to open stdin");
+    std::thread::spawn(move || {
+        stdin.write_all(script_text.as_bytes()).expect("Failed to write to stdin");
     });
-    proc.wait_with_output().unwrap()
+
+    let output = child.wait_with_output().expect("Failed to read stdout");
+    output
+
+
 }
 
 fn get_tempus_ahk_location() -> PathBuf {
@@ -39,7 +42,7 @@ fn get_dll_location() -> PathBuf {
 
 fn make_script(script_text: &str) -> String {
     let header = format!("#DllLoad \"{}\"\n#Include \"{}\"\nstdout := FileOpen(\"*\", \"w\", \"UTF-8\")\nwritestdout(message) {{\n    stdout.Write(message)\n    stdout.Read(0)\n}}", get_dll_location().to_str().unwrap(), get_tempus_ahk_location().to_str().unwrap());
-    format!("{}\n\n{}", header, script_text)
+    format!("{}\n\n{}\r\n", header, script_text)
 }
 
 #[test]
@@ -51,6 +54,9 @@ fn test_command() {
 fn test_timestamp_parse() {
     let script = make_script("ts := Timestamp.parse(\"2024-01-01T00:00:00Z\")\nwritestdout(ts.to_string())");
     let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert_eq!(stdout.to_string(), String::from("2024-01-01T00:00:00Z"));
     assert!(output.status.success());
+
 }
 
