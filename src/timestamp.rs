@@ -217,13 +217,13 @@ pub extern "C" fn timestamp_strptime(ahk_format_str: AHKWstr, ahk_time_str: AHKW
             set_last_error_message("failed to read format string".to_string());
             -1
         }
-        Some(format_str) => {
+        Ok(format_str) => {
             match ahk_str_to_string(ahk_time_str) {
                 Err(_) => {
                     set_last_error_message("failed to read time string".to_string());
                     -1
                 }
-                Some(time_str) => {
+                Ok(time_str) => {
                     match Timestamp::strptime(format_str, time_str) {
                         Err(e) => {
                             set_last_error_message(e.to_string());
