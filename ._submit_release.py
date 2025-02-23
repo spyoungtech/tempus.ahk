@@ -31,7 +31,7 @@ info_data = info_response.json()
 vt_sha_256 = info_data["meta"]["file_info"]["sha256"]
 
 print('\n')
-print('### File Hashes\n\n')
+print('#### File Hashes\n\n')
 for fname in reversed(os.listdir("dist")):
     fp = os.path.join("dist", fname)
     sha_256 = hashlib.sha256()
@@ -50,10 +50,10 @@ for fname in reversed(os.listdir("dist")):
 
     with open(sha256_text, "w", encoding="utf-8") as f:
         f.write(sha256_hash)
-    print(f'- `{fname}')
+    print(f'- `{fname}`')
     print(f"  SHA256 digest: `{sha256_hash}`")
     print(f"  MD5 digest: `{md5_hash}`")
 
-print('\n\n### VirusTotal')
+print('\n\n#### VirusTotal')
 
 print(f"\n\n[VirusTotal link](https://www.virustotal.com/gui/file/{vt_sha_256})")
