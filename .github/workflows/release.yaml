@@ -18,7 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: update rust stable
-        run: rustup update stable
+        run: |
+          rustup update stable
+          rustup target add x86_64-pc-windows-gnu
       - name: Build
         run: cargo build --verbose
       - name: Run tests
@@ -38,7 +40,7 @@ jobs:
           endpoint: ${{ secrets.SIGNING_ENDPOINT }}
           trusted-signing-account-name: ${{ secrets.CODE_SIGNING_ACCOUNT_NAME }}
           certificate-profile-name: ${{ secrets.CERTIFICATE_PROFILE_NAME }}
-          files: ${{ github.workspace }}\target\release\tempus_ahk.dll
+          files: ${{ github.workspace }}\target\x86_64-pc-windows-gnu\release\tempus_ahk.dll
           exclude-environment-credential: true
           exclude-workload-identity-credential: true
           exclude-managed-identity-credential: true
@@ -56,7 +58,7 @@ jobs:
       - name: package_release_zip
         run: |
           mkdir dist
-          copy target\release\tempus_ahk.dll dist\
+          copy target\x86_64-pc-windows-gnu\release\tempus_ahk.dll dist\
           copy tempus.ahk dist\
           7z a -tzip tempus_ahk.zip ${{ github.workspace }}\dist\*
           
@@ -65,7 +67,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            target/release/tempus_ahk.dll
+            target/x86_64-pc-windows-gnu/release/tempus_ahk.dll
             tempus.ahk
             tempus_ahk.zip
         env:
