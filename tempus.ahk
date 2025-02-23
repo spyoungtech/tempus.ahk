@@ -1,9 +1,7 @@
-#DllLoad target\Debug\tempus_ahk.dll
+; the DLL is expected to be on PATH somewhere... Not sure if there's a better way to do this than to trust the user
+; to put it in the right place.
+#DllLoad "tempus_ahk"
 
-
-_TempusCall(func_name, args*) {
-    return DllCall("target\Debug\tempus_ahk.dll\" . func_name, args*)
-}
 
 
 Unit := {
@@ -32,13 +30,13 @@ RoundMode := {
 }
 
 _get_last_error() {
-    length := _TempusCall("get_last_error_length", "UInt")
+    length := DllCall("tempus_ahk\get_last_error_length", "UInt")
     if (length > 0)
     {
         ; Allocate a buffer of length+1 for the null terminator
         buff := Buffer(length + 1, 0)
 
-        success := _TempusCall("get_last_error"
+        success := DllCall("tempus_ahk\get_last_error"
                              , "Ptr", buff
                              , "UInt", buff.Size
                              , "UInt")
@@ -59,12 +57,12 @@ class SignedDuration {
     }
 
     __Delete() {
-        _TempusCall("free_signed_duration", "Ptr", this.pointer, "Int64")
+        DllCall("tempus_ahk\free_signed_duration", "Ptr", this.pointer, "Int64")
     }
 
     static parse(duration_string) {
         duration_out := Buffer(A_PtrSize)
-        retcode := _TempusCall("signed_duration_parse", "WStr", duration_string, "Ptr", duration_out, "Int64")
+        retcode := DllCall("tempus_ahk\signed_duration_parse", "WStr", duration_string, "Ptr", duration_out, "Int64")
 
         if (retcode = 0) {
             handle := NumGet(duration_out, 0, "Ptr")
@@ -88,17 +86,17 @@ class Zoned {
     }
 
     __Delete() {
-        _TempusCall("free_zoned", "Ptr", this.pointer, "Int64")
+        DllCall("tempus_ahk\free_zoned", "Ptr", this.pointer, "Int64")
     }
 
     static now() {
-        ptr := _TempusCall("zoned_now", "Ptr")
+        ptr := DllCall("tempus_ahk\zoned_now", "Ptr")
         return Zoned(ptr)
     }
 
     static parse(time_string) {
         ts_out := Buffer(A_PtrSize)
-        retcode := _TempusCall("zoned_parse", "WStr", time_string, "Ptr", ts_out, "Int64")
+        retcode := DllCall("tempus_ahk\zoned_parse", "WStr", time_string, "Ptr", ts_out, "Int64")
 
         if (retcode = 0) {
             handle := NumGet(ts_out, 0, "Ptr")
@@ -122,18 +120,18 @@ class Timestamp {
     }
 
     __Delete() {
-        _TempusCall("free_timestamp", "Ptr", this.pointer, "Int64")
+        DllCall("tempus_ahk\free_timestamp", "Ptr", this.pointer, "Int64")
     }
 
     static now() {
-        ptr := _TempusCall("timestamp_now", "Ptr")
+        ptr := DllCall("tempus_ahk\timestamp_now", "Ptr")
         return TimeStamp(ptr)
     }
 
 
     static parse(time_string) {
         ts_out := Buffer(A_PtrSize)
-        retcode := _TempusCall("timestamp_parse", "WStr", time_string, "Ptr", ts_out, "Int64")
+        retcode := DllCall("tempus_ahk\timestamp_parse", "WStr", time_string, "Ptr", ts_out, "Int64")
 
         if (retcode = 0) {
             handle := NumGet(ts_out, 0, "Ptr")
@@ -151,20 +149,20 @@ class Timestamp {
     }
 
     as_millisecond() {
-        return _TempusCall("timestamp_as_millisecond", "Ptr", this.pointer, "Int64")
+        return DllCall("tempus_ahk\timestamp_as_millisecond", "Ptr", this.pointer, "Int64")
     }
 
     as_microsecond() {
-        return _TempusCall("timestamp_as_microsecond", "Ptr", this.pointer, "Int64")
+        return DllCall("tempus_ahk\timestamp_as_microsecond", "Ptr", this.pointer, "Int64")
     }
 
     as_second() {
-        return _TempusCall("timestamp_as_second", "Ptr", this.pointer, "Int64")
+        return DllCall("tempus_ahk\timestamp_as_second", "Ptr", this.pointer, "Int64")
     }
 
     static from_second(s) {
         out_ts := Buffer(A_PtrSize)
-        retcode := _TempusCall("timestamp_from_second", "Int64", s, "Ptr", out_ts, "Int64")
+        retcode := DllCall("tempus_ahk\timestamp_from_second", "Int64", s, "Ptr", out_ts, "Int64")
         if (retcode = 0) {
             handle := NumGet(out_ts, 0, "Ptr")
         } else if (retcode = -2) {
@@ -183,7 +181,7 @@ class Timestamp {
     }
     static from_millisecond(s) {
         out_ts := Buffer(A_PtrSize)
-        retcode := _TempusCall("timestamp_from_millisecond", "Int64", s, "Ptr", out_ts, "Int64")
+        retcode := DllCall("tempus_ahk\timestamp_from_millisecond", "Int64", s, "Ptr", out_ts, "Int64")
         if (retcode = 0) {
             handle := NumGet(out_ts, 0, "Ptr")
         } else if (retcode = -2) {
@@ -202,7 +200,7 @@ class Timestamp {
     }
     static from_microsecond(s) {
         out_ts := Buffer(A_PtrSize)
-        retcode := _TempusCall("timestamp_from_microsecond", "Int64", s, "Ptr", out_ts, "Int64")
+        retcode := DllCall("tempus_ahk\timestamp_from_microsecond", "Int64", s, "Ptr", out_ts, "Int64")
         if (retcode = 0) {
             handle := NumGet(out_ts, 0, "Ptr")
         } else if (retcode = -2) {
@@ -222,7 +220,7 @@ class Timestamp {
 
     in_tz(timezone) {
         zoned_ptr := Buffer(A_PtrSize)
-        retcode := _TempusCall("timestamp_parse", "WStr", timezone, "Ptr", this.pointer, "Ptr", zoned_ptr, "Int64")
+        retcode := DllCall("tempus_ahk\timestamp_parse", "WStr", timezone, "Ptr", this.pointer, "Ptr", zoned_ptr, "Int64")
         if (retcode = 0) {
             handle := NumGet(zoned_ptr, 0, "Ptr")
         } else if (retcode = -2) {
@@ -240,15 +238,15 @@ class Timestamp {
     }
 
     to_string() {
-        buff_length := _TempusCall("timestamp_string_length", "Ptr", this.pointer, "UInt64")
+        buff_length := DllCall("tempus_ahk\timestamp_string_length", "Ptr", this.pointer, "UInt64")
         buff := Buffer(buff_length+1, 0)
-        retcode := _TempusCall("timestamp_to_string", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size)
+        retcode := DllCall("tempus_ahk\timestamp_to_string", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size)
         ret := StrGet(buff, "UTF-8")
         return ret
     }
 
     strftime(format_str) {
-        buff_length := _TempusCall("timestamp_strftime_length", "Ptr", this.pointer, "WStr", format_str, "Int64")
+        buff_length := DllCall("tempus_ahk\timestamp_strftime_length", "Ptr", this.pointer, "WStr", format_str, "Int64")
         if buff_length < 0 {
             error_code := buff_length
             if (error_code = -2 || error_code = -3) {
@@ -260,7 +258,7 @@ class Timestamp {
             }
         }
         buff := Buffer(buff_length+1, 0)
-        retcode := _TempusCall("timestamp_strftime", "Ptr", this.pointer, "WStr", format_str, "Ptr", buff, "UInt64", buff.Size, "Int64")
+        retcode := DllCall("tempus_ahk\timestamp_strftime", "Ptr", this.pointer, "WStr", format_str, "Ptr", buff, "UInt64", buff.Size, "Int64")
         if (retcode = 0) {
             ret := StrGet(buff, "UTF-8")
             return ret
