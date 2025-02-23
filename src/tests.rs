@@ -22,8 +22,6 @@ fn run_script(script_text: String) -> Output {
     proc.wait_with_output().unwrap()
 }
 
-const SCRIPT_HEADER: &str = "#DllLoad target/x86_64-pc-windows-gnu/debug/tempus_ahk.dll\n\n#Include tempus.ahk";
-
 fn get_tempus_ahk_location() -> PathBuf {
     let current_file_path = file!();
     let path = Path::new(current_file_path);
@@ -39,8 +37,13 @@ fn get_dll_location() -> PathBuf {
 }
 
 fn make_script(script_text: &str) -> String {
-    let header = format!("#DllLoad {}\n#Include {}\nstdout := FileOpen(\"*\", \"w\", \"UTF-8\")\nwritestdout(message) {{\n    stdout.Write(message)\n    stdout.Read(0)\n}}", get_dll_location().to_str().unwrap(), get_tempus_ahk_location().to_str().unwrap());
+    let header = format!("#DllLoad \"{}\"\n#Include \"{}\"\nstdout := FileOpen(\"*\", \"w\", \"UTF-8\")\nwritestdout(message) {{\n    stdout.Write(message)\n    stdout.Read(0)\n}}", get_dll_location().to_str().unwrap(), get_tempus_ahk_location().to_str().unwrap());
     format!("{}\n\n{}", header, script_text)
+}
+
+#[test]
+fn test_command() {
+    run_script("obj := {}".to_string());
 }
 
 #[test]
