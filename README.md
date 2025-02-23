@@ -3,16 +3,20 @@
 Tempus is a DateTime library for AutoHotkey. It is, essentially, a wrapper to expose the API of the 
 Rust [jiff crate](https://crates.io/crates/jiff) in AHK. 
 
-So, to know what _tempus_ is about, is to know what _jiff_ is about:
+So, to know what _tempus.ahk_ is about, is to know what _jiff_ is about:
 
-> Jiff is a datetime library for Rust that encourages you to jump into the pit of success. The focus of this library is providing high level datetime primitives that are difficult to misuse and have reasonable performance. Jiff supports automatic and seamless integration with the Time Zone Database, DST aware arithmetic and rounding, formatting and parsing zone aware datetimes losslessly, \[...\] and a whole lot more.
+> Jiff is a datetime library for Rust that encourages you to jump into the pit of success. The focus of this library is providing high level datetime primitives that are difficult to misuse and have reasonable performance. Jiff supports automatic and seamless integration with the Time Zone Database, DST aware arithmetic and rounding, formatting and parsing zone aware datetimes losslessly, \[...\] and a whole lot more.  
 > Jiff takes enormous inspiration from [Temporal](https://tc39.es/proposal-temporal/docs/index.html), which is a [TC39](https://tc39.es/) proposal to improve datetime handling in JavaScript.
 
 
 Right now, not much of the API is implemented.
 
 
-## Installation
+# Installation
+
+This project has two components: the compiled `tempus_ahk.dll` and the `tempus.ahk` script, which is intended to be used 
+via [`#Include`](https://www.autohotkey.com/docs/v2/lib/_Include.htm). This script is for AHK v2 only. In principle, 
+the DLL can also be used with AHK v1, but no such script is provided.
 
 From the [releases page](https://github.com/spyoungtech/tempus.ahk/releases) you can download the compiled
 `tempus_ahk.dll` file and `tempus.ahk` file (or the `tempus_ahk.zip` containing these). To ensure Dll loading works correctly, you should ensure that 
@@ -46,10 +50,11 @@ MsgBox(time.as_second())
 ```
 
 
-# Binary Security
+## Binary Security
 
-DLL files are software compiled in binary form. Because these files are not human-readable, it is important
-that you can trust the authors that produce them and that you verify the authenticity of the file you downloaded.
+This project is distributed, in part, as a DLL file. DLL files are software compiled in binary form.
+Because these files are not human-readable, it is important that you can trust the authors that produce them and
+that you can verify the authenticity and integrity of the file you downloaded.
 
 For this project, the DLL binaries in the [releases page](https://github.com/spyoungtech/tempus.ahk/releases) are
 digitally signed as part of the GitHub Action where they are built. This digital signature can be used to verify that
