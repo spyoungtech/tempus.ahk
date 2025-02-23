@@ -3,7 +3,7 @@ use std::str::FromStr;
 use jiff::{SignedDuration, Error};
 use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message};
 #[repr(C)]
-struct TempusSignedDuration {
+pub struct TempusSignedDuration {
     duration: SignedDuration
 }
 

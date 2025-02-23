@@ -1,7 +1,10 @@
 ; the DLL is expected to be on PATH somewhere... Not sure if there's a better way to do this than to trust the user
 ; to put it in the right place.
-#DllLoad "tempus_ahk"
+#DllLoad "*i tempus_ahk"
 
+if !DllCall("GetModuleHandle", "str", "tempus_ahk") {
+    throw Error("Cannot load tempus_ahk.dll -- please ensure it is on PATH or use #DllLoad to load it in your script before your #Inlude of tempus.ahk")
+}
 
 
 Unit := {
@@ -266,6 +269,20 @@ class Timestamp {
             message := _get_last_error()
             throw Error(Format("error: {}", message), -2)
         }
+    }
+
+    static strptime(format_str, time_str) {
+        out_ts := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\timestamp_strptime", "WStr", format_str, "WStr", time_str, "Ptr", out_ts)
+        if (retcode < 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_ts, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Timestamp(handle)
     }
 }
 
