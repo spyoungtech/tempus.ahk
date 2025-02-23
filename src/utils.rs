@@ -1,7 +1,7 @@
 pub(crate) type AHKWstr = *const u16;
 pub(crate) type AHKStringBuffer = *mut c_char;
 
-use std::ffi::{c_char, c_longlong};
+use std::ffi::{c_char};
 use std::borrow::BorrowMut;
 use std::ptr;
 use std::sync::{Mutex, Once};
@@ -12,6 +12,7 @@ static INIT: Once = Once::new();
 fn global_string<'a>() -> &'a Mutex<String> {
     INIT.call_once(|| {
         // Since this access is inside a call_once, it is safe
+        #[allow(static_mut_refs)]
         unsafe {
             *STD_ONCE_COUNTER.borrow_mut() = Some(Mutex::new(String::from("Uninitialized")));
         }
@@ -19,6 +20,7 @@ fn global_string<'a>() -> &'a Mutex<String> {
     // As long as this function is the only place with access to the static variable,
     // giving out read-only borrow here is safe because it is guaranteed no more mutable
     // references will exist at this point or in the future.
+    #[allow(static_mut_refs)]
     unsafe { STD_ONCE_COUNTER.as_ref().unwrap() }
 }
 

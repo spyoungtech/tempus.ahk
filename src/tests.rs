@@ -1,4 +1,5 @@
-use std::io::{Read, Write};
+use std::io::{Write};
+#[cfg(windows)]
 use std::os::windows::process::CommandExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio, Output};

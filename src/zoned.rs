@@ -1,7 +1,6 @@
 use std::ffi::c_longlong;
 use std::str::FromStr;
 use jiff::{Error, Zoned};
-use crate::timestamp::TempusTimestamp;
 use crate::utils::{ahk_str_to_string, AHKWstr, set_last_error_message};
 
 #[repr(C)]
@@ -74,5 +73,6 @@ mod test {
     #[test]
     fn test() {
         let maybe_zoned : Result<Zoned, Error> = "something invalid".parse();
+        maybe_zoned.unwrap_err();
     }
 }
