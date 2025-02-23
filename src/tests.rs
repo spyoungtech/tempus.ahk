@@ -17,6 +17,7 @@ fn run_script(script_text: String) -> Output {
     std::thread::scope(|s| {
         s.spawn(|| {
             stdin.write_all(&script_text.as_bytes()).expect("failed to write to stdin");
+            stdin.flush().expect("failed to flush stdin");
         });
     });
     proc.wait_with_output().unwrap()
