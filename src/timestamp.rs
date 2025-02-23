@@ -1,8 +1,9 @@
-use jiff::{Error, SignedDuration, Span, Timestamp, Zoned};
+#![allow(dead_code)]
 
-use std::ffi::{c_char, c_longlong};
+use jiff::{Error, Timestamp};
+
+use std::ffi::c_longlong;
 use std::fmt::{Display, Formatter};
-use std::ptr;
 use std::str::FromStr;
 use jiff::fmt::strtime::BrokenDownTime;
 use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer};
@@ -66,10 +67,6 @@ impl TempusTimestamp {
     fn from_microsecond(second: i64) -> Result<Self, Error> {
         let ts = Timestamp::from_microsecond(second)?;
         Ok(TempusTimestamp{ts})
-    }
-
-    fn from_duration(duration: SignedDuration) -> Result<Self, Error> {
-        todo!()
     }
 
     pub(crate) fn stuff_into(self, pointer: *mut *mut TempusTimestamp) {
@@ -205,6 +202,36 @@ pub extern "C" fn timestamp_strftime(tts: &TempusTimestamp, ahk_format_str: AHKW
                 Ok(_) => {
                     string_into_ahk_buff(buf, out_buff, buff_len);
                     0
+                }
+            }
+        }
+    }
+}
+
+pub extern "C" fn timestamp_strptime(ahk_format_str: AHKWstr, ahk_time_str: AHKWstr, out_ts: *mut *mut TempusTimestamp) -> i64 {
+    match ahk_str_to_string(ahk_format_str) {
+        Err(_) => {
+            set_last_error_message("failed to read format string".to_string());
+            -1
+        }
+        Ok(format_str) => {
+            match ahk_str_to_string(ahk_time_str) {
+                Err(_) => {
+                    set_last_error_message("failed to read time string".to_string());
+                    -1
+                }
+                Ok(time_str) => {
+                    match Timestamp::strptime(format_str, time_str) {
+                        Err(e) => {
+                            set_last_error_message(e.to_string());
+                            -2
+                        }
+                        Ok(ts) => {
+                            let tts = TempusTimestamp{ts};
+                            tts.stuff_into(out_ts);
+                            0
+                        }
+                    }
                 }
             }
         }
