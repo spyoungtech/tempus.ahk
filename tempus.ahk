@@ -29,7 +29,7 @@ RoundMode := {
     HalfEven: 9,
 }
 
-_t_get_last_error() {
+_get_last_error() {
     length := DllCall("tempus_ahk\get_last_error_length", "UInt")
     if (length > 0)
     {
@@ -67,7 +67,7 @@ class SignedDuration {
         if (retcode = 0) {
             handle := NumGet(duration_out, 0, "Ptr")
         } else if (retcode = -2) {
-            message := _t_get_last_error()
+            message := _get_last_error()
             throw Error(Format("error {}", message), -2)
         } else {
             throw "Unexpected error"
@@ -101,7 +101,7 @@ class Zoned {
         if (retcode = 0) {
             handle := NumGet(ts_out, 0, "Ptr")
         } else if (retcode = -2) {
-            message := _t_get_last_error()
+            message := _get_last_error()
             throw Error(Format("error in parsing zoned: {}", message), -2)
         } else {
             throw "unknown error"
@@ -136,7 +136,7 @@ class Timestamp {
         if (retcode = 0) {
             handle := NumGet(ts_out, 0, "Ptr")
         } else if (retcode = -2) {
-            message := _t_get_last_error()
+            message := _get_last_error()
             throw Error(Format("error {}", message), -2)
         } else {
             throw "Unexpected error"
@@ -166,7 +166,7 @@ class Timestamp {
         if (retcode = 0) {
             handle := NumGet(out_ts, 0, "Ptr")
         } else if (retcode = -2) {
-            message := _t_get_last_error()
+            message := _get_last_error()
             throw Error(Format("Error: {}", message), -2)
         } else {
             throw "unexpected error"
@@ -185,7 +185,7 @@ class Timestamp {
         if (retcode = 0) {
             handle := NumGet(out_ts, 0, "Ptr")
         } else if (retcode = -2) {
-            message := _t_get_last_error()
+            message := _get_last_error()
             throw Error(Format("Error: {}", message), -2)
         } else {
             throw "unexpected error"
@@ -204,7 +204,7 @@ class Timestamp {
         if (retcode = 0) {
             handle := NumGet(out_ts, 0, "Ptr")
         } else if (retcode = -2) {
-            message := _t_get_last_error()
+            message := _get_last_error()
             throw Error(Format("Error: {}", message), -2)
         } else {
             throw "unexpected error"
@@ -224,7 +224,7 @@ class Timestamp {
         if (retcode = 0) {
             handle := NumGet(zoned_ptr, 0, "Ptr")
         } else if (retcode = -2) {
-            message := _t_get_last_error()
+            message := _get_last_error()
             throw Error(Format("error {}", message), -2)
         } else {
             throw "Unexpected error"
@@ -250,7 +250,7 @@ class Timestamp {
         if buff_length < 0 {
             error_code := buff_length
             if (error_code = -2 || error_code = -3) {
-                message := _t_get_last_error()
+                message := _get_last_error()
                 throw Error(Format("error {}", message), -2)
             }
             else {
@@ -263,7 +263,7 @@ class Timestamp {
             ret := StrGet(buff, "UTF-8")
             return ret
         } else {
-            message := _t_get_last_error()
+            message := _get_last_error()
             throw Error(Format("error: {}", message), -2)
         }
     }
