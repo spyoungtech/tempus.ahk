@@ -9,7 +9,7 @@ readme = "README.md"
 include = ["src/**/*.rs", "Cargo.toml", "LICENSE"]
 
 [lib]
-crate-type = ["cdylib", "lib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 jiff = { version="0.2" }
