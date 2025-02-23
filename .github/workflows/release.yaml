@@ -18,7 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: update rust stable
-        run: rustup update stable
+        run: |
+          rustup update stable
+          rustup target add x86_64-pc-windows-gnu
       - name: Build
         run: cargo build --verbose
       - name: Run tests

@@ -1,0 +1,7 @@
+[target.x86_64-pc-windows-gnu]
+rustflags = [
+    "-C", "link-arg=-Wl,-s",            # Strip symbols automatically
+]
+
+[build]
+target = "x86_64-pc-windows-gnu"
