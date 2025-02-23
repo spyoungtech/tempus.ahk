@@ -69,3 +69,13 @@ fn test_timestamp_strptime() {
     assert_eq!(stdout.to_string(), String::from("1721006040"));
     assert!(output.status.success());
 }
+
+#[test]
+fn test_timestamp_strftime() {
+    let script = make_script("ts := Timestamp.from_second(86400)\nout := ts.strftime(\"%a %b %e %I:%M:%S %p UTC %Y\")\nwritestdout(out)");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert_eq!(stdout.to_string(), String::from("Fri Jan  2 12:00:00 AM UTC 1970"));
+    assert!(output.status.success());
+
+}

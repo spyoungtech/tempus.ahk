@@ -93,6 +93,7 @@ pub extern "C" fn timestamp_as_microsecond(t: &TempusTimestamp) -> c_longlong {
     t.as_microsecond()
 }
 
+#[no_mangle]
 pub extern "C" fn timestamp_from_second(s: i64, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
     let maybe_ts = TempusTimestamp::from_second(s);
     match maybe_ts {
@@ -106,6 +107,8 @@ pub extern "C" fn timestamp_from_second(s: i64, out_ts: *mut *mut TempusTimestam
         }
     }
 }
+
+#[no_mangle]
 pub extern "C" fn timestamp_from_millisecond(s: i64, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
     let maybe_ts = TempusTimestamp::from_millisecond(s);
     match maybe_ts {
@@ -119,6 +122,8 @@ pub extern "C" fn timestamp_from_millisecond(s: i64, out_ts: *mut *mut TempusTim
         }
     }
 }
+
+#[no_mangle]
 pub extern "C" fn timestamp_from_microsecond(s: i64, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
     let maybe_ts = TempusTimestamp::from_microsecond(s);
     match maybe_ts {
