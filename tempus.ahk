@@ -34,9 +34,9 @@ RoundMode := {
 }
 
 _Ordering := {
-    LESS: -1
-    EQUAL: 0
-    GREATER: 1
+    LESS: -1,
+    EQUAL: 0,
+    GREATER: 1,
 }
 
 _get_last_error() {
@@ -586,7 +586,7 @@ class Span {
 
     compare(other_span, days_are_24_hours := false) {
         if other_span is Span {
-            retcode := DllCall("tempus_ahk\span_comapre", "Ptr", this.pointer, "Ptr", other_span.pointer, "Char", days_are_24_hours, "Char")
+            retcode := DllCall("tempus_ahk\span_compare", "Ptr", this.pointer, "Ptr", other_span.pointer, "Char", days_are_24_hours, "Char")
             if (retcode < -1) {
                 message := _get_last_error()
                 throw Error(Format("error({}): {}", retcode, message), -2)
