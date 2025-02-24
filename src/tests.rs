@@ -192,3 +192,14 @@ fn test_span_err() {
     assert_eq!(stdout.to_string(), String::from(""));
     assert!(!output.status.success());
 }
+
+#[test]
+fn test_span_compare() {
+    let script = make_script("span1 := Span.new().hours(3)\nspan2 := Span.new().minutes(180)\nwritestdout(span1.eq(span2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}

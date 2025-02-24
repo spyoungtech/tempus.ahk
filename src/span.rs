@@ -1,8 +1,9 @@
 #![allow(dead_code)]
 
+use std::cmp;
 use std::ffi::c_longlong;
 use std::fmt::{Display, Formatter};
-use jiff::{Error, Span, SpanRelativeTo};
+use jiff::{Error, Span, SpanCompare, SpanRelativeTo};
 use crate::utils::{set_last_error_message, string_into_ahk_buff, AHKStringBuffer};
 
 #[repr(C)]
@@ -331,6 +332,35 @@ pub extern "C" fn span_checked_sub_span(tspan: &TempusSpan, other_span: &TempusS
             let new_tspan = TempusSpan{span: new_span};
             new_tspan.stuff_into(out_span);
             0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn span_compare(tspan: &TempusSpan, other_span: &TempusSpan, days_are_24_hours_i: i8) -> i8 {
+    let days_are_24_hours = match days_are_24_hours_i {
+        0 => false,
+        1 => true,
+        _ => {
+            set_last_error_message("invalid options".to_string());
+            return -2
+        }
+    };
+    if days_are_24_hours {
+        match tspan.span.compare(SpanCompare::from(other_span.span).days_are_24_hours()) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                -3
+            }
+            Ok(result) => {result as i8}
+        }
+    } else {
+        match tspan.span.compare(other_span.span) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                -4
+            }
+            Ok(result) => {result as i8}
         }
     }
 }
