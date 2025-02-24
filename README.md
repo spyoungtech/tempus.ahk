@@ -1,5 +1,8 @@
 # tempus.ahk
 
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/spyoungtech/tempus.ahk/build.yaml)](https://github.com/spyoungtech/tempus.ahk/actions/workflows/build.yaml)  [![GitHub Release](https://img.shields.io/github/v/release/spyoungtech/tempus.ahk?color=blue)](https://github.com/spyoungtech/tempus.ahk/releases)
+
+
 Tempus is a DateTime library for AutoHotkey. It is, essentially, a wrapper to expose the API of the 
 Rust [jiff crate](https://crates.io/crates/jiff) in AHK. 
 
