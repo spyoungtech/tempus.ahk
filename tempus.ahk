@@ -324,3 +324,258 @@ class Timestamp {
 
 }
 
+class Span {
+    __New(pointer) {
+        this.pointer := pointer
+    }
+
+    __Delete() {
+        DllCall("tempus_ahk\free_span", "Ptr", this.pointer, "Int64")
+    }
+
+    static new() {
+        pointer := DllCall("tempus_ahk\span_new", "Ptr")
+        return Span(pointer)
+    }
+    days(days) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_days", "Ptr", this.pointer, "Int64", days, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+    hours(hours) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_hours", "Ptr", this.pointer, "Int64", hours, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+    seconds(seconds) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_seconds", "Ptr", this.pointer, "Int64", seconds, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+    milliseconds(milliseconds) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_milliseconds", "Ptr", this.pointer, "Int64", milliseconds, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+    microseconds(microseconds) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_microseconds", "Ptr", this.pointer, "Int64", microseconds, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+    nanoseconds(nanoseconds) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_nanoseconds", "Ptr", this.pointer, "Int64", nanoseconds, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+    weeks(weeks) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_weeks", "Ptr", this.pointer, "Int64", weeks, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message) -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+    months(months) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_months", "Ptr", this.pointer, "Int64", months, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message) -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+    years(years) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_years", "Ptr", this.pointer, "Int64", years, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message) -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+    minutes(minutes) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_minutes", "Ptr", this.pointer, "Int64", minutes, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message) -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+    get_years() {
+        return DllCall("tempus_ahk\span_get_years", "Ptr", this.pointer, "Int64")
+    }
+    get_months() {
+        return DllCall("tempus_ahk\span_get_months", "Ptr", this.pointer, "Int64")
+    }
+    get_weeks() {
+        return DllCall("tempus_ahk\span_get_weeks", "Ptr", this.pointer, "Int64")
+    }
+    get_days() {
+        return DllCall("tempus_ahk\span_get_days", "Ptr", this.pointer, "Int64")
+    }
+    get_hours() {
+        return DllCall("tempus_ahk\span_get_hours", "Ptr", this.pointer, "Int64")
+    }
+    get_minutes() {
+        return DllCall("tempus_ahk\span_get_minutes", "Ptr", this.pointer, "Int64")
+    }
+    get_seconds() {
+        return DllCall("tempus_ahk\span_get_seconds", "Ptr", this.pointer, "Int64")
+    }
+    get_milliseconds() {
+        return DllCall("tempus_ahk\span_get_milliseconds", "Ptr", this.pointer, "Int64")
+    }
+    get_microseconds() {
+        return DllCall("tempus_ahk\span_get_microseconds", "Ptr", this.pointer, "Int64")
+    }
+    get_nanoseconds() {
+        return DllCall("tempus_ahk\span_get_nanoseconds", "Ptr", this.pointer, "Int64")
+    }
+
+    to_string() {
+        buff_length := DllCall("tempus_ahk\span_string_length", "Ptr", this.pointer, "UInt64")
+        buff := Buffer(buff_length+1, 0)
+        retcode := DllCall("tempus_ahk\span_to_string", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size)
+        ret := StrGet(buff, "UTF-8")
+        return ret
+    }
+
+    abs() {
+        pointer := DllCall("tempus_ahk\span_abs", "Ptr", this.pointer, "Ptr")
+        return Span(pointer)
+    }
+    negate() {
+        pointer := DllCall("tempus_ahk\span_negate", "Ptr", this.pointer, "Ptr")
+        return Span(pointer)
+    }
+    is_negative() {
+        return DllCall("tempus_ahk\span_is_negative", "Ptr", this.pointer, "Char")
+    }
+    is_positive() {
+        return DllCall("tempus_ahk\span_is_positive", "Ptr", this.pointer, "Char")
+    }
+    is_zero() {
+        return DllCall("tempus_ahk\span_is_zero", "Ptr", this.pointer, "Char")
+    }
+    signum() {
+        return DllCall("tempus_ahk\span_signum", "Ptr", this.pointer, "Char")
+    }
+
+    checked_add(other, days_are_24_hours := false) {
+        out_span := Buffer(A_PtrSize)
+        if (other is Span) {
+           retcode := DllCall("tempus_ahk\span_checked_add_span", "Ptr", this.pointer, "Ptr", other.pointer, "Char", days_are_24_hours, "Ptr", out_span, "Int64")
+        } else {
+            throw Error("add is only currently supported with other Span types", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+
+    checked_sub(other, days_are_24_hours := false) {
+        out_span := Buffer(A_PtrSize)
+        if (other is Span) {
+           retcode := DllCall("tempus_ahk\span_checked_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Char", days_are_24_hours, "Ptr", out_span, "Int64")
+        } else {
+            throw Error("sub is only currently supported with other Span types", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+
+    checked_mul(i) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_checked_mul", "Ptr", this.pointer, "Int64", i, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+
+}
+
