@@ -1,6 +1,4 @@
 use std::io::{Write};
-#[cfg(windows)]
-use std::os::windows::process::CommandExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio, Output};
 
@@ -47,7 +45,6 @@ fn make_script(script_text: &str) -> String {
     #Include \"{}\"\n\
     stdout := FileOpen(\"*\", \"w\", \"UTF-8\")\n\
     stderr := FileOpen(\"**\", \"w\", \"UTF-8\")\n\
-
     writestdout(message) {{\n\
         stdout.Write(message)\n\
         stdout.Read(0)\n\
