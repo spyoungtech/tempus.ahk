@@ -1,7 +1,8 @@
-; the DLL is expected to be on PATH somewhere... Not sure if there's a better way to do this than to trust the user
-; to put it in the right place.
+; try to load the tempus_ahk dll.
+; we ignore this if it fails, allowing the user to provide their own `DllLoad` call before #Include of this script
 #DllLoad "*i tempus_ahk"
 
+; At runtime, check that the module was actually loaded successfully
 if !DllCall("GetModuleHandle", "str", "tempus_ahk") {
     throw Error("Cannot load tempus_ahk.dll -- please ensure it is on PATH or use #DllLoad to load it in your script before your #Inlude of tempus.ahk")
 }
@@ -30,6 +31,12 @@ RoundMode := {
     HalfExpand: 7,
     HalfTrunc: 8,
     HalfEven: 9,
+}
+
+_Ordering := {
+    LESS: -1,
+    EQUAL: 0,
+    GREATER: 1,
 }
 
 _get_last_error() {
@@ -576,6 +583,65 @@ class Span {
         }
         return Span(handle)
     }
+
+    compare(other_span, days_are_24_hours := false) {
+        if other_span is Span {
+            retcode := DllCall("tempus_ahk\span_compare", "Ptr", this.pointer, "Ptr", other_span.pointer, "Char", days_are_24_hours, "Char")
+            if (retcode < -1) {
+                message := _get_last_error()
+                throw Error(Format("error({}): {}", retcode, message), -2)
+            }
+            return retcode
+        } else {
+            throw Error("Only spans can be compared with spans", -2)
+        }
+    }
+
+    gt(other_span, days_are_24_hours := false) {
+        result := this.compare(other_span, days_are_24_hours)
+        if (result = _Ordering.GREATER) {
+            return true
+        }  else {
+            return false
+        }
+    }
+
+    lt(other_span, days_are_24_hours := false) {
+        result := this.compare(other_span, days_are_24_hours)
+        if (result = _Ordering.LESS) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    eq(other_span, days_are_24_hours := false) {
+        result := this.compare(other_span, days_are_24_hours)
+        if (result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    gte(other_span, days_are_24_hours := false) {
+        result := this.compare(other_span, days_are_24_hours)
+        if (result = _Ordering.GREATER || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    lte(other_span, days_are_24_hours := false) {
+        result := this.compare(other_span, days_are_24_hours)
+        if (result = _Ordering.LESS || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
 
 }
 

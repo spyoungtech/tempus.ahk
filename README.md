@@ -126,6 +126,43 @@ span3 := span1.checked_add(span2)
 MsgBox(span3.to_string()) ; PT3H1M 
 ```
 
+
+Comparisons
+
+The methods `eq`, `gt`, `lt`, `gte`, and `lte` can be used to compare two span objects
+
+```AutoHotkey
+span1 := Span.new().hours(3)
+span2 := Span.new().minutes(180)
+if (span1.eq(span2)) { ; true
+  MsgBox("They are equal in length")
+}
+```
+
+By default, `jiff` takes into account various factors when comparing spans and does not assume all days are 24 hours. 
+Therefore, when a span's smallest component is days or greater (that is, it includes a calendar component), 
+you either need to associate a relative datetime (Because, for example, 1 month from March 1 is 31 days, but 1 month from April 1 is 30 days.)
+or (to compare weeks) opt into an assumption/invariant of days being calculated as 24 hours.
+
+for example:
+
+```AutoHotkey
+span1 := Span.new().weeks(4)
+span2 := Span.new().days(30)
+
+span1.eq(span2) ; error!
+```
+But opting into the 24-hour-days invariant (by passing `true` as the second argument to the compare method) allows this:
+```AutoHotkey
+span1 := Span.new().weeks(4)
+span2 := Span.new().days(30)
+
+; opt into 24-hour-days invariant to allow comparison of days/weeks
+span1.gt(span2, true) ; OK!
+```
+
+Support for specifying a relative timeframe is not yet available.
+
 ## Binary Security
 
 This project is distributed, in part, as a DLL file. DLL files are software compiled in binary form.
@@ -308,7 +345,8 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [checked_mul](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_mul) (for `Span` only so far)
 - [x] [checked_add](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_add) (for `Span` only so far)
 - [x] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_sub)
-- [ ] [compare](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.compare)
+- [x] [compare](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.compare)
+- [ ] [compare](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.compare) (with relative timeframe)
 - [ ] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total)
 - [ ] [round](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.round)
 - [ ] [to_duration](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.to_duration)
