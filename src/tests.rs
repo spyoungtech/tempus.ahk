@@ -194,7 +194,7 @@ fn test_span_err() {
 }
 
 #[test]
-fn test_span_compare() {
+fn test_span_compare_eq() {
     let script = make_script("span1 := Span.new().hours(3)\nspan2 := Span.new().minutes(180)\nwritestdout(span1.eq(span2))");
     let output = run_script(script);
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -202,4 +202,60 @@ fn test_span_compare() {
     assert_eq!(stderr, "");
     assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
+}
+
+
+#[test]
+fn test_span_compare_gte() {
+    let script = make_script("span1 := Span.new().hours(3)\nspan2 := Span.new().minutes(180)\nwritestdout(span1.gte(span2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_span_compare_lte(){
+    let script = make_script("span1 := Span.new().hours(3)\nspan2 := Span.new().minutes(180)\nwritestdout(span1.lte(span2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_span_compare_lt() {
+    let script = make_script("span1 := Span.new().hours(3)\nspan2 := Span.new().minutes(181)\nwritestdout(span1.lt(span2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_span_compare_gt() {
+    let script = make_script("span1 := Span.new().hours(3)\nspan2 := Span.new().minutes(179)\nwritestdout(span1.gt(span2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_span_compare_fails_non_span() {
+    let script = make_script("span1 := Span.new().hours(3)\nspan2 := Timestamp.now()\nwritestdout(span1.gt(span2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("Only spans can be compared with spans"));
+    assert_eq!(stdout.to_string(), String::from(""));
+    assert!(!output.status.success());
 }
