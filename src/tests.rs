@@ -56,6 +56,8 @@ fn test_timestamp_parse() {
     let script = make_script("ts := Timestamp.parse(\"2024-01-01T00:00:00Z\")\nwritestdout(ts.to_string())");
     let output = run_script(script);
     let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
     assert_eq!(stdout.to_string(), String::from("2024-01-01T00:00:00Z"));
     assert!(output.status.success());
 }
@@ -66,6 +68,8 @@ fn test_timestamp_strptime() {
     let script = make_script("ts := Timestamp.strptime(\"%F %H:%M %:z\", \"2024-07-14 21:14 -04:00\")\nwritestdout(ts.as_second())");
     let output = run_script(script);
     let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
     assert_eq!(stdout.to_string(), String::from("1721006040"));
     assert!(output.status.success());
 }
@@ -75,6 +79,8 @@ fn test_timestamp_strftime() {
     let script = make_script("ts := Timestamp.from_second(86400)\nout := ts.strftime(\"%a %b %e %I:%M:%S %p UTC %Y\")\nwritestdout(out)");
     let output = run_script(script);
     let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
     assert_eq!(stdout.to_string(), String::from("Fri Jan  2 12:00:00 AM UTC 1970"));
     assert!(output.status.success());
 
@@ -85,12 +91,29 @@ fn test_timestamp_is_zero() {
     let script = make_script("ts := Timestamp.UNIX_EPOCH()\nwritestdout(ts.is_zero())");
     let output = run_script(script);
     let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
     assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
 
     let script = make_script("ts := Timestamp.from_second(1)\nwritestdout(ts.is_zero())");
     let output = run_script(script);
     let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
     assert_eq!(stdout.to_string(), String::from("0"));
     assert!(output.status.success());
+}
+
+#[test]
+fn test_timestamp_round() {
+    let script = make_script("ts := Timestamp.parse(\"2024-06-20 03:25:01Z\")\nrounded := ts.round(Unit.Minute, 1, RoundMode.Ceil)\nwritestdout(rounded.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2024-06-20T03:26:00Z"));
+    assert!(output.status.success());
+
+
 }
