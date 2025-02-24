@@ -1,7 +1,7 @@
 use std::io::{Write};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio, Output};
-
+use jiff::ToSpan;
 
 fn run_script(script_text: String) -> Output {
     let mut child = Command::new("autohotkeyv2.exe")
@@ -258,4 +258,26 @@ fn test_span_compare_fails_non_span() {
     assert!(stderr.contains("Only spans can be compared with spans"));
     assert_eq!(stdout.to_string(), String::from(""));
     assert!(!output.status.success());
+}
+
+#[test]
+fn test_span_compare_fails_calendar_components() {
+    let script = make_script("span1 := Span.new().days(300)\nspan2 := Span.new().months(1)\nwritestdout(span1.gt(span2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("requires that a relative reference time be given"), "{stderr}");
+    assert_eq!(stdout.to_string(), String::from(""));
+    assert!(!output.status.success());
+}
+
+#[test]
+fn test_span_compare_24_hours() {
+    let script = make_script("span1 := Span.new().days(30)\nspan2 := Span.new().weeks(3)\nwritestdout(span1.gt(span2, true))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
 }
