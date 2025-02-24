@@ -51,6 +51,8 @@ MsgBox(time.as_second())
 
 ## Examples
 
+### Timestamp
+
 `Timestamp.strptime` / `Timestamp.as_second`
 
 ```AutoHotkey
@@ -112,6 +114,14 @@ RoundMode := {
 }
 ```
 
+### Span
+
+```AutoHotkey
+span1 := Span.new().hours(2).minutes(59)
+span2 := Span.new().minutes(2)
+span3 := span1.checked_add(span2)
+MsgBox(span3.to_string()) ; PT3H1M 
+```
 
 ## Binary Security
 
@@ -292,9 +302,9 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [is_negative](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.is_negative)
 - [x] [is_zero](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.is_zero)
 - [ ] ~~[fieldwise](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.fieldwise)~~
-- [ ] [checked_mul](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_mul)
-- [ ] [checked_add](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_add)
-- [ ] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_sub)
+- [x] [checked_mul](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_mul) (for `Span` only so far)
+- [x] [checked_add](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_add) (for `Span` only so far)
+- [x] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_sub)
 - [ ] [compare](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.compare)
 - [ ] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total)
 - [ ] [round](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.round)
