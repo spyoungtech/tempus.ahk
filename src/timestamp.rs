@@ -267,6 +267,11 @@ pub extern "C" fn timestamp_in_tz(ahk_time_str: AHKWstr, tts: &TempusTimestamp, 
 }
 
 #[no_mangle]
+pub extern "C" fn timestamp_is_zero(tts: &TempusTimestamp) -> i8 {
+    tts.ts.is_zero().into()
+}
+
+#[no_mangle]
 pub extern "C" fn timestamp_parse(ahk_time_string: AHKWstr, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
     match ahk_str_to_string(ahk_time_string) {
         Err(_) => {
