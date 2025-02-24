@@ -114,6 +114,48 @@ fn test_timestamp_round() {
     assert_eq!(stderr, "");
     assert_eq!(stdout.to_string(), String::from("2024-06-20T03:26:00Z"));
     assert!(output.status.success());
+}
 
+#[test]
+fn test_span() {
+    let script = make_script("sp := Span.new().days(5).hours(8).minutes(1)\nwritestdout(sp.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("P5DT8H1M"));
+    assert!(output.status.success());
+}
 
+#[test]
+fn test_span_add() {
+    let script = make_script("span1 := Span.new().hours(2).minutes(59)\nspan2 := Span.new().minutes(2)\nspan3 := span1.checked_add(span2)\nwritestdout(span3.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("PT3H1M"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_span_sub() {
+    let script = make_script("span1 := Span.new().hours(3).minutes(59)\nspan2 := Span.new().minutes(59)\nspan3 := span1.checked_sub(span2)\nwritestdout(span3.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("PT3H"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_span_mul() {
+    let script = make_script("span1 := Span.new().hours(3).checked_mul(10)\nwritestdout(span1.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("PT30H"));
+    assert!(output.status.success());
 }

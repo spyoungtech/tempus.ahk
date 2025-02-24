@@ -9,7 +9,7 @@ So, to know what _tempus.ahk_ is about, is to know what _jiff_ is about:
 > Jiff takes enormous inspiration from [Temporal](https://tc39.es/proposal-temporal/docs/index.html), which is a [TC39](https://tc39.es/) proposal to improve datetime handling in JavaScript.
 
 
-Right now, not much of the API is implemented.
+Right now, only a portion of the API is implemented, but development towards completion is rapidly underway.
 
 
 # Installation
@@ -50,6 +50,8 @@ MsgBox(time.as_second())
 ```
 
 ## Examples
+
+### Timestamp
 
 `Timestamp.strptime` / `Timestamp.as_second`
 
@@ -112,6 +114,14 @@ RoundMode := {
 }
 ```
 
+### Span
+
+```AutoHotkey
+span1 := Span.new().hours(2).minutes(59)
+span2 := Span.new().minutes(2)
+span3 := span1.checked_add(span2)
+MsgBox(span3.to_string()) ; PT3H1M 
+```
 
 ## Binary Security
 
@@ -263,47 +273,38 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 
 ## Span
 
-- [ ] [new](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.new)
-- [ ] [years](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.years)
-- [ ] [months](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.months)
-- [ ] [weeks](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.weeks)
-- [ ] [days](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.days)
-- [ ] [hours](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.hours)
-- [ ] [minutes](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.minutes)
-- [ ] [seconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.seconds)
-- [ ] [milliseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.milliseconds)
-- [ ] [microseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.microseconds)
-- [ ] [nanoseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.nanoseconds)
-- [ ] [try_years](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.try_years)
-- [ ] [try_months](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.try_months)
-- [ ] [try_weeks](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.try_weeks)
-- [ ] [try_days](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.try_days)
-- [ ] [try_hours](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.try_hours)
-- [ ] [try_minutes](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.try_minutes)
-- [ ] [try_seconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.try_seconds)
-- [ ] [try_milliseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.try_milliseconds)
-- [ ] [try_microseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.try_microseconds)
-- [ ] [try_nanoseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.try_nanoseconds)
-- [ ] [get_years](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_years)
-- [ ] [get_months](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_months)
-- [ ] [get_weeks](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_weeks)
-- [ ] [get_days](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_days)
-- [ ] [get_hours](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_hours)
-- [ ] [get_minutes](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_minutes)
-- [ ] [get_seconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_seconds)
-- [ ] [get_milliseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_milliseconds)
-- [ ] [get_microseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_microseconds)
-- [ ] [get_nanoseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_nanoseconds)
-- [ ] [abs](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.abs)
-- [ ] [negate](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.negate)
-- [ ] [signum](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.signum)
-- [ ] [is_positive](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.is_positive)
-- [ ] [is_negative](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.is_negative)
-- [ ] [is_zero](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.is_zero)
-- [ ] [fieldwise](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.fieldwise)
-- [ ] [checked_mul](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_mul)
-- [ ] [checked_add](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_add)
-- [ ] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_sub)
+- [x] [new](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.new)
+- [x] `parse`
+- [x] [years](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.years)
+- [x] [months](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.months)
+- [x] [weeks](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.weeks)
+- [x] [days](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.days)
+- [x] [hours](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.hours)
+- [x] [minutes](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.minutes)
+- [x] [seconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.seconds)
+- [x] [milliseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.milliseconds)
+- [x] [microseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.microseconds)
+- [x] [nanoseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.nanoseconds)
+- [x] [get_years](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_years)
+- [x] [get_months](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_months)
+- [x] [get_weeks](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_weeks)
+- [x] [get_days](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_days)
+- [x] [get_hours](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_hours)
+- [x] [get_minutes](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_minutes)
+- [x] [get_seconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_seconds)
+- [x] [get_milliseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_milliseconds)
+- [x] [get_microseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_microseconds)
+- [x] [get_nanoseconds](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.get_nanoseconds)
+- [x] [abs](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.abs)
+- [x] [negate](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.negate)
+- [x] [signum](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.signum)
+- [x] [is_positive](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.is_positive)
+- [x] [is_negative](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.is_negative)
+- [x] [is_zero](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.is_zero)
+- [ ] ~~[fieldwise](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.fieldwise)~~
+- [x] [checked_mul](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_mul) (for `Span` only so far)
+- [x] [checked_add](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_add) (for `Span` only so far)
+- [x] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_sub)
 - [ ] [compare](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.compare)
 - [ ] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total)
 - [ ] [round](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.round)
