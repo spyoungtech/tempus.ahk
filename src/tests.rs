@@ -138,3 +138,24 @@ fn test_span_add() {
     assert!(output.status.success());
 }
 
+#[test]
+fn test_span_sub() {
+    let script = make_script("span1 := Span.new().hours(3).minutes(59)\nspan2 := Span.new().minutes(59)\nspan3 := span1.checked_sub(span2)\nwritestdout(span3.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("PT3H"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_span_mul() {
+    let script = make_script("span1 := Span.new().hours(3).checked_mul(10)\nwritestdout(span1.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("PT30H"));
+    assert!(output.status.success());
+}
