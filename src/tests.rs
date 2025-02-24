@@ -281,3 +281,15 @@ fn test_span_compare_24_hours() {
     assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
 }
+
+
+#[test]
+fn test_span_total() {
+    let script = make_script("span1 := Span.new().hours(3).minutes(10)\nwritestdout(span1.total(Unit.Second))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("11400.0"));
+    assert!(output.status.success());
+}

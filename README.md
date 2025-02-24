@@ -126,6 +126,13 @@ span3 := span1.checked_add(span2)
 MsgBox(span3.to_string()) ; PT3H1M 
 ```
 
+`span.total`
+
+```AutoHotkey
+span1 := Span.new().hours(3).minutes(10)
+MsgBox(span1.total(Unit.Second)) ; 11400.0
+```
+
 
 Comparisons
 
@@ -347,7 +354,8 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_sub)
 - [x] [compare](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.compare)
 - [ ] [compare](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.compare) (with relative timeframe)
-- [ ] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total)
+- [x] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total)
+- [ ] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total) (with relative timeframe)
 - [ ] [round](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.round)
 - [ ] [to_duration](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.to_duration)
 - [ ] Others (trait impls (to_string, parse/from_str, etc.), arithmetic, comparisons)

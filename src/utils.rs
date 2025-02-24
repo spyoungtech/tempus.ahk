@@ -5,6 +5,7 @@ use std::ffi::{c_char};
 use std::borrow::BorrowMut;
 use std::ptr;
 use std::sync::{Mutex, Once};
+use jiff::{RoundMode, Unit};
 
 static mut STD_ONCE_COUNTER: Option<Mutex<String>> = None;
 static INIT: Once = Once::new();
@@ -84,6 +85,42 @@ pub(crate) fn string_into_ahk_buff(s: String, out_buff: AHKStringBuffer, buff_le
     unsafe {
         ptr::copy_nonoverlapping(ret_bytes.as_ptr(), out_buff as *mut u8, copy_len);
         *out_buff.add(copy_len) = 0;
+    }
+}
+
+
+pub(crate) fn round_mode_from_i8(i: i8) -> Result<RoundMode, String> {
+    match i {
+        1 => Ok(RoundMode::Ceil),
+        2 => Ok(RoundMode::Floor),
+        3 => Ok(RoundMode::Expand),
+        4 => Ok(RoundMode::Trunc),
+        5 => Ok(RoundMode::HalfCeil),
+        6 => Ok(RoundMode::HalfFloor),
+        7 => Ok(RoundMode::HalfExpand),
+        8 => Ok(RoundMode::HalfTrunc),
+        9 => Ok(RoundMode::HalfEven),
+        _ => {
+            Err(format!("invalid round mode: {i}. Must be in range 1-9 (inclusive)"))
+        }
+    }
+}
+
+pub(crate) fn unit_from_i8(i: i8) -> Result<Unit, String> {
+    match i {
+        0 => Ok(Unit::Nanosecond),
+        1 => Ok(Unit::Microsecond),
+        2 => Ok(Unit::Millisecond),
+        3 => Ok(Unit::Second),
+        4 => Ok(Unit::Minute),
+        5 => Ok(Unit::Hour),
+        6 => Ok(Unit::Day),
+        7 => Ok(Unit::Week),
+        8 => Ok(Unit::Month),
+        9 => Ok(Unit::Year),
+        _ => {
+            Err(format!("invalid unit: {i}. Must be in range 0-9 (inclusive)"))
+        }
     }
 }
 
