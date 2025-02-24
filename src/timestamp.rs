@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use jiff::{Error, Timestamp};
+use jiff::{Error, RoundMode, Timestamp, TimestampRound, Unit};
 
 use std::ffi::c_longlong;
 use std::fmt::{Display, Formatter};
@@ -269,6 +269,54 @@ pub extern "C" fn timestamp_in_tz(ahk_time_str: AHKWstr, tts: &TempusTimestamp, 
 #[no_mangle]
 pub extern "C" fn timestamp_is_zero(tts: &TempusTimestamp) -> i8 {
     tts.ts.is_zero().into()
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_round(tts: &TempusTimestamp, unit: i8, increment: i64, round_mode: i8, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    let round_unit = match unit {
+        0 => Unit::Nanosecond,
+        1 => Unit::Microsecond,
+        2 => Unit::Millisecond,
+        3 => Unit::Second,
+        4 => Unit::Minute,
+        5 => Unit::Hour,
+        6 => Unit::Day,
+        7 => Unit::Week,
+        8 => Unit::Month,
+        9 => Unit::Year,
+        _ => {
+            set_last_error_message("invalid round unit".to_string());
+            return -1
+        }
+    };
+    let mode = match round_mode {
+        1 => RoundMode::Ceil,
+        2 => RoundMode::Floor,
+        3 => RoundMode::Expand,
+        4 => RoundMode::Trunc,
+        5 => RoundMode::HalfCeil,
+        6 => RoundMode::HalfFloor,
+        7 => RoundMode::HalfExpand,
+        8 => RoundMode::HalfTrunc,
+        9 => RoundMode::HalfEven,
+        _ => {
+            set_last_error_message("Invalid round mode".to_string());
+            return -2
+        }
+    };
+
+    let ts_round = TimestampRound::new().smallest(round_unit).mode(mode).increment(increment);
+    match tts.ts.round(ts_round) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -3
+        }
+        Ok(new_ts) => {
+            let new_tts = TempusTimestamp{ts: new_ts};
+            new_tts.stuff_into(out_ts);
+            0
+        }
+    }
 }
 
 #[no_mangle]

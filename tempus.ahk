@@ -128,7 +128,7 @@ class Timestamp {
 
     static now() {
         ptr := DllCall("tempus_ahk\timestamp_now", "Ptr")
-        return TimeStamp(ptr)
+        return Timestamp(ptr)
     }
 
 
@@ -148,7 +148,7 @@ class Timestamp {
         if (handle = 0) {
             throw "unexpected error"
         }
-        return TimeStamp(handle)
+        return Timestamp(handle)
     }
 
     as_millisecond() {
@@ -296,6 +296,30 @@ class Timestamp {
         } else {
             return false
         }
+    }
+
+    round(round_unit, increment := 1, round_mode := RoundMode.HalfExpand) {
+        if round_unit < 0 {
+            throw Error("Invalid round unit.", -2)
+        }
+        if round_unit > 5 {
+            throw Error("Largest allowed unit is Unit.Hour", -2)
+        }
+        if (round_mode < 1 || round_mode > 9) {
+            throw Error("Invalid round mode", -2)
+        }
+        out_ts := Buffer(A_PtrSize)
+        
+        retcode := DllCall("tempus_ahk\timestamp_round", "Ptr", this.pointer, "Char", round_unit, "Int64", increment, "Char", round_mode, "Ptr", out_ts, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error ({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_ts, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Timestamp(handle)
     }
 
 }

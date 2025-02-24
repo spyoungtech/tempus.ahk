@@ -72,6 +72,45 @@ ts := Timestamp.from_second(86400)
 MsgBox(ts.strftime("%a %b %e %I:%M:%S %p UTC %Y")) ; Fri Jan  2 12:00:00 AM UTC 1970
 ```
 
+`Timestamp.round`
+
+`round` takes three arguments: the rounding unit, the increment, and the rounding mode.
+
+
+```AutoHotkey
+ts := Timestamp.parse("2024-06-20 03:25:01Z")
+rounded := ts.round(Unit.Minute, 1, RoundMode.Ceil)
+MsgBox(rounded.to_string()) ; 2024-06-20T03:26:00Z
+```
+
+Convenience objects are available for specifying the unit and mode:
+
+```AutoHotkey
+Unit := {
+    Nanosecond: 0, 
+    Microsecond: 1, 
+    Millisecond: 2, 
+    Second: 3, 
+    Minute: 4, 
+    Hour: 5, 
+    Day: 6, 
+    Week: 7, 
+    Month: 8, 
+    Year: 9
+}
+
+RoundMode := {
+    Ceil: 1,
+    Floor: 2,
+    Expand: 3,
+    Trunc: 4,
+    HalfCeil: 5,
+    HalfFloor: 6,
+    HalfExpand: 7,
+    HalfTrunc: 8,
+    HalfEven: 9,
+}
+```
 
 
 ## Binary Security
@@ -159,7 +198,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [ ] [since](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.since)
 - [ ] [duration_until](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.duration_until)
 - [ ] [duration_since](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.duration_since)
-- [ ] [round](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.round)
+- [x] [round](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.round)
 - [ ] [series](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.series)
 - [x] [strptime](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.strptime)
 - [x] [strftime](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.strftime)
