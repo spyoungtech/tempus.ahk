@@ -6,7 +6,7 @@ use std::ffi::c_longlong;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 use jiff::fmt::strtime::BrokenDownTime;
-use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer};
+use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, unit_from_i8, round_mode_from_i8};
 use crate::zoned::TempusZoned;
 
 #[repr(C)]
@@ -273,34 +273,17 @@ pub extern "C" fn timestamp_is_zero(tts: &TempusTimestamp) -> i8 {
 
 #[no_mangle]
 pub extern "C" fn timestamp_round(tts: &TempusTimestamp, unit: i8, increment: i64, round_mode: i8, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
-    let round_unit = match unit {
-        0 => Unit::Nanosecond,
-        1 => Unit::Microsecond,
-        2 => Unit::Millisecond,
-        3 => Unit::Second,
-        4 => Unit::Minute,
-        5 => Unit::Hour,
-        6 => Unit::Day,
-        7 => Unit::Week,
-        8 => Unit::Month,
-        9 => Unit::Year,
-        _ => {
-            set_last_error_message("invalid round unit".to_string());
+    let round_unit = match unit_from_i8(unit) {
+        Ok(unit) => unit,
+        Err(e) => {
+            set_last_error_message(e.to_string());
             return -1
         }
     };
-    let mode = match round_mode {
-        1 => RoundMode::Ceil,
-        2 => RoundMode::Floor,
-        3 => RoundMode::Expand,
-        4 => RoundMode::Trunc,
-        5 => RoundMode::HalfCeil,
-        6 => RoundMode::HalfFloor,
-        7 => RoundMode::HalfExpand,
-        8 => RoundMode::HalfTrunc,
-        9 => RoundMode::HalfEven,
-        _ => {
-            set_last_error_message("Invalid round mode".to_string());
+    let mode = match round_mode_from_i8(round_mode) {
+        Ok(m) => m,
+        Err(e) => {
+            set_last_error_message(e.to_string());
             return -2
         }
     };

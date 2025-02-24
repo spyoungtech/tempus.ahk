@@ -642,6 +642,14 @@ class Span {
         }
     }
 
-
+    total(unit, days_are_24_hours := false) {
+        retcode := DllCall("tempus_ahk\span_total", "Ptr", this.pointer, "Char", unit, "Char", days_are_24_hours, "DoubleP", &out_buff:=0.0, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        } else {
+            return out_buff
+        }
+    }
 }
 

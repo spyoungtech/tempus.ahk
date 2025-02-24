@@ -3,8 +3,8 @@
 use std::cmp;
 use std::ffi::c_longlong;
 use std::fmt::{Display, Formatter};
-use jiff::{Error, Span, SpanCompare, SpanRelativeTo};
-use crate::utils::{set_last_error_message, string_into_ahk_buff, AHKStringBuffer};
+use jiff::{Error, Span, SpanCompare, SpanRelativeTo, SpanTotal};
+use crate::utils::{set_last_error_message, string_into_ahk_buff, unit_from_i8, AHKStringBuffer};
 
 #[repr(C)]
 pub struct TempusSpan {
@@ -361,6 +361,52 @@ pub extern "C" fn span_compare(tspan: &TempusSpan, other_span: &TempusSpan, days
                 -4
             }
             Ok(result) => {result as i8}
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn span_total(tspan: &TempusSpan, unit_i: i8, days_are_24_hours_i: i8, out_f64: *mut f64) -> c_longlong {
+    let days_are_24_hours = match days_are_24_hours_i {
+        0 => false,
+        1 => true,
+        _ => {
+            set_last_error_message("invalid options".to_string());
+            return -1
+        }
+    };
+    let unit = match unit_from_i8(unit_i) {
+        Ok(u) => u,
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            return -2
+        }
+    };
+    if days_are_24_hours {
+        match tspan.span.total(SpanTotal::from(unit).days_are_24_hours()) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                -3
+            }
+            Ok(res) => {
+                unsafe {
+                    out_f64.replace(res);
+                }
+                0
+            }
+        }
+    } else {
+        match tspan.span.total(unit) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                -4
+            }
+            Ok(res) => {
+                unsafe {
+                    out_f64.replace(res);
+                }
+                0
+            }
         }
     }
 }
