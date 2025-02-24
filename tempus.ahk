@@ -284,5 +284,19 @@ class Timestamp {
         }
         return Timestamp(handle)
     }
+
+    static UNIX_EPOCH() {
+        return Timestamp.from_second(0)
+    }
+
+    is_zero() {
+        ret := DllCall("tempus_ahk\timestamp_is_zero", "Ptr", this.pointer, "Char")
+        if ret {
+            return true
+        } else {
+            return false
+        }
+    }
+
 }
 

@@ -79,3 +79,18 @@ fn test_timestamp_strftime() {
     assert!(output.status.success());
 
 }
+
+#[test]
+fn test_timestamp_is_zero() {
+    let script = make_script("ts := Timestamp.UNIX_EPOCH()\nwritestdout(ts.is_zero())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+
+    let script = make_script("ts := Timestamp.from_second(1)\nwritestdout(ts.is_zero())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert_eq!(stdout.to_string(), String::from("0"));
+    assert!(output.status.success());
+}

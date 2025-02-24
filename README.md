@@ -133,6 +133,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [now](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.now)
 - [x] `parse` (equivalent of `let ts: Timestamp = "2024-07-11T01:14:00Z".parse()`) -- `Timestamp.parse(mystring)` in AHK
 - [ ] [new](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.new)
+- [x] [UNIX_EPOCH](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#associatedconstant.UNIX_EPOCH)
 - [x] [from_second](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_second)
 - [x] [from_millisecond](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_millisecond)
 - [x] [from_microsecond](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.from_microsecond)
@@ -147,7 +148,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [ ] [subsec_nanosecond](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.subsec_nanosecond)
 - [ ] [as_duration](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.as_duration)
 - [ ] [signum](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.signum)
-- [ ] [is_zero](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.is_zero)
+- [x] [is_zero](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.is_zero)
 - [x] [in_tz](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.in_tz)
 - [ ] [to_zoned](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.to_zoned)
 - [ ] [checked_add](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html#method.checked_add)
