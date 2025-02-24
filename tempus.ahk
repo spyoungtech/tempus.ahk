@@ -340,6 +340,23 @@ class Span {
         DllCall("tempus_ahk\free_span", "Ptr", this.pointer, "Int64")
     }
 
+    static parse(time_string) {
+        span_out := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_parse", "WStr", time_string, "Ptr", span_out, "Int64")
+
+        if (retcode = 0) {
+            handle := NumGet(span_out, 0, "Ptr")
+        } else {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+
+        return Span(handle)
+    }
     static new() {
         pointer := DllCall("tempus_ahk\span_new", "Ptr")
         return Span(pointer)
@@ -650,6 +667,23 @@ class Span {
         } else {
             return out_buff
         }
+    }
+
+    round(smallest := -1, increment := 1, largest := -1, round_mode := RoundMode.HalfExpand) {
+        out_span := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\span_round", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Ptr", out_span, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+
+        return Span(handle)
+
+
     }
 }
 

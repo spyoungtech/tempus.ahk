@@ -356,7 +356,8 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [ ] [compare](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.compare) (with relative timeframe)
 - [x] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total)
 - [ ] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total) (with relative timeframe)
-- [ ] [round](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.round)
+- [x] [round](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.round)
+- [ ] [round](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.round) (with relative timeframe)
 - [ ] [to_duration](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.to_duration)
 - [ ] Others (trait impls (to_string, parse/from_str, etc.), arithmetic, comparisons)
 

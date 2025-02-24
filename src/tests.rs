@@ -293,3 +293,14 @@ fn test_span_total() {
     assert_eq!(stdout.to_string(), String::from("11400.0"));
     assert!(output.status.success());
 }
+
+#[test]
+fn test_span_round() {
+    let script = make_script("span1 := Span.parse(\"PT23h50m3.123s\")\nexpected := Span.new().hours(24)\nrounded := span1.round(Unit.Minute, 30)\nwritestdout(expected.eq(rounded))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}

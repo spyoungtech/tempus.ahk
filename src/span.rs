@@ -3,8 +3,9 @@
 use std::cmp;
 use std::ffi::c_longlong;
 use std::fmt::{Display, Formatter};
-use jiff::{Error, Span, SpanCompare, SpanRelativeTo, SpanTotal};
-use crate::utils::{set_last_error_message, string_into_ahk_buff, unit_from_i8, AHKStringBuffer};
+use std::str::FromStr;
+use jiff::{Error, Span, SpanCompare, SpanRelativeTo, SpanRound, SpanTotal};
+use crate::utils::{ahk_str_to_string, round_mode_from_i8, set_last_error_message, string_into_ahk_buff, unit_from_i8, AHKStringBuffer, AHKWstr};
 
 #[repr(C)]
 pub struct TempusSpan {
@@ -14,6 +15,15 @@ pub struct TempusSpan {
 impl Display for TempusSpan {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         self.span.fmt(f)
+    }
+}
+
+impl FromStr for TempusSpan {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let span: Span = s.parse()?;
+        Ok(TempusSpan{span})
     }
 }
 
@@ -411,7 +421,73 @@ pub extern "C" fn span_total(tspan: &TempusSpan, unit_i: i8, days_are_24_hours_i
     }
 }
 
+#[no_mangle]
+pub extern "C" fn span_round(tspan: &TempusSpan, smallest_i: i8, increment: i64, largest_i: i8, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            return -1
+        }
+        Ok(mode) => mode
+    };
+    let mut rounder = SpanRound::new().mode(round_mode).increment(increment);
+    if smallest_i >= 0 {
+        match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                return -2
+            }
+            Ok(smallest) => {
+                rounder = rounder.smallest(smallest)
+            }
+        };
+    }
+    if largest_i >= 0 {
+        match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                return -3
+            }
+            Ok(largest) => {
+                rounder = rounder.largest(largest);
+            }
+        }
+    }
 
+    match tspan.span.round(rounder) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -4
+        }
+        Ok(rounded) => {
+            let new_tts = TempusSpan{span: rounded};
+            new_tts.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn span_parse(ahk_time_string: AHKWstr, out_ts: *mut *mut TempusSpan) -> c_longlong {
+    match ahk_str_to_string(ahk_time_string) {
+        Err(_) => {
+            -1
+        }
+        Ok(time_string) => {
+            let maybe_ts= time_string.as_str().parse::<TempusSpan>();
+            match maybe_ts {
+                Err(e) => {
+                    set_last_error_message(e.to_string());
+                    -2
+                }
+                Ok(tspan) => {
+                    tspan.stuff_into(out_ts);
+                    0
+                }
+            }
+        }
+    }
+}
 
 #[no_mangle]
 pub extern "C" fn free_span(tspan: Box<TempusSpan>) -> c_longlong {
