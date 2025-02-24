@@ -1,6 +1,4 @@
 use std::io::{Write};
-#[cfg(windows)]
-use std::os::windows::process::CommandExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio, Output};
 
@@ -42,8 +40,32 @@ fn get_dll_location() -> PathBuf {
 }
 
 fn make_script(script_text: &str) -> String {
-    let header = format!("#DllLoad \"{}\"\n#Include \"{}\"\nstdout := FileOpen(\"*\", \"w\", \"UTF-8\")\nwritestdout(message) {{\n    stdout.Write(message)\n    stdout.Read(0)\n}}", get_dll_location().to_str().unwrap(), get_tempus_ahk_location().to_str().unwrap());
-    format!("{}\n\n{}\r\n", header, script_text)
+    let header = format!("\
+    #DllLoad \"{}\" \n\
+    #Include \"{}\"\n\
+    stdout := FileOpen(\"*\", \"w\", \"UTF-8\")\n\
+    stderr := FileOpen(\"**\", \"w\", \"UTF-8\")\n\
+    writestdout(message) {{\n\
+        stdout.Write(message)\n\
+        stdout.Read(0)\n\
+    }}\
+    writestderr(message) {{\n\
+        stderr.Write(message)\n\
+        stderr.Read(0)\n\
+    }}\
+    ", get_dll_location().to_str().unwrap(), get_tempus_ahk_location().to_str().unwrap());
+    format!("{}\n\
+    main(){{\n\
+    {}\n\
+    }}\n\
+    try {{
+        main()\n\
+    }} catch Any as e {{\n\
+        message := Format(\"Error {{}} (line {{}}). The error message was: {{}}. Specifically: {{}}`nStack:`n{{}}\", e.what, e.line, e.message, e.extra, e.stack)\n\
+        writestderr(message)\n\
+        Exit 1\n\
+    }}\n\
+    \r\n", header, script_text)
 }
 
 #[test]
@@ -158,4 +180,15 @@ fn test_span_mul() {
     assert_eq!(stderr, "");
     assert_eq!(stdout.to_string(), String::from("PT30H"));
     assert!(output.status.success());
+}
+
+#[test]
+fn test_span_err() {
+    let script = make_script("span1 := Span.new().years(10000).checked_mul(3)");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("not in the required range"));
+    assert_eq!(stdout.to_string(), String::from(""));
+    assert!(!output.status.success());
 }
