@@ -62,8 +62,8 @@ fn make_script(script_text: &str) -> String {
     try {{
         main()\n\
     }} catch Any as e {{\n\
-        message := Format(\"Error {{}} (line {{}}). The error message was: {{}}. Specifically: {{}}`nStack:`n{{}}\", e.what, e.line, e.message, e.extra, e.stack)\n\
-        writestderr(message)\n\
+        msg := Format(\"Error {{}} (line {{}}). The error message was: {{}}. Specifically: {{}}`nStack:`n{{}}\", e.what, e.line, e.message, e.extra, e.stack)\n\
+        writestderr(msg)\n\
         Exit 1\n\
     }}\n\
     \r\n", header, script_text)
