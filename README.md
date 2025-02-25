@@ -394,11 +394,11 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [as_millis](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_millis)
 - [x] [as_micros](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_micros)
 - [ ] ~~[as_nanos](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_nanos)~~ not supported
-- [ ] [checked_add](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_add)
+- [x] [checked_add](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_add)
 - [ ] [saturating_add](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.saturating_add)
-- [ ] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_sub)
+- [x] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_sub)
 - [ ] [saturating_sub](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.saturating_sub)
-- [ ] [checked_mul](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_mul)
+- [x] [checked_mul](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_mul)
 - [ ] [saturating_mul](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.saturating_mul)
 - [ ] [checked_div](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_div)
 - [ ] ~~[as_secs_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_secs_f64)~~ use `as_secs`

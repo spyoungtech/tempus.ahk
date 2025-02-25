@@ -405,3 +405,15 @@ fn test_signed_duration_checked_neg() {
     assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
 }
+
+
+#[test]
+fn test_signed_duration_checked_add() {
+    let script = make_script("duration1 := SignedDuration.new(12, 500000000)\nduration2 := SignedDuration.new(0, 500000000)\nexpected := SignedDuration.new(13, 0)\nwritestdout(duration1.checked_add(duration2).eq(expected))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
