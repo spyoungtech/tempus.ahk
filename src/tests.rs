@@ -639,5 +639,14 @@ fn test_time_minute_hour_second() {
     assert_eq!(stderr, "");
     assert_eq!(stdout.to_string(), String::from("23, 59, 59, 999999999"));
     assert!(output.status.success());
+}
 
+fn test_datetime_components() {
+    let script = make_script("dt := DateTime.new(2025, 10, 9, 8, 7, 6, 5)\nwritestdout(Format(\"{}, {}, {}, {}, {}, {}, {}\", dt.year(), dt.month(), dt.day(), dt.hour(), dt.minute(), dt.second(), dt.subsec_nanosecond()))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2025, 10, 9, 8, 7, 6, 5"));
+    assert!(output.status.success());
 }

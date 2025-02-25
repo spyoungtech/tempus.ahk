@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::os::raw::{c_char, c_longlong};
+use std::os::raw::{c_char, c_int, c_longlong, c_short};
 use std::str::FromStr;
 use jiff::civil::DateTime;
 use jiff::Error;
@@ -107,6 +107,50 @@ pub extern "C" fn datetime_new(year: i16,
         }
     }
 }
+
+#[no_mangle]
+pub extern "C" fn time_hour(tdt: &TempusDateTime) -> c_char {
+    tdt.datetime.hour()
+}
+#[no_mangle]
+pub extern "C" fn time_minute(tdt: &TempusDateTime) -> c_char {
+    tdt.datetime.minute()
+}
+#[no_mangle]
+pub extern "C" fn time_second(tdt: &TempusDateTime) -> c_char {
+    tdt.datetime.second()
+}
+
+#[no_mangle]
+pub extern "C" fn datetime_millisecond(tdt: &TempusDateTime) -> c_short {
+    tdt.datetime.millisecond()
+}
+#[no_mangle]
+pub extern "C" fn datetime_microsecond(tdt: &TempusDateTime) -> c_short {
+    tdt.datetime.microsecond()
+}
+#[no_mangle]
+pub extern "C" fn datetime_nanosecond(tdt: &TempusDateTime) -> c_short {
+    tdt.datetime.nanosecond()
+}
+#[no_mangle]
+pub extern "C" fn datetime_subsec_nanosecond(tdt: &TempusDateTime) -> c_int {
+    tdt.datetime.subsec_nanosecond()
+}
+
+#[no_mangle]
+pub extern "C" fn date_year(tdt: &TempusDateTime) -> c_short {
+    tdt.datetime.year()
+}
+#[no_mangle]
+pub extern "C" fn date_month(tdt: &TempusDateTime) -> c_char {
+    tdt.datetime.month()
+}
+#[no_mangle]
+pub extern "C" fn date_day(tdt: &TempusDateTime) -> c_char {
+    tdt.datetime.day()
+}
+
 
 #[no_mangle]
 pub extern "C" fn free_datetime(tdt: Box<TempusDateTime>) -> c_longlong {

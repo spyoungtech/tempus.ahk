@@ -1171,6 +1171,16 @@ class Date {
         }
     }
 
+    year() {
+        return DllCall("tempus_ahk\date_year", "Ptr", this.pointer, "Short")
+    }
+    month() {
+        return DllCall("tempus_ahk\date_month", "Ptr", this.pointer, "Char")
+    }
+    date() {
+        return DllCall("tempus_ahk\date_day", "Ptr", this.pointer, "Char")
+    }
+
 }
 
 
@@ -1233,6 +1243,37 @@ class DateTime {
 
     ToString() {
         this.to_string()
+    }
+
+    year() {
+        return DllCall("tempus_ahk\datetime_year", "Ptr", this.pointer, "Short")
+    }
+    month() {
+        return DllCall("tempus_ahk\datetime_month", "Ptr", this.pointer, "Char")
+    }
+    day() {
+        return DllCall("tempus_ahk\datetime_day", "Ptr", this.pointer, "Char")
+    }
+    hour() {
+        return DllCall("tempus_ahk\datetime_hour", "Ptr", this.pointer, "Char")
+    }
+    minute() {
+        return DllCall("tempus_ahk\datetime_minute", "Ptr", this.pointer, "Char")
+    }
+    second() {
+        return DllCall("tempus_ahk\datetime_second", "Ptr", this.pointer, "Char")
+    }
+    millisecond() {
+        return DllCall("tempus_ahk\datetime_millisecond", "Ptr", this.pointer, "Short")
+    }
+    microsecond() {
+        return DllCall("tempus_ahk\datetime_microsecond", "Ptr", this.pointer, "Short")
+    }
+    nanosecond() {
+        return DllCall("tempus_ahk\datetime_nanosecond", "Ptr", this.pointer, "Short")
+    }
+    subsec_nanosecond() {
+        return DllCall("tempus_ahk\datetime_subsec_nanosecond", "Ptr", this.pointer, "Int")
     }
 
     compare(other_time) {
@@ -1309,7 +1350,7 @@ class Time {
     }
 
     static midnight() {
-        poitner := DllCall("tempus_ahk\time_midnight", "Ptr")
+        pointer := DllCall("tempus_ahk\time_midnight", "Ptr")
         return Time(pointer)
     }
 
@@ -1553,5 +1594,16 @@ class Time {
         }
         pointer := DllCall("tempus_ahk\time_duration_since", "Ptr", this.pointer, "Ptr", other_time.pointer, "Ptr")
         return SignedDuration(pointer)
+    }
+
+    on(year, month, day) {
+        return DateTime.new(year, month, day, this.hour(), this.minute(), this.second(), this.subsec_nanosecond())
+    }
+
+    to_datetime(to_date) {
+        if !(to_date is Date) {
+            throw Error("Unsupported Type. Must be Date", -2)
+        }
+        return DateTime.new(date.year(), date.month(), date.day(), this.hour(), this.minute(), this.second(), this.subsec_nanosecond())
     }
 }

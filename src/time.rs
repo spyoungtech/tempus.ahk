@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::ffi::{c_char, c_int, c_long, c_longlong, c_short};
+use std::ffi::{c_char, c_int, c_longlong, c_short};
 use std::str::FromStr;
 use jiff::civil::{Time, TimeDifference};
 use jiff::{Error};
@@ -364,6 +364,7 @@ pub extern "C" fn time_nanosecond(tt: &TempusTime) -> c_short {
 pub extern "C" fn time_subsec_nanosecond(tt: &TempusTime) -> c_int {
     tt.time.subsec_nanosecond()
 }
+
 
 #[no_mangle]
 pub extern "C" fn free_time(time: Box<TempusTime>) -> c_longlong {

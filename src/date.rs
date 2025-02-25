@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::ffi::c_short;
 use std::os::raw::{c_char, c_longlong};
 use std::str::FromStr;
 use jiff::civil::Date;
@@ -100,6 +101,19 @@ pub extern "C" fn date_new(year: i16, month: i8, day: i8, out_date: *mut *mut Te
             0
         }
     }
+}
+
+#[no_mangle]
+pub extern "C" fn date_year(td: &TempusDate) -> c_short {
+    td.date.year()
+}
+#[no_mangle]
+pub extern "C" fn date_month(td: &TempusDate) -> c_char {
+    td.date.month()
+}
+#[no_mangle]
+pub extern "C" fn date_day(td: &TempusDate) -> c_char {
+    td.date.day()
 }
 
 
