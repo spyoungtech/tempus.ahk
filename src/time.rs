@@ -130,6 +130,37 @@ pub extern "C" fn time_checked_add_signed_duration(tt: &TempusTime, other: &Temp
 }
 
 
+#[no_mangle]
+pub extern "C" fn time_checked_sub_span(tt: &TempusTime, other: &TempusSpan, out_time: *mut *mut TempusTime) -> c_longlong {
+    match tt.time.checked_sub(other.span) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(time) => {
+            let ttime = TempusTime{time};
+            ttime.stuff_into(out_time);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn time_checked_sub_signed_duration(tt: &TempusTime, other: &TempusSignedDuration, out_time: *mut *mut TempusTime) -> c_longlong {
+    match tt.time.checked_sub(other.duration) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(time) => {
+            let ttime = TempusTime{time};
+            ttime.stuff_into(out_time);
+            0
+        }
+    }
+}
+
+
 
 #[no_mangle]
 pub extern "C" fn free_time(time: Box<TempusTime>) -> c_longlong {

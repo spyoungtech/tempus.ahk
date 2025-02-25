@@ -479,6 +479,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `MIN`
 - [x] `MAX`
 - [x] `new`
+- [x] `checked_add`
 
 ## DateTime
 
