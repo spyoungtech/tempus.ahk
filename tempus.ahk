@@ -1341,6 +1341,29 @@ class Time {
         return Time(handle)
     }
 
+    hour() {
+        return DllCall("tempus_ahk\time_hour", "Ptr", this.pointer, "Char")
+    }
+    minute() {
+        return DllCall("tempus_ahk\time_minute", "Ptr", this.pointer, "Char")
+    }
+    second() {
+        return DllCall("tempus_ahk\time_second", "Ptr", this.pointer, "Char")
+    }
+
+    millisecond() {
+        return DllCall("tempus_ahk\time_millisecond", "Ptr", this.pointer, "Short")
+    }
+    microsecond() {
+        return DllCall("tempus_ahk\time_microsecond", "Ptr", this.pointer, "Short")
+    }
+    nanosecond() {
+        return DllCall("tempus_ahk\time_nanosecond", "Ptr", this.pointer, "Short")
+    }
+    subsec_nanosecond() {
+        return DllCall("tempus_ahk\time_subsec_nanosecond", "Ptr", this.pointer, "Int")
+    }
+
     to_string() {
         buff_length := DllCall("tempus_ahk\time_string_length", "Ptr", this.pointer, "UInt64")
         buff := Buffer(buff_length+1, 0)

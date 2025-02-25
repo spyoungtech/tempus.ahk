@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::ffi::{c_char, c_longlong};
+use std::ffi::{c_char, c_int, c_long, c_longlong, c_short};
 use std::str::FromStr;
 use jiff::civil::{Time, TimeDifference};
 use jiff::{Error};
@@ -333,6 +333,36 @@ pub extern "C" fn time_duration_since(tt: &TempusTime, other: &TempusTime) -> Bo
 #[no_mangle]
 pub extern "C" fn time_midnight() -> Box<TempusTime> {
     Box::new(TempusTime{time: Time::midnight()})
+}
+
+#[no_mangle]
+pub extern "C" fn time_hour(tt: &TempusTime) -> c_char {
+    tt.time.hour()
+}
+#[no_mangle]
+pub extern "C" fn time_minute(tt: &TempusTime) -> c_char {
+    tt.time.minute()
+}
+#[no_mangle]
+pub extern "C" fn time_second(tt: &TempusTime) -> c_char {
+    tt.time.second()
+}
+
+#[no_mangle]
+pub extern "C" fn time_millisecond(tt: &TempusTime) -> c_short {
+    tt.time.millisecond()
+}
+#[no_mangle]
+pub extern "C" fn time_microsecond(tt: &TempusTime) -> c_short {
+    tt.time.microsecond()
+}
+#[no_mangle]
+pub extern "C" fn time_nanosecond(tt: &TempusTime) -> c_short {
+    tt.time.nanosecond()
+}
+#[no_mangle]
+pub extern "C" fn time_subsec_nanosecond(tt: &TempusTime) -> c_int {
+    tt.time.subsec_nanosecond()
 }
 
 #[no_mangle]

@@ -630,3 +630,14 @@ fn test_time_wrapping_add() {
     assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
 }
+
+fn test_time_minute_hour_second() {
+    let script = make_script("t := Time.new(23, 59, 59, 999999999)\nwritestdout(Format(\"{}, {}, {}, {}\", t.hour(), t.minute(), t.second(), t.subsec_nanosecond()))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("23, 59, 59, 999999999"));
+    assert!(output.status.success());
+
+}
