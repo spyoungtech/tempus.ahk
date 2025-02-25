@@ -41,6 +41,7 @@ fn get_dll_location() -> PathBuf {
 
 fn make_script(script_text: &str) -> String {
     let header = format!("\
+    #Warn All, Stdout\n\
     #DllLoad \"{}\" \n\
     #Include \"{}\"\n\
     stdout := FileOpen(\"*\", \"w\", \"UTF-8\")\n\
