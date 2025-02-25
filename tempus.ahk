@@ -287,6 +287,59 @@ class SignedDuration {
         return DllCall("tempus_ahk\signed_duration_div_duration", "Ptr", this.pointer, "Ptr", other_duration.pointer, "Double")
     }
 
+    compare(other_duration) {
+        if !(other_duration is SignedDuration) {
+            throw Error("argument must be a SignedDuration", -2)
+        }
+        return DllCall("tempus_ahk\signed_duration_compare", "Ptr", this.pointer, "Ptr", other_duration.pointer, "Char")
+    }
+
+    gt(other_duration) {
+        result := this.compare(other_)
+
+        if (result = _Ordering.GREATER) {
+            return true
+        }  else {
+            return false
+        }
+    }
+
+    lt(other_duration) {
+        result := this.compare(other_duration)
+        if (result = _Ordering.LESS) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    eq(other_duration) {
+        result := this.compare(other_duration)
+        if (result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    gte(other_duration) {
+        result := this.compare(other_duration)
+        if (result = _Ordering.GREATER || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    lte(other_duration) {
+        result := this.compare(other_duration)
+        if (result = _Ordering.LESS || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
 
 
     abs() {

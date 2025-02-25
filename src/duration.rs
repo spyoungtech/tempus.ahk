@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::ffi::{c_char, c_double, c_longlong};
 use std::str::FromStr;
 use jiff::{SignedDuration, Error};
@@ -261,6 +262,15 @@ pub extern "C" fn signed_duration_min() -> Box<TempusSignedDuration> {
 #[no_mangle]
 pub extern "C" fn signed_duration_max() -> Box<TempusSignedDuration> {
     Box::new(TempusSignedDuration{duration: SignedDuration::MAX})
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_compare(tds: &TempusSignedDuration, other: &TempusSignedDuration) -> c_char {
+    match tds.duration.cmp(&other.duration) {
+        Ordering::Less => {-1}
+        Ordering::Equal => {0}
+        Ordering::Greater => {1}
+    }
 }
 
 
