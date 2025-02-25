@@ -439,3 +439,16 @@ fn test_signed_duration_div_duration() {
     assert_eq!(stdout.to_string(), String::from("2.0"));
     assert!(output.status.success());
 }
+
+#[test]
+fn test_signed_duration_round() {
+    let script = make_script("duration1 := SignedDuration.new(4 * 60 * 60 + 50 * 60 + 32, 500000000)\nexpected := SignedDuration.new(4 * 60 * 60 + 50 * 60 + 33, 0)\nwritestdout(duration1.round(Unit.Second).eq(expected))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+
+
+}
