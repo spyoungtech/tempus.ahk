@@ -304,3 +304,151 @@ fn test_span_round() {
     assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
 }
+
+#[test]
+fn test_signed_duration_from_secs() {
+    let script = make_script("duration := SignedDuration.from_secs(1.0)\nwritestdout(duration.as_millis())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1000.0"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_sign_duration_from_millis() {
+    let script = make_script("duration := SignedDuration.from_millis(10)\nwritestdout(duration.as_millis())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("10.0"));
+    assert!(output.status.success());
+
+}
+#[test]
+fn test_sign_duration_from_micros() {
+    let script = make_script("duration := SignedDuration.from_micros(1000)\nwritestdout(duration.as_millis())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1.0"));
+    assert!(output.status.success());
+
+}
+#[test]
+fn test_sign_duration_from_nanos() {
+    let script = make_script("duration := SignedDuration.from_nanos(1000000)\nwritestdout(duration.as_millis())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1.0"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_signed_duration_from_hours() {
+    let script = make_script("duration := SignedDuration.from_hours(1)\nwritestdout(duration.as_secs())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("3600.0"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_signed_duration_is_zero() {
+    let script = make_script("duration := SignedDuration.ZERO()\nwritestdout(duration.is_zero())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_signed_duration_is_positive() {
+    let script = make_script("duration := SignedDuration.MAX()\nwritestdout(duration.is_positive())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+
+#[test]
+fn test_signed_duration_is_negative() {
+    let script = make_script("duration := SignedDuration.MIN()\nwritestdout(duration.is_negative())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+
+#[test]
+fn test_signed_duration_checked_neg() {
+    let script = make_script("duration := SignedDuration.MAX()\nwritestdout(duration.checked_neg().is_negative())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+
+#[test]
+fn test_signed_duration_checked_add() {
+    let script = make_script("duration1 := SignedDuration.new(12, 500000000)\nduration2 := SignedDuration.new(0, 500000000)\nexpected := SignedDuration.new(13, 0)\nwritestdout(duration1.checked_add(duration2).eq(expected))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_signed_duration_new_overflow() {
+    let script = make_script(format!("duration1 := SignedDuration.new({}, {})", i64::MAX, 1_000_000_000).as_str());
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("overflow"), "{}", stderr);
+    assert_eq!(stdout.to_string(), String::from(""));
+    assert!(!output.status.success());
+}
+
+#[test]
+fn test_signed_duration_div_duration() {
+    let script = make_script("duration1 := SignedDuration.new(12, 600000000)\nduration2 := SignedDuration.new(6, 300000000)\nwritestdout(duration1.div_duration(duration2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2.0"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_signed_duration_round() {
+    let script = make_script("duration1 := SignedDuration.new(4 * 60 * 60 + 50 * 60 + 32, 500000000)\nexpected := SignedDuration.new(4 * 60 * 60 + 50 * 60 + 33, 0)\nwritestdout(duration1.round(Unit.Second).eq(expected))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+
+
+}

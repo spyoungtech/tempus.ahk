@@ -88,6 +88,290 @@ class SignedDuration {
         }
         return SignedDuration(handle)
     }
+
+    static new(secs, nanosecs) {
+        duration_out := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_new", "Int64", secs, "Int", nanosecs, "Ptr", duration_out, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(duration_out, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+
+    static ZERO() {
+        pointer := DllCall("tempus_ahk\signed_duration_zero", "Ptr")
+        return SignedDuration(pointer)
+    }
+
+    static MIN() {
+        pointer := DllCall("tempus_ahk\signed_duration_min", "Ptr")
+        return SignedDuration(pointer)
+    }
+    static MAX() {
+        pointer := DllCall("tempus_ahk\signed_duration_max", "Ptr")
+        return SignedDuration(pointer)
+    }
+
+
+    static from_secs(secs) {
+        duration_out := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_from_secs", "Double", secs, "Ptr", duration_out, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(duration_out, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+
+    static from_hours(hours) {
+        return this.from_secs(hours * 3600)
+    }
+
+    static from_mins(minutes) {
+        return this.from_secs(minutes * 60)
+    }
+
+
+    static from_millis(n) {
+        pointer := DllCall("tempus_ahk\signed_duration_from_millis", "Int64", n, "Ptr")
+        return SignedDuration(pointer)
+    }
+    static from_micros(n) {
+        pointer := DllCall("tempus_ahk\signed_duration_from_micros", "Int64", n, "Ptr")
+        return SignedDuration(pointer)
+    }
+    static from_nanos(n) {
+        pointer := DllCall("tempus_ahk\signed_duration_from_nanos", "Int64", n, "Ptr")
+        return SignedDuration(pointer)
+    }
+    as_secs() {
+        return DllCall("tempus_ahk\signed_duration_as_secs", "Ptr", this.pointer, "Double")
+    }
+    as_millis() {
+        return DllCall("tempus_ahk\signed_duration_as_millis", "Ptr", this.pointer, "Double")
+    }
+
+    as_hours() {
+        return DllCall("tempus_ahk\signed_duration_as_hours", "Ptr", this.pointer, "Int64")
+    }
+
+    as_mins() {
+        return DllCall("tempus_ahk\signed_duration_as_mins", "Ptr", this.pointer, "Int64")
+    }
+
+    is_zero() {
+        ret := DllCall("tempus_ahk\signed_duration_is_zero", "Ptr", this.pointer, "Char")
+        if (ret = 1) {
+            return true
+        } else if (ret = 0) {
+            return false
+        } else {
+            throw "unexpected error"
+        }
+    }
+
+    is_positive() {
+        ret := DllCall("tempus_ahk\signed_duration_is_positive", "Ptr", this.pointer, "Char")
+        if (ret = 1) {
+            return true
+        } else if (ret = 0) {
+            return false
+        } else {
+            throw "unexpected error"
+        }
+    }
+
+    is_negative() {
+        ret := DllCall("tempus_ahk\signed_duration_is_negative", "Ptr", this.pointer, "Char")
+        if (ret = 1) {
+            return true
+        } else if (ret = 0) {
+            return false
+        } else {
+            throw "unexpected error"
+        }
+    }
+
+    signum() {
+        return DllCall("tempus_ahk\signed_duration_is_negative", "Ptr", this.pointer, "Char")
+    }
+
+    checked_neg() {
+        out_duration := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_checked_neg", "Ptr", this.pointer, "Ptr", out_duration, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_duration, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+
+    checked_add(other_signed_duration) {
+        if !(other_signed_duration is SignedDuration) {
+            throw Error("add only supported for SignedDuration", -2)
+        }
+        out_duration := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_checked_add", "Ptr", this.pointer, "Ptr", other_signed_duration.pointer, "Ptr", out_duration, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_duration, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+    checked_sub(other_signed_duration) {
+        if !(other_signed_duration is SignedDuration) {
+            throw Error("add only supported for SignedDuration", -2)
+        }
+        out_duration := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_checked_sub", "Ptr", this.pointer, "Ptr", other_signed_duration.pointer, "Ptr", out_duration, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_duration, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+
+    checked_mul(i) {
+        out_duration := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_checked_mul", "Ptr", this.pointer, "Int", i, "Ptr", out_duration, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_duration, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+
+    checked_div(i) {
+        out_duration := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_checked_div", "Ptr", this.pointer, "Int", i, "Ptr", out_duration, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_duration, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+
+    div_duration(other_duration) {
+        if !(other_duration is SignedDuration) {
+            throw Error("argument must be a SignedDuration", -2)
+        }
+        return DllCall("tempus_ahk\signed_duration_div_duration", "Ptr", this.pointer, "Ptr", other_duration.pointer, "Double")
+    }
+
+    compare(other_duration) {
+        if !(other_duration is SignedDuration) {
+            throw Error("argument must be a SignedDuration", -2)
+        }
+        return DllCall("tempus_ahk\signed_duration_compare", "Ptr", this.pointer, "Ptr", other_duration.pointer, "Char")
+    }
+
+    gt(other_duration) {
+        result := this.compare(other_duration)
+        if (result = _Ordering.GREATER) {
+            return true
+        }  else {
+            return false
+        }
+    }
+
+    lt(other_duration) {
+        result := this.compare(other_duration)
+        if (result = _Ordering.LESS) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    eq(other_duration) {
+        result := this.compare(other_duration)
+        if (result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    gte(other_duration) {
+        result := this.compare(other_duration)
+        if (result = _Ordering.GREATER || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    lte(other_duration) {
+        result := this.compare(other_duration)
+        if (result = _Ordering.LESS || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    round(smallest := Unit.Nanosecond, increment := 1, round_mode := RoundMode.HalfExpand) {
+        out_duration := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_round", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", round_mode, "Ptr", out_duration, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_duration, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+
+
+
+    abs() {
+        out_duration := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_abs", "Ptr", this.pointer, "Ptr", out_duration, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_duration, 0, "Ptr")
+        if (handle = 0) {
+            throw "Unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+
+
+
+
 }
 
 class Zoned {
