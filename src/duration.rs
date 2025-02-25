@@ -1,4 +1,4 @@
-use std::ffi::{c_char, c_longlong};
+use std::ffi::{c_char, c_double, c_longlong};
 use std::str::FromStr;
 use jiff::{SignedDuration, Error};
 use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message};
@@ -183,6 +183,11 @@ pub extern "C" fn signed_duration_checked_div(tsd: &TempusSignedDuration, rhs: i
             0
         }
     }
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_div_duration(tsd: &TempusSignedDuration, other: &TempusSignedDuration) -> c_double {
+    tsd.duration.div_duration_f64(other.duration)
 }
 
 #[no_mangle]

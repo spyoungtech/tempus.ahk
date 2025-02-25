@@ -428,3 +428,14 @@ fn test_signed_duration_new_overflow() {
     assert_eq!(stdout.to_string(), String::from(""));
     assert!(!output.status.success());
 }
+
+#[test]
+fn test_signed_duration_div_duration() {
+    let script = make_script("duration1 := SignedDuration.new(12, 600000000)\nduration2 := SignedDuration.new(6, 300000000)\nwritestdout(duration1.div_duration(duration2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2.0"));
+    assert!(output.status.success());
+}

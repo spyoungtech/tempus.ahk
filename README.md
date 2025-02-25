@@ -400,7 +400,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [ ] [saturating_sub](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.saturating_sub)
 - [x] [checked_mul](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_mul)
 - [ ] [saturating_mul](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.saturating_mul)
-- [ ] [checked_div](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_div)
+- [x] [checked_div](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_div)
 - [ ] ~~[as_secs_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_secs_f64)~~ use `as_secs`
 - [ ] ~~[as_secs_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_secs_f32)~~
 - [ ] ~~[as_millis_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_millis_f64)~~ use `as_millis`
@@ -413,8 +413,8 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [ ] [mul_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.mul_f32)
 - [ ] [div_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.div_f64)
 - [ ] [div_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.div_f32)
-- [ ] [div_duration_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.div_duration_f64)
-- [ ] [div_duration_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.div_duration_f32)
+- [x] [div_duration_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.div_duration_f64)
+- [ ] ~~[div_duration_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.div_duration_f32)~~
 - [x] [as_hours](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_hours)
 - [x] [as_mins](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_mins)
 - [x] [abs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.abs)

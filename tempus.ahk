@@ -280,6 +280,13 @@ class SignedDuration {
         return SignedDuration(handle)
     }
 
+    div_duration(other_duration) {
+        if !(other_duration is SignedDuration) {
+            throw Error("argument must be a SignedDuration", -2)
+        }
+        return DllCall("tempus_ahk\signed_duration_div_duration", "Ptr", this.pointer, "Ptr", other_duration.pointer, "Double")
+    }
+
 
 
     abs() {
