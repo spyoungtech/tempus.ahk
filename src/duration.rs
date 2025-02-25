@@ -1,8 +1,8 @@
 use std::cmp::Ordering;
 use std::ffi::{c_char, c_double, c_longlong};
 use std::str::FromStr;
-use jiff::{SignedDuration, Error};
-use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message};
+use jiff::{SignedDuration, Error, SignedDurationRound};
+use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message, unit_from_i8, round_mode_from_i8};
 #[repr(C)]
 pub struct TempusSignedDuration {
     duration: SignedDuration
@@ -270,6 +270,37 @@ pub extern "C" fn signed_duration_compare(tds: &TempusSignedDuration, other: &Te
         Ordering::Less => {-1}
         Ordering::Equal => {0}
         Ordering::Greater => {1}
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_round(tds: &TempusSignedDuration, smallest_i: i8, increment: i64, round_mode_i: i8, out_duration: *mut *mut TempusSignedDuration) -> c_longlong {
+    let unit = match unit_from_i8(smallest_i) {
+        Err(e) => {
+            set_last_error_message(e);
+            return -1
+        }
+        Ok(unit) => unit,
+    };
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e);
+            return -2
+        }
+        Ok(round_mode) => round_mode,
+    };
+    let roundoptions = SignedDurationRound::new().increment(increment).mode(round_mode).smallest(unit);
+
+    match tds.duration.round(roundoptions) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -3
+        }
+        Ok(duration) => {
+            let new_tds = TempusSignedDuration{duration};
+            new_tds.stuff_into(out_duration);
+            0
+        }
     }
 }
 

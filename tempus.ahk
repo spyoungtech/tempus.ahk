@@ -339,6 +339,20 @@ class SignedDuration {
         }
     }
 
+    round(smallest := Unit.Nanosecond, increment := 1, mode := RoundMode.HalfExpand) {
+        out_duration := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_round", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", round_mode, "Ptr", out_duration, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_duration, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+
 
 
     abs() {

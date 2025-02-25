@@ -379,7 +379,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `ZERO`
 - [x] `MIN`
 - [x] `MAX`
-- [ ] [new](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.new)
+- [x] [new](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.new)
 - [x] [from_secs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_secs)
 - [x] [from_millis](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_millis)
 - [x] [from_micros](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_micros)
@@ -424,7 +424,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [is_positive](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.is_positive)
 - [x] [is_negative](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.is_negative)
 - [ ] [system_until](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.system_until)
-- [ ] [round](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.round)
+- [x] [round](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.round)
 
 
 ## TimeZone
