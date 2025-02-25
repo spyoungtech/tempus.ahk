@@ -539,6 +539,10 @@ class Timestamp {
         return ret
     }
 
+    ToString() {
+        this.to_string()
+    }
+
     strftime(format_str) {
         buff_length := DllCall("tempus_ahk\timestamp_strftime_length", "Ptr", this.pointer, "WStr", format_str, "Int64")
         if buff_length < 0 {
@@ -814,6 +818,10 @@ class Span {
         return ret
     }
 
+    ToString() {
+        this.to_string()
+    }
+
     abs() {
         pointer := DllCall("tempus_ahk\span_abs", "Ptr", this.pointer, "Ptr")
         return Span(pointer)
@@ -1021,4 +1029,75 @@ class Timezone {
         return Timezone(pointer)
     }
 
+}
+
+class Date {
+    __New(pointer) {
+        this.pointer := pointer
+    }
+    __Delete() {
+        DllCall("tempus_ahk\free_date", "Ptr", this.pointer, "Int64")
+    }
+
+    static parse(date_string) {
+        out_date := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\date_parse", "WStr", date_string, "Ptr", out_date, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_date, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Date(handle)
+    }
+}
+
+
+class DateTime {
+    __New(pointer) {
+        this.pointer := pointer
+    }
+    __Delete() {
+        DllCall("tempus_ahk\free_datetime", "Ptr", this.pointer, "Int64")
+    }
+
+    static parse(date_string) {
+        out_date := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_parse", "WStr", date_string, "Ptr", out_date, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_date, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return DateTime(handle)
+    }
+}
+
+
+class Time {
+    __New(pointer) {
+        this.pointer := pointer
+    }
+    __Delete() {
+        DllCall("tempus_ahk\free_time", "Ptr", this.pointer, "Int64")
+    }
+
+    static parse(date_string) {
+        out_date := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\time_parse", "WStr", date_string, "Ptr", out_date, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_date, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Time(handle)
+    }
 }
