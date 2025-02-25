@@ -1171,7 +1171,7 @@ class DateTime {
 
     static new(year := 1970, month := 1, day := 1, hour := 0, minute := 0, second := 0, subsec_nanosecond := 0) {
         out_datetime := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\datetime_new", "Short", year, "Char", month, "Char", day, "Char", hour, "Char", minute, "Int", subsec_nanosecond, "Ptr", out_datetime, "Int64")
+        retcode := DllCall("tempus_ahk\datetime_new", "Short", year, "Char", month, "Char", day, "Char", hour, "Char", minute, "Char", second, "Int", subsec_nanosecond, "Ptr", out_datetime, "Int64")
         if (retcode := 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message))
@@ -1283,7 +1283,7 @@ class Time {
 
     static new(hour := 0, minute := 0, second := 0, subsec_nano := 0) {
         out_time := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\time_new", "Char", hour, "Char", minute, "Char", second, "Int", subsec_nano, "Int64")
+        retcode := DllCall("tempus_ahk\time_new", "Char", hour, "Char", minute, "Char", second, "Int", subsec_nano, "Ptr", out_time, "Int64")
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message), -2)
