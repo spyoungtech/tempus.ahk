@@ -88,6 +88,27 @@ pub extern "C" fn datetime_zero() -> Box<TempusDateTime> {
 }
 
 #[no_mangle]
+pub extern "C" fn datetime_new(year: i16,
+                               month: i8,
+                               day: i8,
+                               hour: i8,
+                               minute: i8,
+                               second: i8,
+                               subsec_nanosecond: i32, out_datetime: *mut *mut TempusDateTime) -> c_longlong {
+    match DateTime::new(year, month, day, hour, minute, second, subsec_nanosecond) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(datetime) => {
+            let tdt = TempusDateTime { datetime };
+            tdt.stuff_into(out_datetime);
+            0
+        }
+    }
+}
+
+#[no_mangle]
 pub extern "C" fn free_datetime(tdt: Box<TempusDateTime>) -> c_longlong {
     let raw = Box::into_raw(tdt);
     unsafe {

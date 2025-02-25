@@ -87,6 +87,21 @@ pub extern "C" fn date_zero() -> Box<TempusDate> {
     Box::new(TempusDate{date: Date::ZERO})
 }
 
+#[no_mangle]
+pub extern "C" fn date_new(year: i16, month: i8, day: i8, out_date: *mut *mut TempusDate) -> c_longlong {
+    match Date::new(year, month, day) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(date) => {
+            let td = TempusDate{date};
+            td.stuff_into(out_date);
+            0
+        }
+    }
+}
+
 
 
 #[no_mangle]

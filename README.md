@@ -467,15 +467,25 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `parse`
 - [x] `compare` (`gt`, `lt`, `gte`, `lte`, `eq`)
 - [x] `to_string`
-
+- [x] `MIN`
+- [x] `MAX`
+- [x] `ZERO`
+- [x] `new`
 ## Time
 
 - [x] `parse`
 - [x] `compare` (`gt`, `lt`, `gte`, `lte`, `eq`)
 - [x] `to_string`
+- [x] `MIN`
+- [x] `MAX`
+- [x] `new`
 
 ## DateTime
 
 - [x] `parse`
 - [x] `compare` (`gt`, `lt`, `gte`, `lte`, `eq`)
 - [x] `to_string`
+- [x] `MIN`
+- [x] `MAX`
+- [x] `ZERO`
+- [x] `new`

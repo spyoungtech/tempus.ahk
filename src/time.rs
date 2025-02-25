@@ -83,6 +83,23 @@ pub extern "C" fn time_min() -> Box<TempusTime> {
 }
 
 #[no_mangle]
+pub extern "C" fn time_new(hour: i8, minute: i8, second: i8, subsec_nano: i32, out_time: *mut *mut TempusTime) -> c_longlong {
+    match Time::new(hour, minute, second, subsec_nano) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(time) => {
+            let ttime = TempusTime{time};
+            ttime.stuff_into(out_time);
+            0
+        }
+    }
+}
+
+
+
+#[no_mangle]
 pub extern "C" fn free_time(time: Box<TempusTime>) -> c_longlong {
     let raw = Box::into_raw(time);
     unsafe {
