@@ -88,6 +88,40 @@ class SignedDuration {
         }
         return SignedDuration(handle)
     }
+
+    static from_secs(secs) {
+        duration_out := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_from_secs", "Double", secs, "Ptr", duration_out, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(duration_out, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+    static from_millis(n) {
+        pointer := DllCall("tempus_ahk\signed_duration_from_millis", "Int64", n, "Ptr")
+        return SignedDuration(pointer)
+    }
+    static from_micros(n) {
+        pointer := DllCall("tempus_ahk\signed_duration_from_micros", "Int64", n, "Ptr")
+        return SignedDuration(pointer)
+    }
+    static from_nanos(n) {
+        pointer := DllCall("tempus_ahk\signed_duration_from_nanos", "Int64", n, "Ptr")
+        return SignedDuration(pointer)
+    }
+    as_secs() {
+        return DllCall("tempus_ahk\signed_duration_as_secs", "Ptr", this.pointer, "Double")
+    }
+    as_millis() {
+        return DllCall("tempus_ahk\signed_duration_as_millis", "Ptr", this.pointer, "Double")
+    }
+
+
 }
 
 class Zoned {

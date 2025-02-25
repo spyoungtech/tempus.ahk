@@ -47,6 +47,47 @@ pub extern "C" fn signed_duration_parse(ahk_duration_str: AHKWstr, duration_out:
     }
 }
 
+#[no_mangle]
+pub extern "C" fn signed_duration_as_secs(tsd: &TempusSignedDuration) -> f64 {
+    tsd.duration.as_secs_f64()
+}
+#[no_mangle]
+pub extern "C" fn signed_duration_as_millis(tsd: &TempusSignedDuration) -> f64 {
+    tsd.duration.as_millis_f64()
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_from_secs(secs: f64, out_sd: *mut *mut TempusSignedDuration) -> c_longlong {
+    match SignedDuration::try_from_secs_f64(secs) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(duration) => {
+            let tsd = TempusSignedDuration{duration};
+            tsd.stuff_into(out_sd);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_from_millis(n: i64) -> Box<TempusSignedDuration> {
+    let duration = SignedDuration::from_millis(n);
+    Box::new(TempusSignedDuration{duration})
+}
+#[no_mangle]
+pub extern "C" fn signed_duration_from_micros(n: i64) -> Box<TempusSignedDuration> {
+    let duration = SignedDuration::from_micros(n);
+    Box::new(TempusSignedDuration{duration})
+}
+#[no_mangle]
+pub extern "C" fn signed_duration_from_nanos(n: i64) -> Box<TempusSignedDuration> {
+    let duration = SignedDuration::from_nanos(n);
+    Box::new(TempusSignedDuration{duration})
+}
+
+
 
 #[no_mangle]
 pub extern "C" fn free_signed_duration(ts: Box<TempusSignedDuration>) -> c_longlong {

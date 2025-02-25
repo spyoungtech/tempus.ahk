@@ -304,3 +304,49 @@ fn test_span_round() {
     assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
 }
+
+#[test]
+fn test_signed_duration_from_secs() {
+    let script = make_script("duration := SignedDuration.from_secs(1.0)\nwritestdout(duration.as_millis())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1000.0"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_sign_duration_from_millis() {
+    let script = make_script("duration := SignedDuration.from_millis(10)\nwritestdout(duration.as_millis())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("10.0"));
+    assert!(output.status.success());
+
+}
+#[test]
+fn test_sign_duration_from_micros() {
+    let script = make_script("duration := SignedDuration.from_micros(1000)\nwritestdout(duration.as_millis())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1.0"));
+    assert!(output.status.success());
+
+}
+#[test]
+fn test_sign_duration_from_nanos() {
+    let script = make_script("duration := SignedDuration.from_nanos(1000000)\nwritestdout(duration.as_millis())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1.0"));
+    assert!(output.status.success());
+}
+
+
