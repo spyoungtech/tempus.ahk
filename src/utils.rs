@@ -1,5 +1,5 @@
-pub(crate) type AHKWstr = *const u16;
-pub(crate) type AHKStringBuffer = *mut c_char;
+pub type AHKWstr = *const u16;
+pub type AHKStringBuffer = *mut c_char;
 
 use std::ffi::{c_char};
 use std::borrow::BorrowMut;
@@ -31,7 +31,7 @@ pub extern "C" fn get_last_error_length() -> usize {
     global_string().lock().unwrap().len()
 }
 
-pub(crate) fn set_last_error_message(message: String) {
+pub fn set_last_error_message(message: String) {
     *global_string().lock().unwrap() = message;
 }
 
@@ -58,12 +58,12 @@ pub extern "C" fn get_last_error(buf: *mut c_char, buf_len: usize) -> usize {
 }
 
 
-pub(crate) fn clear_last_error() {
+fn clear_last_error() {
     set_last_error_message(String::from("unset error"));
 }
 
 
-pub(crate) fn ahk_str_to_string(ahk_str: AHKWstr) -> Result<String, i64> {
+pub fn ahk_str_to_string(ahk_str: AHKWstr) -> Result<String, i64> {
     if ahk_str.is_null() {
         return Err(-1);
     }
@@ -79,7 +79,7 @@ pub(crate) fn ahk_str_to_string(ahk_str: AHKWstr) -> Result<String, i64> {
 }
 
 
-pub(crate) fn string_into_ahk_buff(s: String, out_buff: AHKStringBuffer, buff_len: usize) {
+pub fn string_into_ahk_buff(s: String, out_buff: AHKStringBuffer, buff_len: usize) {
     let ret_bytes = s.as_bytes();
     let copy_len = ret_bytes.len().min(buff_len - 1);
     unsafe {
@@ -89,7 +89,7 @@ pub(crate) fn string_into_ahk_buff(s: String, out_buff: AHKStringBuffer, buff_le
 }
 
 
-pub(crate) fn round_mode_from_i8(i: i8) -> Result<RoundMode, String> {
+pub fn round_mode_from_i8(i: i8) -> Result<RoundMode, String> {
     match i {
         1 => Ok(RoundMode::Ceil),
         2 => Ok(RoundMode::Floor),
@@ -106,7 +106,7 @@ pub(crate) fn round_mode_from_i8(i: i8) -> Result<RoundMode, String> {
     }
 }
 
-pub(crate) fn unit_from_i8(i: i8) -> Result<Unit, String> {
+pub fn unit_from_i8(i: i8) -> Result<Unit, String> {
     match i {
         0 => Ok(Unit::Nanosecond),
         1 => Ok(Unit::Microsecond),

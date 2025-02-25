@@ -5,11 +5,11 @@ use jiff::{SignedDuration, Error, SignedDurationRound};
 use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message, unit_from_i8, round_mode_from_i8, AHKStringBuffer, string_into_ahk_buff};
 #[repr(C)]
 pub struct TempusSignedDuration {
-    pub(crate) duration: SignedDuration
+    pub duration: SignedDuration
 }
 
 impl TempusSignedDuration {
-    pub(crate) fn stuff_into(self, pointer: *mut *mut TempusSignedDuration) {
+    pub fn stuff_into(self, pointer: *mut *mut TempusSignedDuration) {
         let handle = Box::new(self);
         unsafe {
             *pointer = Box::into_raw(handle);

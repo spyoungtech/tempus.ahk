@@ -7,11 +7,11 @@ use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_bu
 
 #[repr(C)]
 pub struct TempusDate {
-    date: Date
+    pub date: Date
 }
 
 impl TempusDate {
-    pub(crate) fn stuff_into(self, pointer: *mut *mut TempusDate) {
+    pub fn stuff_into(self, pointer: *mut *mut TempusDate) {
         let handle = Box::new(self);
         unsafe {
             *pointer = Box::into_raw(handle);

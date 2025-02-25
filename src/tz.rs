@@ -3,12 +3,12 @@ use jiff::tz::TimeZone;
 use crate::utils::{ahk_str_to_string, set_last_error_message, AHKWstr};
 
 #[repr(C)]
-struct TempusTimeZone {
-    tz: TimeZone
+pub struct TempusTimeZone {
+    pub tz: TimeZone
 }
 
 impl TempusTimeZone {
-    pub(crate) fn stuff_into(self, pointer: *mut *mut TempusTimeZone) {
+    pub fn stuff_into(self, pointer: *mut *mut TempusTimeZone) {
         let handle = Box::new(self);
         unsafe {
             *pointer = Box::into_raw(handle);

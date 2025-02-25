@@ -1,6 +1,5 @@
 #![allow(dead_code)]
 
-use std::cmp;
 use std::ffi::c_longlong;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
@@ -9,7 +8,7 @@ use crate::utils::{ahk_str_to_string, round_mode_from_i8, set_last_error_message
 
 #[repr(C)]
 pub struct TempusSpan {
-    pub(crate) span: Span
+    pub span: Span
 }
 
 impl Display for TempusSpan {
@@ -28,7 +27,7 @@ impl FromStr for TempusSpan {
 }
 
 impl TempusSpan {
-    pub(crate) fn stuff_into(self, pointer: *mut *mut TempusSpan) {
+    pub fn stuff_into(self, pointer: *mut *mut TempusSpan) {
         let handle = Box::new(self);
         unsafe {
             *pointer = Box::into_raw(handle);

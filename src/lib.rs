@@ -1,14 +1,14 @@
 #![doc = include_str!("../README.md")]
 
-mod utils;
-mod timestamp;
-mod zoned;
-mod span;
-mod duration;
-mod tz;
-mod date;
-mod time;
-mod datetime;
+pub mod utils;
+pub mod timestamp;
+pub mod zoned;
+pub mod span;
+pub mod duration;
+pub mod tz;
+pub mod date;
+pub mod time;
+pub mod datetime;
 
 #[cfg(test)]
 mod tests;

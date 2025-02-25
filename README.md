@@ -3,17 +3,24 @@
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/spyoungtech/tempus.ahk/build.yaml)](https://github.com/spyoungtech/tempus.ahk/actions/workflows/build.yaml)  [![GitHub Release](https://img.shields.io/github/v/release/spyoungtech/tempus.ahk?color=blue)](https://github.com/spyoungtech/tempus.ahk/releases)
 
 
-Tempus is a DateTime library for AutoHotkey. It is, essentially, a wrapper to expose the API of the 
-Rust [jiff crate](https://crates.io/crates/jiff) in AHK. 
+Tempus is a DateTime library for AutoHotkey. 
 
-So, to know what _tempus.ahk_ is about, is to know what _jiff_ is about:
+Right now, the API is usable, but not complete. Development towards completion is rapidly underway. See [API progress](#api-progress) for detailed status.
+
+## Acknowledgement
+
+`tempus.ahk` is built on top of [jiff](https://github.com/BurntSushi/jiff), which is authored by [Andrew Gallant](https://github.com/BurntSushi/) and other [contributors](https://github.com/BurntSushi/jiff/graphs/contributors). 
+We thank Andrew for his helpful nature, numerous contributions to the community. Moreover, we thank Andrew and other 
+other jiff contributors for providing/contributing to `jiff` under permissive licensing, allowing Tempus to exist.
+
+
+About _jiff_:
 
 > Jiff is a datetime library for Rust that encourages you to jump into the pit of success. The focus of this library is providing high level datetime primitives that are difficult to misuse and have reasonable performance. Jiff supports automatic and seamless integration with the Time Zone Database, DST aware arithmetic and rounding, formatting and parsing zone aware datetimes losslessly, \[...\] and a whole lot more.  
 > Jiff takes enormous inspiration from [Temporal](https://tc39.es/proposal-temporal/docs/index.html), which is a [TC39](https://tc39.es/) proposal to improve datetime handling in JavaScript.
 
-
-Right now, only a portion of the API is implemented, but development towards completion is rapidly underway.
-
+Tempus aims to provide to AutoHotkey users the same benefits that `jiff` provides for Rust users. 
+In most cases, Tempus simply provides a 1:1 bridge to `jiff`'s APIs.
 
 # Installation
 
@@ -32,7 +39,7 @@ See also: [Binary security](#binary-security).
 # Usage
 
 The exposed AHK API aims to mirror, as much as is reasonable, the API of `jiff`. Most of the usage is a straightforward 
-translation from [the rust API for jiff](https://docs.rs/jiff/latest/jiff/).
+translation from [the rust API for jiff](https://docs.rs/jiff/latest/jiff/) (so be sure to check out this documentation!).
 
 For example, in Rust with `jiff`:
 
@@ -49,7 +56,7 @@ Looks like this with `tempus.ahk`:
 #Include "tempus.ahk"
 
 time := Timestamp.parse("2024-07-11T01:14:00Z")
-MsgBox(time.as_second())
+MsgBox(time.as_second()) ; 1720660440
 ```
 
 ## Examples
