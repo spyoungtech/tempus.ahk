@@ -339,7 +339,7 @@ class SignedDuration {
         }
     }
 
-    round(smallest := Unit.Nanosecond, increment := 1, mode := RoundMode.HalfExpand) {
+    round(smallest := Unit.Nanosecond, increment := 1, round_mode := RoundMode.HalfExpand) {
         out_duration := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\signed_duration_round", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", round_mode, "Ptr", out_duration, "Int64")
         if (retcode != 0) {
