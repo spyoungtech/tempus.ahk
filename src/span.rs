@@ -231,6 +231,20 @@ pub extern "C" fn span_get_nanoseconds(tspan: &TempusSpan) -> c_longlong {
 }
 
 #[no_mangle]
+pub extern "C" fn span_string_length_friendly(tspan: &TempusSpan) -> usize {
+    let span = tspan.span;
+    format!("{span:#}").len()
+}
+
+#[no_mangle]
+pub extern "C" fn span_to_string_friendly(tspan: &TempusSpan, out_buff: AHKStringBuffer, buff_len: usize) -> c_longlong {
+    let span = tspan.span;
+    let ret = format!("{span:#}");
+    string_into_ahk_buff(ret, out_buff, buff_len);
+    0
+}
+
+#[no_mangle]
 pub extern "C" fn span_string_length(tspan: &TempusSpan) -> usize {
     tspan.to_string().len()
 }
