@@ -1308,6 +1308,11 @@ class Time {
         return Time(pointer)
     }
 
+    static midnight() {
+        poitner := DllCall("tempus_ahk\time_midnight", "Ptr")
+        return Time(pointer)
+    }
+
     static new(hour := 0, minute := 0, second := 0, subsec_nano := 0) {
         out_time := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\time_new", "Char", hour, "Char", minute, "Char", second, "Int", subsec_nano, "Ptr", out_time, "Int64")

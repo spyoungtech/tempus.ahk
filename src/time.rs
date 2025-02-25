@@ -331,6 +331,11 @@ pub extern "C" fn time_duration_since(tt: &TempusTime, other: &TempusTime) -> Bo
 
 
 #[no_mangle]
+pub extern "C" fn time_midnight() -> Box<TempusTime> {
+    Box::new(TempusTime{time: Time::midnight()})
+}
+
+#[no_mangle]
 pub extern "C" fn free_time(time: Box<TempusTime>) -> c_longlong {
     let raw = Box::into_raw(time);
     unsafe {
