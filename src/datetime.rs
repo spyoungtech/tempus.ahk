@@ -109,15 +109,15 @@ pub extern "C" fn datetime_new(year: i16,
 }
 
 #[no_mangle]
-pub extern "C" fn time_hour(tdt: &TempusDateTime) -> c_char {
+pub extern "C" fn datetime_hour(tdt: &TempusDateTime) -> c_char {
     tdt.datetime.hour()
 }
 #[no_mangle]
-pub extern "C" fn time_minute(tdt: &TempusDateTime) -> c_char {
+pub extern "C" fn datetime_minute(tdt: &TempusDateTime) -> c_char {
     tdt.datetime.minute()
 }
 #[no_mangle]
-pub extern "C" fn time_second(tdt: &TempusDateTime) -> c_char {
+pub extern "C" fn datetime_second(tdt: &TempusDateTime) -> c_char {
     tdt.datetime.second()
 }
 
@@ -139,15 +139,15 @@ pub extern "C" fn datetime_subsec_nanosecond(tdt: &TempusDateTime) -> c_int {
 }
 
 #[no_mangle]
-pub extern "C" fn date_year(tdt: &TempusDateTime) -> c_short {
+pub extern "C" fn datetime_year(tdt: &TempusDateTime) -> c_short {
     tdt.datetime.year()
 }
 #[no_mangle]
-pub extern "C" fn date_month(tdt: &TempusDateTime) -> c_char {
+pub extern "C" fn datetime_month(tdt: &TempusDateTime) -> c_char {
     tdt.datetime.month()
 }
 #[no_mangle]
-pub extern "C" fn date_day(tdt: &TempusDateTime) -> c_char {
+pub extern "C" fn datetime_day(tdt: &TempusDateTime) -> c_char {
     tdt.datetime.day()
 }
 
