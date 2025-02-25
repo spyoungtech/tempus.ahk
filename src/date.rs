@@ -5,7 +5,7 @@ use jiff::Error;
 use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
 
 #[repr(C)]
-struct TempusDate {
+pub struct TempusDate {
     date: Date
 }
 
@@ -63,7 +63,7 @@ pub extern "C" fn date_to_string(td: &TempusDate, out_buff: AHKStringBuffer, buf
 }
 
 #[no_mangle]
-pub extern "C" fn free_timezone(tz: Box<TempusDate>) -> c_longlong {
+pub extern "C" fn free_date(tz: Box<TempusDate>) -> c_longlong {
     let raw = Box::into_raw(tz);
     unsafe {
         drop(Box::from_raw(raw))

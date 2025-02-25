@@ -5,7 +5,7 @@ use jiff::Error;
 use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
 
 #[repr(C)]
-struct TempusDateTime {
+pub struct TempusDateTime {
     datetime: DateTime,
 }
 
