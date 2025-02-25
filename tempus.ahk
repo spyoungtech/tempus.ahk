@@ -295,8 +295,7 @@ class SignedDuration {
     }
 
     gt(other_duration) {
-        result := this.compare(other_)
-
+        result := this.compare(other_duration)
         if (result = _Ordering.GREATER) {
             return true
         }  else {
