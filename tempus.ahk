@@ -89,6 +89,21 @@ class SignedDuration {
         return SignedDuration(handle)
     }
 
+    static ZERO() {
+        pointer := DllCall("tempus_ahk\signed_duration_zero", "Ptr")
+        return SignedDuration(pointer)
+    }
+
+    static MIN() {
+        pointer := DllCall("tempus_ahk\signed_duration_min", "Ptr")
+        return SignedDuration(pointer)
+    }
+    static MAX() {
+        pointer := DllCall("tempus_ahk\signed_duration_max", "Ptr")
+        return SignedDuration(pointer)
+    }
+
+
     static from_secs(secs) {
         duration_out := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\signed_duration_from_secs", "Double", secs, "Ptr", duration_out, "Int64")
@@ -129,6 +144,16 @@ class SignedDuration {
     }
     as_millis() {
         return DllCall("tempus_ahk\signed_duration_as_millis", "Ptr", this.pointer, "Double")
+    }
+    is_zero() {
+        ret := DllCall("tempus_ahk\signed_duration_is_zero", "Ptr", this.pointer, "Char")
+        if (ret = 1) {
+            return true
+        } else if (ret = 0) {
+            return false
+        } else {
+            throw "unexpected error"
+        }
     }
 
 

@@ -376,6 +376,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 (typed variants will likely just be implemented once with 64bit precision)
 
 - [x] `parse`
+- [x] `zero`
 - [ ] [new](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.new)
 - [x] [from_secs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_secs)
 - [x] [from_millis](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_millis)
@@ -384,7 +385,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [from_hours](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_hours)
 - [x] [from_mins](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_mins)
 - [ ] [is_zero](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.is_zero)
-- [ ] [as_secs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_secs)
+- [x] [as_secs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_secs)
 - [ ] [subsec_millis](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.subsec_millis)
 - [ ] [subsec_micros](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.subsec_micros)
 - [ ] [subsec_nanos](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.subsec_nanos)

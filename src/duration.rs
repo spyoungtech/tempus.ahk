@@ -1,4 +1,4 @@
-use std::ffi::c_longlong;
+use std::ffi::{c_char, c_longlong};
 use std::str::FromStr;
 use jiff::{SignedDuration, Error};
 use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message};
@@ -87,6 +87,25 @@ pub extern "C" fn signed_duration_from_nanos(n: i64) -> Box<TempusSignedDuration
     Box::new(TempusSignedDuration{duration})
 }
 
+#[no_mangle]
+pub extern "C" fn signed_duration_is_zero(tsd: &TempusSignedDuration) -> c_char {
+    tsd.duration.is_zero() as i8
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_zero() -> Box<TempusSignedDuration> {
+    Box::new(TempusSignedDuration{duration: SignedDuration::ZERO})
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_min() -> Box<TempusSignedDuration> {
+    Box::new(TempusSignedDuration{duration: SignedDuration::MIN})
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_max() -> Box<TempusSignedDuration> {
+    Box::new(TempusSignedDuration{duration: SignedDuration::MAX})
+}
 
 
 #[no_mangle]

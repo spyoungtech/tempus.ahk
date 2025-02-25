@@ -356,6 +356,17 @@ fn test_signed_duration_from_hours() {
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert_eq!(stderr, "");
-    assert_eq!(stdout.to_string(), String::from("3600"));
+    assert_eq!(stdout.to_string(), String::from("3600.0"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_signed_duration_is_zero() {
+    let script = make_script("duration := SignedDuration.ZERO()\nwritestdout(duration.is_zero())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
 }
