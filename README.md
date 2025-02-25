@@ -126,6 +126,16 @@ span3 := span1.checked_add(span2)
 MsgBox(span3.to_string()) ; PT3H1M 
 ```
 
+`span.parse` / `span.round`
+
+```AutoHotkey
+span1 := Span.parse("PT23h50m3.123s")
+expected := Span.new().hours(24)
+rounded := span1.round(Unit.Minute, 30)
+expected.eq(rounded) ; true
+```
+
+
 `span.total`
 
 ```AutoHotkey
