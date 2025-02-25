@@ -7,7 +7,7 @@ use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_bu
 
 #[repr(C)]
 pub struct TempusDateTime {
-    datetime: DateTime,
+    pub(crate) datetime: DateTime,
 }
 
 impl FromStr for TempusDateTime {

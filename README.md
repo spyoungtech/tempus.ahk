@@ -480,6 +480,8 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `MAX`
 - [x] `new`
 - [x] `checked_add`
+- [x] `checked_sub`
+- [x] `until` (`until_time` since `until` is a reserved keyword in AHK)
 
 ## DateTime
 

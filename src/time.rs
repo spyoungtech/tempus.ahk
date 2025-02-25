@@ -3,9 +3,10 @@ use std::ffi::{c_char, c_longlong};
 use std::str::FromStr;
 use jiff::civil::Time;
 use jiff::Error;
+use crate::datetime::TempusDateTime;
 use crate::duration::TempusSignedDuration;
 use crate::span::TempusSpan;
-use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
+use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, unit_from_i8, AHKStringBuffer, AHKWstr};
 
 #[repr(C)]
 pub struct TempusTime {
@@ -160,7 +161,66 @@ pub extern "C" fn time_checked_sub_signed_duration(tt: &TempusTime, other: &Temp
     }
 }
 
+#[no_mangle]
+pub extern "C" fn time_until_time(tt: &TempusTime, other: &TempusTime,  out_span: *mut *mut TempusSpan) -> c_longlong {
+    match tt.time.until(other.time) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
+}
 
+#[no_mangle]
+pub extern "C" fn time_until_time_unit(tt: &TempusTime, other: &TempusTime, unit_i: i8,  out_span: *mut *mut TempusSpan) -> c_longlong {
+    match unit_from_i8(unit_i) {
+        Err(_) => {
+            set_last_error_message("invalid unit".to_string());
+            -1
+        }
+        Ok(unit) => {
+            match tt.time.until((unit, other.time)) {
+                Err(e) => {
+                    set_last_error_message(e.to_string());
+                    -2
+                }
+                Ok(span) => {
+                    let new_span = TempusSpan{span};
+                    new_span.stuff_into(out_span);
+                    0
+                }
+            }
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn time_until_datetime_unit(tt: &TempusTime, other: &TempusDateTime, unit_i: i8,  out_span: *mut *mut TempusSpan) -> c_longlong {
+    match unit_from_i8(unit_i) {
+        Err(_) => {
+            set_last_error_message("invalid unit".to_string());
+            -1
+        }
+        Ok(unit) => {
+            match tt.time.until((unit, other.datetime)) {
+                Err(e) => {
+                    set_last_error_message(e.to_string());
+                    -2
+                }
+                Ok(span) => {
+                    let new_span = TempusSpan{span};
+                    new_span.stuff_into(out_span);
+                    0
+                }
+            }
+        }
+    }
+}
 
 #[no_mangle]
 pub extern "C" fn free_time(time: Box<TempusTime>) -> c_longlong {
