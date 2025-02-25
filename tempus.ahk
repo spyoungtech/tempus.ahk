@@ -1485,7 +1485,7 @@ class Time {
         if !(other_time is Time) {
             throw Error("Unsupported Type. Must be Time", -2)
         }
-        pointer := DllCall("tempus_ahk\time_duration_until", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        pointer := DllCall("tempus_ahk\time_duration_until", "Ptr", this.pointer, "Ptr", other_time.pointer, "Ptr")
         return SignedDuration(pointer)
     }
 
@@ -1493,7 +1493,7 @@ class Time {
         if !(other_time is Time) {
             throw Error("Unsupported Type. Must be Time", -2)
         }
-        pointer := DllCall("tempus_ahk\time_duration_since", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        pointer := DllCall("tempus_ahk\time_duration_since", "Ptr", this.pointer, "Ptr", other_time.pointer, "Ptr")
         return SignedDuration(pointer)
     }
 }
