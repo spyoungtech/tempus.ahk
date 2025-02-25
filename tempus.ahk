@@ -1414,22 +1414,14 @@ class Time {
         return Time(handle)
     }
 
-    until_time(other, unit := unset) {
+    until_time(other, unit := Unit.Hour, round_mode := RoundMode.HalfExpand) {
         out_span := Buffer(A_PtrSize)
         if (other is Time) {
-            if IsSet(unit) {
-                retcode := DllCall("tempus_ahk\time_until_time_unit", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Ptr", out_span, "Int64")
-            } else {
-                retcode := DllCall("tempus_ahk\time_until_time", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_span, "Int64")
-            }
+            retcode := DllCall("tempus_ahk\time_until_time", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Char", round_mode, "Ptr", out_span, "Int64")
         } else if (other is DateTime) {
-            if IsSet(unit) {
-                retcode := DllCall("tempus_ahk\time_until_datetime_unit", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Ptr", out_span, "Int64")
-            } else {
-                retcode := DllCall("tempus_ahk\time_until_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_span, "Int64")
-            }
+            retcode := DllCall("tempus_ahk\time_until_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Char", round_mode, "Ptr", out_span, "Int64")
         } else {
-            throw Error("Unsupported Type. Must be either Time or DateTime")
+            throw Error("Unsupported Type. Must be Time or DateTime", -2)
         }
         if (retcode != 0) {
             message := _get_last_error()
@@ -1445,19 +1437,11 @@ class Time {
     since(other, unit := unset) {
         out_span := Buffer(A_PtrSize)
         if (other is Time) {
-            if IsSet(unit) {
-                retcode := DllCall("tempus_ahk\time_since_time_unit", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Ptr", out_span, "Int64")
-            } else {
-                retcode := DllCall("tempus_ahk\time_since_time", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_span, "Int64")
-            }
+            retcode := DllCall("tempus_ahk\time_since_time", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Char", round_mode, "Ptr", out_span, "Int64")
         } else if (other is DateTime) {
-            if IsSet(unit) {
-                retcode := DllCall("tempus_ahk\time_since_datetime_unit", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Ptr", out_span, "Int64")
-            } else {
-                retcode := DllCall("tempus_ahk\time_since_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_span, "Int64")
-            }
+            retcode := DllCall("tempus_ahk\time_since_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Char", round_mode, "Ptr", out_span, "Int64")
         } else {
-            throw Error("Unsupported Type. Must be either Time or DateTime")
+            throw Error("Unsupported Type. Must be Time or DateTime", -2)
         }
         if (retcode != 0) {
             message := _get_last_error()
