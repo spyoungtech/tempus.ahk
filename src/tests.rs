@@ -349,4 +349,13 @@ fn test_sign_duration_from_nanos() {
     assert!(output.status.success());
 }
 
-
+#[test]
+fn test_signed_duration_from_hours() {
+    let script = make_script("duration := SignedDuration.from_hours(1)\nwritestdout(duration.as_secs())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("3600"));
+    assert!(output.status.success());
+}

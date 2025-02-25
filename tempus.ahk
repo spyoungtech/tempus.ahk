@@ -102,6 +102,16 @@ class SignedDuration {
         }
         return SignedDuration(handle)
     }
+
+    static from_hours(hours) {
+        return this.from_secs(hours * 3600)
+    }
+
+    static from_mins(minutes) {
+        return this.from_secs(minutes * 60)
+    }
+
+
     static from_millis(n) {
         pointer := DllCall("tempus_ahk\signed_duration_from_millis", "Int64", n, "Ptr")
         return SignedDuration(pointer)
