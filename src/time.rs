@@ -132,6 +132,32 @@ pub extern "C" fn time_checked_add_signed_duration(tt: &TempusTime, other: &Temp
 
 
 #[no_mangle]
+pub extern "C" fn time_wrapping_add_span(tt: &TempusTime, other: &TempusSpan) -> Box<TempusTime> {
+    let time = tt.time.wrapping_add(other.span);
+    Box::new(TempusTime{time})
+}
+
+#[no_mangle]
+pub extern "C" fn time_wrapping_add_signed_duration(tt: &TempusTime, other: &TempusSignedDuration) -> Box<TempusTime> {
+    let time = tt.time.wrapping_add(other.duration);
+    Box::new(TempusTime{time})
+}
+
+
+#[no_mangle]
+pub extern "C" fn time_wrapping_sub_span(tt: &TempusTime, other: &TempusSpan) -> Box<TempusTime> {
+    let time = tt.time.wrapping_sub(other.span);
+    Box::new(TempusTime{time})
+}
+
+#[no_mangle]
+pub extern "C" fn time_wrapping_sub_signed_duration(tt: &TempusTime, other: &TempusSignedDuration) -> Box<TempusTime> {
+    let time = tt.time.wrapping_sub(other.duration);
+    Box::new(TempusTime{time})
+}
+
+
+#[no_mangle]
 pub extern "C" fn time_checked_sub_span(tt: &TempusTime, other: &TempusSpan, out_time: *mut *mut TempusTime) -> c_longlong {
     match tt.time.checked_sub(other.span) {
         Err(e) => {
