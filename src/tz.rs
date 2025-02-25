@@ -45,6 +45,15 @@ pub extern "C" fn timezone_get(ahk_time_string: AHKWstr, out_tz: *mut *mut Tempu
 
 }
 
+#[no_mangle]
+pub extern "C" fn timezone_utc() -> Box<TempusTimeZone> {
+    Box::new(TempusTimeZone { tz: TimeZone::UTC })
+}
+
+#[no_mangle]
+pub extern "C" fn timezone_unknown() -> Box<TempusTimeZone> {
+    Box::new(TempusTimeZone{tz: TimeZone::unknown()})
+}
 
 #[no_mangle]
 pub extern "C" fn free_timezone(ts: Box<TempusTimeZone>) -> c_longlong {

@@ -982,7 +982,7 @@ class Timezone {
         return Timezone(pointer)
     }
 
-    get(timezone_name) {
+    static get(timezone_name) {
         out_tz := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\timezone_get", "WStr", timezone_name, "Ptr", out_tz, "Int64")
         if (retcode != 0) {
@@ -994,6 +994,31 @@ class Timezone {
             throw "unexpected error"
         }
         return Timezone(handle)
+    }
+
+    static posix(posix_tz_name) {
+        out_tz := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\timezone_posix", "WStr", posix_tz_name, "Ptr", out_tz, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_tz, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+
+        return Timezone(handle)
+    }
+
+    static UTC() {
+        pointer := DllCall("tempus_ahk\timezone_utc", "Ptr")
+        return Timezone(pointer)
+    }
+
+    static unknown() {
+        pointer := DllCall("tempus_ahk\timezone_unknown", "Ptr")
+        return Timezone(pointer)
     }
 
 }
