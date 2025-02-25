@@ -417,3 +417,14 @@ fn test_signed_duration_checked_add() {
     assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
 }
+
+#[test]
+fn test_signed_duration_new_overflow() {
+    let script = make_script(format!("duration1 := SignedDuration.new({}, {})", i64::MAX, 1_000_000_000).as_str());
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("overflow"), "{}", stderr);
+    assert_eq!(stdout.to_string(), String::from(""));
+    assert!(!output.status.success());
+}
