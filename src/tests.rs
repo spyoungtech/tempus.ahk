@@ -622,7 +622,7 @@ fn test_time_duration_until() {
 
 #[test]
 fn test_time_wrapping_add() {
-    let script = make_script("t := Time.new(23, 59, 59, 999999999)\nt2 := t.add(Span.new().nanoseconds(1))\nwritestdout(t2.eq(Time.MIN())");
+    let script = make_script("t := Time.new(23, 59, 59, 999999999)\nt2 := t.add(Span.new().nanoseconds(1))\nwritestdout(t2.eq(Time.MIN()))");
     let output = run_script(script);
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
