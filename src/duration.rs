@@ -9,7 +9,7 @@ pub struct TempusSignedDuration {
 }
 
 impl TempusSignedDuration {
-        pub(crate) fn stuff_into(self, pointer: *mut *mut TempusSignedDuration) {
+    pub(crate) fn stuff_into(self, pointer: *mut *mut TempusSignedDuration) {
         let handle = Box::new(self);
         unsafe {
             *pointer = Box::into_raw(handle);

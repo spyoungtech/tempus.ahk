@@ -443,9 +443,8 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 
 ## TimeZone
 
-- [ ] [system](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.system)
-- [ ] [try_system](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.try_system)
-- [ ] [get](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.get)
+- [x] [system](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.system) (uses try_system and fallsback to UTC on failure)
+- [x] [get](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.get)
 - [ ] [fixed](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.fixed)
 - [ ] [posix](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.posix)
 - [ ] [tzif](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.tzif)
