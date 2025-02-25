@@ -91,7 +91,7 @@ class SignedDuration {
 
     static new(secs, nanosecs) {
         duration_out := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\signed_duration_new", "Int64", secs, "Int", nanosecs, "Ptr", duration_out "Int64")
+        retcode := DllCall("tempus_ahk\signed_duration_new", "Int64", secs, "Int", nanosecs, "Ptr", duration_out, "Int64")
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message), -2)
