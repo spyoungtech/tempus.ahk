@@ -540,7 +540,7 @@ class Timestamp {
     }
 
     ToString() {
-        this.to_string()
+        return this.to_string()
     }
 
     strftime(format_str) {
@@ -819,7 +819,7 @@ class Span {
     }
 
     ToString() {
-        this.to_string()
+        return this.to_string()
     }
 
     abs() {
@@ -1061,7 +1061,7 @@ class Date {
     }
 
     ToString() {
-        this.to_string()
+        return this.to_string()
     }
 
     compare(other_date) {
@@ -1238,7 +1238,7 @@ class Time {
     }
 
     ToString() {
-        this.to_string()
+        return this.to_string()
     }
 
 
