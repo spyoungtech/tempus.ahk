@@ -56,6 +56,8 @@ MsgBox(time.as_second())
 
 ### Timestamp
 
+Jiff [Timestamp](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html)
+
 `Timestamp.strptime` / `Timestamp.as_second`
 
 ```AutoHotkey
@@ -119,6 +121,8 @@ RoundMode := {
 
 ### Span
 
+Jiff [Span](https://docs.rs/jiff/latest/jiff/struct.Span.html)
+
 ```AutoHotkey
 span1 := Span.new().hours(2).minutes(59)
 span2 := Span.new().minutes(2)
@@ -179,6 +183,15 @@ span1.gt(span2, true) ; OK!
 ```
 
 Support for specifying a relative timeframe is not yet available.
+
+### SignedDuration
+
+Jiff [SignedDuration](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html)
+
+```AutoHotkey
+duration := SignedDuration.parse("2h 30m")
+```
+
 
 ## Binary Security
 
@@ -379,6 +392,7 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `ZERO`
 - [x] `MIN`
 - [x] `MAX`
+- [x] cmp (`compare`, `lt`, `gt`, `gte`, `lte`, `eq`)
 - [x] [new](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.new)
 - [x] [from_secs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_secs)
 - [x] [from_millis](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_millis)
