@@ -69,6 +69,25 @@ class SignedDuration {
     __Delete() {
         DllCall("tempus_ahk\free_signed_duration", "Ptr", this.pointer, "Int64")
     }
+    to_string() {
+        buff_length := DllCall("tempus_ahk\signed_duration_string_length", "Ptr", this.pointer, "UInt64")
+        buff := Buffer(buff_length+1, 0)
+        retcode := DllCall("tempus_ahk\signed_duration_to_string", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size)
+        ret := StrGet(buff, "UTF-8")
+        return ret
+    }
+
+    to_string_friendly() {
+        buff_length := DllCall("tempus_ahk\signed_duration_string_length_friendly", "Ptr", this.pointer, "UInt64")
+        buff := Buffer(buff_length+1, 0)
+        retcode := DllCall("tempus_ahk\signed_duration_to_string_friendly", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size)
+        ret := StrGet(buff, "UTF-8")
+        return ret
+    }
+
+    ToString() {
+        return this.to_string_friendly()
+    }
 
     static parse(duration_string) {
         duration_out := Buffer(A_PtrSize)
@@ -818,8 +837,16 @@ class Span {
         return ret
     }
 
+    to_string_friendly() {
+        buff_length := DllCall("tempus_ahk\span_string_length_friendly", "Ptr", this.pointer, "UInt64")
+        buff := Buffer(buff_length+1, 0)
+        retcode := DllCall("tempus_ahk\span_to_string_friendly", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size)
+        ret := StrGet(buff, "UTF-8")
+        return ret
+    }
+
     ToString() {
-        return this.to_string()
+        return this.to_string_friendly()
     }
 
     abs() {
@@ -1414,12 +1441,12 @@ class Time {
         return Time(handle)
     }
 
-    until_time(other, unit := Unit.Hour, round_mode := RoundMode.HalfExpand) {
+    until_time(other, largest_unit := Unit.Hour, round_mode := RoundMode.HalfExpand) {
         out_span := Buffer(A_PtrSize)
         if (other is Time) {
-            retcode := DllCall("tempus_ahk\time_until_time", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Char", round_mode, "Ptr", out_span, "Int64")
+            retcode := DllCall("tempus_ahk\time_until_time", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", round_mode, "Ptr", out_span, "Int64")
         } else if (other is DateTime) {
-            retcode := DllCall("tempus_ahk\time_until_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Char", round_mode, "Ptr", out_span, "Int64")
+            retcode := DllCall("tempus_ahk\time_until_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", round_mode, "Ptr", out_span, "Int64")
         } else {
             throw Error("Unsupported Type. Must be Time or DateTime", -2)
         }
@@ -1434,12 +1461,12 @@ class Time {
         return Span(handle)
     }
 
-    since(other, unit := unset) {
+    since(other, largest_unit := Unit.Hour, round_mode := RoundMode.HalfExpand) {
         out_span := Buffer(A_PtrSize)
         if (other is Time) {
-            retcode := DllCall("tempus_ahk\time_since_time", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Char", round_mode, "Ptr", out_span, "Int64")
+            retcode := DllCall("tempus_ahk\time_since_time", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", round_mode, "Ptr", out_span, "Int64")
         } else if (other is DateTime) {
-            retcode := DllCall("tempus_ahk\time_since_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Char", unit, "Char", round_mode, "Ptr", out_span, "Int64")
+            retcode := DllCall("tempus_ahk\time_since_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", round_mode, "Ptr", out_span, "Int64")
         } else {
             throw Error("Unsupported Type. Must be Time or DateTime", -2)
         }
@@ -1452,5 +1479,21 @@ class Time {
             throw "unexpected error"
         }
         return Span(handle)
+    }
+
+    duration_until(other_time) {
+        if !(other_time is Time) {
+            throw Error("Unsupported Type. Must be Time", -2)
+        }
+        pointer := DllCall("tempus_ahk\time_duration_until", "Ptr", this.pointer, "Ptr": other.pointer, "Ptr")
+        return SignedDuration(pointer)
+    }
+
+    duration_since(other_time) {
+        if !(other_time is Time) {
+            throw Error("Unsupported Type. Must be Time", -2)
+        }
+        pointer := DllCall("tempus_ahk\time_duration_since", "Ptr", this.pointer, "Ptr": other.pointer, "Ptr")
+        return SignedDuration(pointer)
     }
 }

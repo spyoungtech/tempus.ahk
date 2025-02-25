@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::ffi::{c_char, c_longlong};
 use std::str::FromStr;
 use jiff::civil::{Time, TimeDifference};
-use jiff::Error;
+use jiff::{Error};
 use crate::datetime::TempusDateTime;
 use crate::duration::TempusSignedDuration;
 use crate::span::TempusSpan;
@@ -291,6 +291,17 @@ pub extern "C" fn time_since_datetime(tt: &TempusTime, other: &TempusDateTime, u
 }
 
 
+#[no_mangle]
+pub extern "C" fn time_duration_until(tt: &TempusTime, other: &TempusTime) -> Box<TempusSignedDuration> {
+    let duration = tt.time.duration_until(other.time);
+    Box::new(TempusSignedDuration{duration})
+}
+
+#[no_mangle]
+pub extern "C" fn time_duration_since(tt: &TempusTime, other: &TempusTime) -> Box<TempusSignedDuration> {
+    let duration = tt.time.duration_since(other.time);
+    Box::new(TempusSignedDuration{duration})
+}
 
 
 #[no_mangle]

@@ -596,3 +596,25 @@ fn test_time_since_time() {
     assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
 }
+
+#[test]
+fn test_time_duration_since() {
+    let script = make_script("t := Time.new(22, 35, 1, 0)\nspan1 := Span.new().nanoseconds(2500000000)\nt2 := t.checked_add(span1)\ndur := t2.duration_since(t)\nwritestdout(dur.to_string_friendly())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2s 500ms"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_duration_until() {
+    let script = make_script("t := Time.new(22, 35, 1, 0)\nspan1 := Span.new().nanoseconds(2500000000)\nt2 := t.checked_add(span1)\ndur := t.duration_until(t2)\nwritestdout(dur.to_string_friendly())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2s 500ms"));
+    assert!(output.status.success());
+}
