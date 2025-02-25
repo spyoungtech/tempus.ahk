@@ -200,6 +200,21 @@ pub extern "C" fn time_until_time_unit(tt: &TempusTime, other: &TempusTime, unit
 }
 
 #[no_mangle]
+pub extern "C" fn time_until_datetime(tt: &TempusTime, other: &TempusDateTime,  out_span: *mut *mut TempusSpan) -> c_longlong {
+    match tt.time.until(other.datetime) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+#[no_mangle]
 pub extern "C" fn time_until_datetime_unit(tt: &TempusTime, other: &TempusDateTime, unit_i: i8,  out_span: *mut *mut TempusSpan) -> c_longlong {
     match unit_from_i8(unit_i) {
         Err(_) => {
@@ -221,6 +236,84 @@ pub extern "C" fn time_until_datetime_unit(tt: &TempusTime, other: &TempusDateTi
         }
     }
 }
+
+
+#[no_mangle]
+pub extern "C" fn time_since_time(tt: &TempusTime, other: &TempusTime,  out_span: *mut *mut TempusSpan) -> c_longlong {
+    match tt.time.since(other.time) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn time_since_time_unit(tt: &TempusTime, other: &TempusTime, unit_i: i8,  out_span: *mut *mut TempusSpan) -> c_longlong {
+    match unit_from_i8(unit_i) {
+        Err(_) => {
+            set_last_error_message("invalid unit".to_string());
+            -1
+        }
+        Ok(unit) => {
+            match tt.time.since((unit, other.time)) {
+                Err(e) => {
+                    set_last_error_message(e.to_string());
+                    -2
+                }
+                Ok(span) => {
+                    let new_span = TempusSpan{span};
+                    new_span.stuff_into(out_span);
+                    0
+                }
+            }
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn time_since_datetime(tt: &TempusTime, other: &TempusDateTime,  out_span: *mut *mut TempusSpan) -> c_longlong {
+    match tt.time.since(other.datetime) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn time_since_datetime_unit(tt: &TempusTime, other: &TempusDateTime, unit_i: i8,  out_span: *mut *mut TempusSpan) -> c_longlong {
+    match unit_from_i8(unit_i) {
+        Err(_) => {
+            set_last_error_message("invalid unit".to_string());
+            -1
+        }
+        Ok(unit) => {
+            match tt.time.since((unit, other.datetime)) {
+                Err(e) => {
+                    set_last_error_message(e.to_string());
+                    -2
+                }
+                Ok(span) => {
+                    let new_span = TempusSpan{span};
+                    new_span.stuff_into(out_span);
+                    0
+                }
+            }
+        }
+    }
+}
+
 
 #[no_mangle]
 pub extern "C" fn free_time(time: Box<TempusTime>) -> c_longlong {
