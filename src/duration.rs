@@ -57,6 +57,60 @@ pub extern "C" fn signed_duration_as_millis(tsd: &TempusSignedDuration) -> f64 {
 }
 
 #[no_mangle]
+pub extern "C" fn signed_duration_as_hours(tsd: &TempusSignedDuration) -> i64 {
+    tsd.duration.as_hours()
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_as_mins(tsd: &TempusSignedDuration) -> i64 {
+    tsd.duration.as_mins()
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_abs(tsd: &TempusSignedDuration, out_duration: *mut *mut TempusSignedDuration) -> c_longlong{
+    if tsd.duration.eq(&SignedDuration::MIN) {
+        set_last_error_message("Cannot use abs when duration seconds is i64::MIN".to_string());
+        return -1
+    }
+    let new_duration = tsd.duration.abs();
+    let new_tsd = TempusSignedDuration{duration: new_duration};
+    new_tsd.stuff_into(out_duration);
+    0
+
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_is_negative(tsd: &TempusSignedDuration) -> c_char {
+    tsd.duration.is_negative() as i8
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_is_positive(tsd: &TempusSignedDuration) -> c_char {
+    tsd.duration.is_positive() as i8
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_signum(tsd: &TempusSignedDuration) -> c_char {
+    tsd.duration.signum()
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_checked_neg(tsd: &TempusSignedDuration, out_duration: *mut *mut TempusSignedDuration) -> c_longlong {
+    match tsd.duration.checked_neg() {
+        Some(duration) => {
+            let new_tsd = TempusSignedDuration{duration};
+            new_tsd.stuff_into(out_duration);
+            0
+        }
+        None => {
+            set_last_error_message("negation failed (likely because seconds is i64::MIN)".to_string());
+            -1
+        }
+    }
+}
+
+
+#[no_mangle]
 pub extern "C" fn signed_duration_from_secs(secs: f64, out_sd: *mut *mut TempusSignedDuration) -> c_longlong {
     match SignedDuration::try_from_secs_f64(secs) {
         Err(e) => {

@@ -145,6 +145,15 @@ class SignedDuration {
     as_millis() {
         return DllCall("tempus_ahk\signed_duration_as_millis", "Ptr", this.pointer, "Double")
     }
+
+    as_hours() {
+        return DllCall("tempus_ahk\signed_duration_as_hours", "Ptr", this.pointer, "Int64")
+    }
+
+    as_mins() {
+        return DllCall("tempus_ahk\signed_duration_as_mins", "Ptr", this.pointer, "Int64")
+    }
+
     is_zero() {
         ret := DllCall("tempus_ahk\signed_duration_is_zero", "Ptr", this.pointer, "Char")
         if (ret = 1) {
@@ -155,6 +164,62 @@ class SignedDuration {
             throw "unexpected error"
         }
     }
+
+    is_positive() {
+        ret := DllCall("tempus_ahk\signed_duration_is_positive", "Ptr", this.pointer, "Char")
+        if (ret = 1) {
+            return true
+        } else if (ret = 0) {
+            return false
+        } else {
+            throw "unexpected error"
+        }
+    }
+
+    is_negative() {
+        ret := DllCall("tempus_ahk\signed_duration_is_negative", "Ptr", this.pointer, "Char")
+        if (ret = 1) {
+            return true
+        } else if (ret = 0) {
+            return false
+        } else {
+            throw "unexpected error"
+        }
+    }
+
+    signum() {
+        return DllCall("tempus_ahk\signed_duration_is_negative", "Ptr", this.pointer, "Char")
+    }
+
+    checked_neg() {
+        out_duration := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_checked_neg", "Ptr", this.pointer, "Ptr", out_duration, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_duration, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+
+    abs() {
+        out_duration := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\signed_duration_abs", "Ptr", this.pointer, "Ptr", out_duration, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_duration, 0, "Ptr")
+        if (handle = 0) {
+            throw "Unexpected error"
+        }
+        return SignedDuration(handle)
+    }
+
+
 
 
 }

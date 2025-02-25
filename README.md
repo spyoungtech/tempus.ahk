@@ -373,10 +373,12 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 
 ## SignedDuration
 
-(typed variants will likely just be implemented once with 64bit precision)
+(some variants will likely just be implemented once with 64bit precision)
 
 - [x] `parse`
-- [x] `zero`
+- [x] `ZERO`
+- [x] `MIN`
+- [x] `MAX`
 - [ ] [new](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.new)
 - [x] [from_secs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_secs)
 - [x] [from_millis](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_millis)
@@ -384,14 +386,14 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [from_nanos](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_nanos)
 - [x] [from_hours](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_hours)
 - [x] [from_mins](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_mins)
-- [ ] [is_zero](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.is_zero)
+- [x] [is_zero](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.is_zero)
 - [x] [as_secs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_secs)
 - [ ] [subsec_millis](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.subsec_millis)
 - [ ] [subsec_micros](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.subsec_micros)
 - [ ] [subsec_nanos](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.subsec_nanos)
 - [x] [as_millis](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_millis)
 - [x] [as_micros](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_micros)
-- [ ] [as_nanos](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_nanos)
+- [ ] ~~[as_nanos](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_nanos)~~ not supported
 - [ ] [checked_add](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_add)
 - [ ] [saturating_add](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.saturating_add)
 - [ ] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_sub)
@@ -399,28 +401,28 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [ ] [checked_mul](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_mul)
 - [ ] [saturating_mul](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.saturating_mul)
 - [ ] [checked_div](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_div)
-- [ ] [as_secs_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_secs_f64)
-- [ ] [as_secs_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_secs_f32)
-- [ ] [as_millis_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_millis_f64)
-- [ ] [as_millis_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_millis_f32)
-- [ ] [from_secs_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_secs_f64)
-- [ ] [from_secs_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_secs_f32)
-- [ ] [try_from_secs_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.try_from_secs_f64)
-- [ ] [try_from_secs_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.try_from_secs_f32)
+- [ ] ~~[as_secs_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_secs_f64)~~ use `as_secs`
+- [ ] ~~[as_secs_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_secs_f32)~~
+- [ ] ~~[as_millis_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_millis_f64)~~ use `as_millis`
+- [ ] ~~[as_millis_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_millis_f32)~~
+- [ ] ~~[from_secs_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_secs_f64)~~ use `from_secs`
+- [ ] ~~[from_secs_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.from_secs_f32)~~
+- [ ] ~~[try_from_secs_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.try_from_secs_f64)~~
+- [ ] ~~[try_from_secs_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.try_from_secs_f32)~~
 - [ ] [mul_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.mul_f64)
 - [ ] [mul_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.mul_f32)
 - [ ] [div_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.div_f64)
 - [ ] [div_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.div_f32)
 - [ ] [div_duration_f64](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.div_duration_f64)
 - [ ] [div_duration_f32](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.div_duration_f32)
-- [ ] [as_hours](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_hours)
-- [ ] [as_mins](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_mins)
-- [ ] [abs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.abs)
-- [ ] [unsigned_abs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.unsigned_abs)
-- [ ] [checked_neg](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_neg)
-- [ ] [signum](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.signum)
-- [ ] [is_positive](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.is_positive)
-- [ ] [is_negative](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.is_negative)
+- [x] [as_hours](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_hours)
+- [x] [as_mins](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.as_mins)
+- [x] [abs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.abs)
+- [ ] ~~[unsigned_abs](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.unsigned_abs)~~ (`std::time::Duration` support not planned for now)
+- [x] [checked_neg](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.checked_neg)
+- [x] [signum](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.signum)
+- [x] [is_positive](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.is_positive)
+- [x] [is_negative](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.is_negative)
 - [ ] [system_until](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.system_until)
 - [ ] [round](https://docs.rs/jiff/latest/jiff/struct.SignedDuration.html#method.round)
 

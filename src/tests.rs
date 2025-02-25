@@ -370,3 +370,38 @@ fn test_signed_duration_is_zero() {
     assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
 }
+
+#[test]
+fn test_signed_duration_is_positive() {
+    let script = make_script("duration := SignedDuration.MAX()\nwritestdout(duration.is_positive())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+
+#[test]
+fn test_signed_duration_is_negative() {
+    let script = make_script("duration := SignedDuration.MIN()\nwritestdout(duration.is_negative())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+
+#[test]
+fn test_signed_duration_checked_neg() {
+    let script = make_script("duration := SignedDuration.MAX()\nwritestdout(duration.checked_neg().is_negative())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
