@@ -12,7 +12,7 @@ include = ["src/**/*.rs", "Cargo.toml", "LICENSE-MIT", "UNLICENSE", "COPYING"]
 crate-type = ["cdylib"]
 
 [dependencies]
-jiff = { version="0.2" }
+jiff = { version="0.2.1" }
 
 [profile.release]
 lto = true
