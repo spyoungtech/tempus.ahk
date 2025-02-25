@@ -5,6 +5,7 @@ mod timestamp;
 mod zoned;
 mod span;
 mod duration;
+mod tz;
 
 #[cfg(test)]
 mod tests;
