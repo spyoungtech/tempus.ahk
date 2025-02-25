@@ -1052,6 +1052,17 @@ class Date {
         }
         return Date(handle)
     }
+    to_string() {
+        buff_length := DllCall("tempus_ahk\date_string_length", "Ptr", this.pointer, "UInt64")
+        buff := Buffer(buff_length+1, 0)
+        retcode := DllCall("tempus_ahk\date_to_string", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size, "Int64")
+        ret := StrGet(buff, "UTF-8")
+        return ret
+    }
+
+    ToString() {
+        this.to_string()
+    }
 }
 
 
@@ -1076,6 +1087,17 @@ class DateTime {
         }
         return DateTime(handle)
     }
+    to_string() {
+        buff_length := DllCall("tempus_ahk\datetime_string_length", "Ptr", this.pointer, "UInt64")
+        buff := Buffer(buff_length+1, 0)
+        retcode := DllCall("tempus_ahk\datetime_to_string", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size, "Int64")
+        ret := StrGet(buff, "UTF-8")
+        return ret
+    }
+
+    ToString() {
+        this.to_string()
+    }
 }
 
 
@@ -1087,17 +1109,30 @@ class Time {
         DllCall("tempus_ahk\free_time", "Ptr", this.pointer, "Int64")
     }
 
-    static parse(date_string) {
-        out_date := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\time_parse", "WStr", date_string, "Ptr", out_date, "Int64")
+    static parse(time_string) {
+        out_time := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\time_parse", "WStr", time_string, "Ptr", out_time, "Int64")
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message), -2)
         }
-        handle := NumGet(out_date, 0, "Ptr")
+        handle := NumGet(out_time, 0, "Ptr")
         if (handle = 0) {
             throw "unexpected error"
         }
         return Time(handle)
     }
+
+    to_string() {
+        buff_length := DllCall("tempus_ahk\time_string_length", "Ptr", this.pointer, "UInt64")
+        buff := Buffer(buff_length+1, 0)
+        retcode := DllCall("tempus_ahk\time_to_string", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size, "Int64")
+        ret := StrGet(buff, "UTF-8")
+        return ret
+    }
+
+    ToString() {
+        this.to_string()
+    }
+
 }

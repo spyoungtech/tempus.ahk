@@ -2,7 +2,7 @@ use std::os::raw::c_longlong;
 use std::str::FromStr;
 use jiff::civil::DateTime;
 use jiff::Error;
-use crate::utils::{ahk_str_to_string, set_last_error_message, AHKWstr};
+use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
 
 #[repr(C)]
 struct TempusDateTime {
@@ -48,6 +48,18 @@ pub extern "C" fn datetime_parse(ahk_time_string: AHKWstr, out_datetime: *mut *m
             }
         }
     }
+}
+
+#[no_mangle]
+pub extern "C" fn datetime_string_length(tdt: &TempusDateTime) -> usize {
+    tdt.datetime.to_string().len()
+}
+
+#[no_mangle]
+pub extern "C" fn datetime_to_string(tdt: &TempusDateTime, out_buff: AHKStringBuffer, buff_len: usize) -> c_longlong {
+    let ret = tdt.datetime.to_string();
+    string_into_ahk_buff(ret, out_buff, buff_len);
+    0
 }
 
 #[no_mangle]

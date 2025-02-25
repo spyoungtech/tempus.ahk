@@ -2,7 +2,7 @@ use std::ffi::c_longlong;
 use std::str::FromStr;
 use jiff::civil::Time;
 use jiff::Error;
-use crate::utils::{ahk_str_to_string, set_last_error_message, AHKWstr};
+use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
 
 #[repr(C)]
 struct TempusTime {
@@ -25,6 +25,18 @@ impl TempusTime {
             *pointer = Box::into_raw(handle);
         }
     }
+}
+
+#[no_mangle]
+pub extern "C" fn time_string_length(tt: &TempusTime) -> usize {
+    tt.time.to_string().len()
+}
+
+#[no_mangle]
+pub extern "C" fn time_to_string(tt: &TempusTime, out_buff: AHKStringBuffer, buff_len: usize) -> c_longlong {
+    let ret = tt.time.to_string();
+    string_into_ahk_buff(ret, out_buff, buff_len);
+    0
 }
 
 

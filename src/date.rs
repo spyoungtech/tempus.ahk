@@ -2,7 +2,7 @@ use std::os::raw::c_longlong;
 use std::str::FromStr;
 use jiff::civil::Date;
 use jiff::Error;
-use crate::utils::{ahk_str_to_string, set_last_error_message, AHKWstr};
+use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
 
 #[repr(C)]
 struct TempusDate {
@@ -50,7 +50,17 @@ pub extern "C" fn date_parse(ahk_time_string: AHKWstr, out_date: *mut *mut Tempu
     }
 }
 
+#[no_mangle]
+pub extern "C" fn date_string_length(td: &TempusDate) -> usize {
+    td.date.to_string().len()
+}
 
+#[no_mangle]
+pub extern "C" fn date_to_string(td: &TempusDate, out_buff: AHKStringBuffer, buff_len: usize) -> c_longlong {
+    let ret = td.date.to_string();
+    string_into_ahk_buff(ret, out_buff, buff_len);
+    0
+}
 
 #[no_mangle]
 pub extern "C" fn free_timezone(tz: Box<TempusDate>) -> c_longlong {

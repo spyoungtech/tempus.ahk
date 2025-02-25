@@ -452,3 +452,37 @@ fn test_signed_duration_round() {
 
 
 }
+
+#[test]
+fn test_date_parse() {
+    let script = make_script("d := Date.parse(\"2025-02-25\")\nwritestdout(d.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2025-02-25"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_parse() {
+    let script = make_script("t := Time.parse(\"15:22:45\")\nwritestdout(t.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("15:22:45"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_datetime_parse() {
+    let script = make_script("dt := DateTime.parse(\"2024-06-19 15:22:45\")\nwritestdout(dt.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2024-06-19T15:22:45"));
+    assert!(output.status.success());
+}
+
