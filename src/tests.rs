@@ -551,3 +551,15 @@ fn test_time_new() {
     assert_eq!(stdout.to_string(), String::from("00:00:00"));
     assert!(output.status.success());
 }
+
+#[test]
+fn test_time_checked_add_span() {
+    let script = make_script("t := Time.new(22, 35, 1, 0)\nspan1 := Span.new().nanoseconds(2500000000)\nexpected := Time.new(22, 35, 3, 500000000)\nwritestdout(t.checked_add(span1).eq(expected))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+

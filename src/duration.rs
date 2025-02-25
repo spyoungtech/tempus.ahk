@@ -5,7 +5,7 @@ use jiff::{SignedDuration, Error, SignedDurationRound};
 use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message, unit_from_i8, round_mode_from_i8};
 #[repr(C)]
 pub struct TempusSignedDuration {
-    duration: SignedDuration
+    pub(crate) duration: SignedDuration
 }
 
 impl TempusSignedDuration {

@@ -9,7 +9,7 @@ use crate::utils::{ahk_str_to_string, round_mode_from_i8, set_last_error_message
 
 #[repr(C)]
 pub struct TempusSpan {
-    span: Span
+    pub(crate) span: Span
 }
 
 impl Display for TempusSpan {

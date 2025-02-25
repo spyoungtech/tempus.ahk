@@ -1374,4 +1374,26 @@ class Time {
         }
     }
 
+    checked_add(other) {
+        out_time := Buffer(A_PtrSize)
+        if (other is Span) {
+            retcode := DllCall("tempus_ahk\time_checked_add_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_time, "Int64")
+        } else if (other is SignedDuration) {
+            retcode := DllCall("tempus_ahk\time_checked_add_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_time, "Int64")
+        } else {
+            throw Error("Unsupported type. Must be Span or SignedDuration", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_time, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Time(handle)
+    }
+
+
+
 }

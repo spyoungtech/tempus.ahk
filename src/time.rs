@@ -3,6 +3,8 @@ use std::ffi::{c_char, c_longlong};
 use std::str::FromStr;
 use jiff::civil::Time;
 use jiff::Error;
+use crate::duration::TempusSignedDuration;
+use crate::span::TempusSpan;
 use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
 
 #[repr(C)]
@@ -85,6 +87,36 @@ pub extern "C" fn time_min() -> Box<TempusTime> {
 #[no_mangle]
 pub extern "C" fn time_new(hour: i8, minute: i8, second: i8, subsec_nano: i32, out_time: *mut *mut TempusTime) -> c_longlong {
     match Time::new(hour, minute, second, subsec_nano) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(time) => {
+            let ttime = TempusTime{time};
+            ttime.stuff_into(out_time);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn time_checked_add_span(tt: &TempusTime, other: &TempusSpan, out_time: *mut *mut TempusTime) -> c_longlong {
+    match tt.time.checked_add(other.span) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(time) => {
+            let ttime = TempusTime{time};
+            ttime.stuff_into(out_time);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn time_checked_add_signed_duration(tt: &TempusTime, other: &TempusSignedDuration, out_time: *mut *mut TempusTime) -> c_longlong {
+    match tt.time.checked_add(other.duration) {
         Err(e) => {
             set_last_error_message(e.to_string());
             -1
