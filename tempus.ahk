@@ -21,6 +21,16 @@ Unit := {
     Year: 9
 }
 
+WeekDay := {
+    Monday: 1,
+    Tuesday: 2,
+    Wednesday: 3,
+    Thursday: 4,
+    Friday: 5,
+    Saturday: 6,
+    Sunday: 7,
+}
+
 RoundMode := {
     Ceil: 1,
     Floor: 2,
@@ -1181,6 +1191,21 @@ class Date {
         return DllCall("tempus_ahk\date_day", "Ptr", this.pointer, "Char")
     }
 
+    era() {
+        ret := DllCall("tempus_ahk\date_era", "Ptr", this.pointer, "Char")
+        if (ret = -1) {
+            return "BCE"
+        } else if (ret = 1) {
+            return "CE"
+        } else {
+            throw "unexpected error"
+        }
+    }
+
+    era_year() {
+        return DllCall("tempus_ahk\date_era_year", "Ptr", this.pointer, "Short")
+    }
+
 }
 
 
@@ -1274,6 +1299,21 @@ class DateTime {
     }
     subsec_nanosecond() {
         return DllCall("tempus_ahk\datetime_subsec_nanosecond", "Ptr", this.pointer, "Int")
+    }
+
+    era() {
+        ret := DllCall("tempus_ahk\datetime_era", "Ptr", this.pointer, "Char")
+        if (ret = -1) {
+            return "BCE"
+        } else if (ret = 1) {
+            return "CE"
+        } else {
+            throw "unexpected error"
+        }
+    }
+
+    era_year() {
+        return DllCall("tempus_ahk\datetime_era_year", "Ptr", this.pointer, "Short")
     }
 
     compare(other_time) {

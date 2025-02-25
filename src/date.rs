@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::ffi::c_short;
 use std::os::raw::{c_char, c_longlong};
 use std::str::FromStr;
-use jiff::civil::Date;
+use jiff::civil::{Date, Era};
 use jiff::Error;
 use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
 
@@ -114,6 +114,19 @@ pub extern "C" fn date_month(td: &TempusDate) -> c_char {
 #[no_mangle]
 pub extern "C" fn date_day(td: &TempusDate) -> c_char {
     td.date.day()
+}
+
+#[no_mangle]
+pub extern "C" fn date_era_year(td: &TempusDate) -> c_short {
+    td.date.era_year().0
+}
+
+#[no_mangle]
+pub extern "C" fn date_era(td: &TempusDate) -> c_char {
+    match td.date.era_year().1 {
+        Era::BCE => {-1}
+        Era::CE => {1}
+    }
 }
 
 

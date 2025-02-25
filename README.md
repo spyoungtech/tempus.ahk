@@ -478,6 +478,12 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `MAX`
 - [x] `ZERO`
 - [x] `new`
+- [x] `year`
+- [x] `month`
+- [x] `day`
+- [x] `era_year` (only returns year component, use `era` to get era as string)
+- [x] `era` (return string "BCE" or "CE")
+
 ## Time
 
 - [x] `parse`
@@ -485,10 +491,24 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `to_string`
 - [x] `MIN`
 - [x] `MAX`
+- [x] `midnight`
 - [x] `new`
 - [x] `checked_add`
 - [x] `checked_sub`
+- [x] `wrapping_add`
+- [x] `wrapping_sub`
 - [x] `until` (`until_time` since `until` is a reserved keyword in AHK)
+- [x] `since`
+- [x] `on`
+- [x] `to_datetime`
+- [x] `hour`
+- [x] `minute`
+- [x] `second`
+- [x] `millisecond`
+- [x] `microsecond`
+- [x] `nanosecond`
+- [x] `subsec_nanosecond`
+
 
 ## DateTime
 
@@ -499,3 +519,19 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `MAX`
 - [x] `ZERO`
 - [x] `new`
+
+- [x] `year`
+- [x] `month`
+- [x] `day`
+- [x] `hour`
+- [x] `minute`
+- [x] `second`
+- [x] `millisecond`
+- [x] `microsecond`
+- [x] `nanosecond`
+- [x] `subsec_nanosecond`
+- [x] `era_year` (only returns year component, use `era` to get era as string)
+- [x] `era` (return string "BCE" or "CE")
+
+
+## ISOWeekDate

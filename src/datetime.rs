@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 use std::os::raw::{c_char, c_int, c_longlong, c_short};
 use std::str::FromStr;
-use jiff::civil::DateTime;
+use jiff::civil::{DateTime, Era};
 use jiff::Error;
 use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
 
@@ -149,6 +149,20 @@ pub extern "C" fn datetime_month(tdt: &TempusDateTime) -> c_char {
 #[no_mangle]
 pub extern "C" fn datetime_day(tdt: &TempusDateTime) -> c_char {
     tdt.datetime.day()
+}
+
+
+#[no_mangle]
+pub extern "C" fn datetime_era_year(tdt: &TempusDateTime) -> c_short {
+    tdt.datetime.era_year().0
+}
+
+#[no_mangle]
+pub extern "C" fn datetime_era(tdt: &TempusDateTime) -> c_char {
+    match tdt.datetime.era_year().1 {
+        Era::BCE => {-1}
+        Era::CE => {1}
+    }
 }
 
 
