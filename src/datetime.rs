@@ -73,6 +73,21 @@ pub extern "C" fn datetime_compare(tdt: &TempusDateTime, other_datetime: &Tempus
 }
 
 #[no_mangle]
+pub extern "C" fn datetime_min() -> Box<TempusDateTime> {
+    Box::new(TempusDateTime{datetime: DateTime::MIN})
+}
+
+#[no_mangle]
+pub extern "C" fn datetime_max() -> Box<TempusDateTime> {
+    Box::new(TempusDateTime{datetime: DateTime::MAX})
+}
+
+#[no_mangle]
+pub extern "C" fn datetime_zero() -> Box<TempusDateTime> {
+    Box::new(TempusDateTime{datetime: DateTime::ZERO})
+}
+
+#[no_mangle]
 pub extern "C" fn free_datetime(tdt: Box<TempusDateTime>) -> c_longlong {
     let raw = Box::into_raw(tdt);
     unsafe {

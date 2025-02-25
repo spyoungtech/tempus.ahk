@@ -73,6 +73,23 @@ pub extern "C" fn date_compare(td: &TempusDate, other_date: &TempusDate) -> c_ch
 }
 
 #[no_mangle]
+pub extern "C" fn date_min() -> Box<TempusDate> {
+    Box::new(TempusDate{date: Date::MIN})
+}
+
+#[no_mangle]
+pub extern "C" fn date_max() -> Box<TempusDate> {
+    Box::new(TempusDate{date: Date::MAX})
+}
+
+#[no_mangle]
+pub extern "C" fn date_zero() -> Box<TempusDate> {
+    Box::new(TempusDate{date: Date::ZERO})
+}
+
+
+
+#[no_mangle]
 pub extern "C" fn free_date(tz: Box<TempusDate>) -> c_longlong {
     let raw = Box::into_raw(tz);
     unsafe {

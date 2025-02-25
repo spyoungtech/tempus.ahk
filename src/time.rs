@@ -73,6 +73,16 @@ pub extern "C" fn time_compare(tt: &TempusTime, other_time: &TempusTime) -> c_ch
 }
 
 #[no_mangle]
+pub extern "C" fn time_max() -> Box<TempusTime> {
+    Box::new(TempusTime{time: Time::MAX})
+}
+
+#[no_mangle]
+pub extern "C" fn time_min() -> Box<TempusTime> {
+    Box::new(TempusTime{time: Time::MIN})
+}
+
+#[no_mangle]
 pub extern "C" fn free_time(time: Box<TempusTime>) -> c_longlong {
     let raw = Box::into_raw(time);
     unsafe {
@@ -80,3 +90,4 @@ pub extern "C" fn free_time(time: Box<TempusTime>) -> c_longlong {
     }
     0
 }
+

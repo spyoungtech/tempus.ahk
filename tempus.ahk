@@ -1038,6 +1038,20 @@ class Date {
     __Delete() {
         DllCall("tempus_ahk\free_date", "Ptr", this.pointer, "Int64")
     }
+    static MIN() {
+        pointer := DllCall("tempus_ahk\date_min", "Ptr")
+        return Date(pointer)
+    }
+
+    static MAX() {
+        pointer := DllCall("tempus_ahk\date_max", "Ptr")
+        return Date(pointer)
+    }
+
+    static ZERO() {
+        pointer := DllCall("tempus_ahk\date_zero", "Ptr")
+        return Date(pointer)
+    }
 
     static parse(date_string) {
         out_date := Buffer(A_PtrSize)
@@ -1126,6 +1140,20 @@ class DateTime {
     __Delete() {
         DllCall("tempus_ahk\free_datetime", "Ptr", this.pointer, "Int64")
     }
+    static MIN() {
+        pointer := DllCall("tempus_ahk\datetime_min", "Ptr")
+        return DateTime(pointer)
+    }
+
+    static MAX() {
+        pointer := DllCall("tempus_ahk\datetime_max", "Ptr")
+        return DateTime(pointer)
+    }
+
+    static ZERO() {
+        pointer := DllCall("tempus_ahk\datetime_zero", "Ptr")
+        return DateTime(pointer)
+    }
 
     static parse(date_string) {
         out_date := Buffer(A_PtrSize)
@@ -1213,6 +1241,16 @@ class Time {
     }
     __Delete() {
         DllCall("tempus_ahk\free_time", "Ptr", this.pointer, "Int64")
+    }
+
+    static MIN() {
+        pointer := DllCall("tempus_ahk\time_min", "Ptr")
+        return Time(pointer)
+    }
+
+    static MAX() {
+        pointer := DllCall("tempus_ahk\time_max", "Ptr")
+        return Time(pointer)
     }
 
     static parse(time_string) {

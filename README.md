@@ -464,9 +464,18 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [ ] [following](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.following)
 
 ## Date
-
+- [x] `parse`
+- [x] `compare` (`gt`, `lt`, `gte`, `lte`, `eq`)
+- [x] `to_string`
 
 ## Time
 
+- [x] `parse`
+- [x] `compare` (`gt`, `lt`, `gte`, `lte`, `eq`)
+- [x] `to_string`
+
 ## DateTime
 
+- [x] `parse`
+- [x] `compare` (`gt`, `lt`, `gte`, `lte`, `eq`)
+- [x] `to_string`

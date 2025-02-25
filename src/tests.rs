@@ -486,3 +486,35 @@ fn test_datetime_parse() {
     assert!(output.status.success());
 }
 
+#[test]
+fn test_time_min_max() {
+    let script = make_script("t := Time.MAX()\nt2 := Time.MIN()\nwritestdout(t.gt(t2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_datetime_min_max() {
+    let script = make_script("t := DateTime.MAX()\nt2 := DateTime.MIN()\nwritestdout(t.gt(t2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_date_min_max() {
+    let script = make_script("t := Date.MAX()\nt2 := Date.MIN()\nwritestdout(t.gt(t2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
