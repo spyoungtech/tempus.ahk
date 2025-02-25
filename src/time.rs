@@ -1,4 +1,5 @@
-use std::ffi::c_longlong;
+use std::cmp::Ordering;
+use std::ffi::{c_char, c_longlong};
 use std::str::FromStr;
 use jiff::civil::Time;
 use jiff::Error;
@@ -59,6 +60,15 @@ pub extern "C" fn time_parse(ahk_time_string: AHKWstr, out_date: *mut *mut Tempu
                 }
             }
         }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn time_compare(tt: &TempusTime, other_time: &TempusTime) -> c_char {
+    match tt.time.cmp(&other_time.time) {
+        Ordering::Less => {-1}
+        Ordering::Equal => {0}
+        Ordering::Greater => {1}
     }
 }
 

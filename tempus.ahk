@@ -1063,6 +1063,59 @@ class Date {
     ToString() {
         this.to_string()
     }
+
+    compare(other_date) {
+        if !(other_date is Date) {
+            throw Error("argument must be a Date", -2)
+        }
+        return DllCall("tempus_ahk\date_compare", "Ptr", this.pointer, "Ptr", other_date.pointer, "Char")
+    }
+
+    gt(other_date) {
+        result := this.compare(other_date)
+        if (result = _Ordering.GREATER) {
+            return true
+        }  else {
+            return false
+        }
+    }
+
+    lt(other_date) {
+        result := this.compare(other_date)
+        if (result = _Ordering.LESS) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    eq(other_date) {
+        result := this.compare(other_date)
+        if (result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    gte(other_date) {
+        result := this.compare(other_date)
+        if (result = _Ordering.GREATER || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    lte(other_date) {
+        result := this.compare(other_date)
+        if (result = _Ordering.LESS || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
 }
 
 
@@ -1098,6 +1151,59 @@ class DateTime {
     ToString() {
         this.to_string()
     }
+
+    compare(other_time) {
+        if !(other_time is DateTime) {
+            throw Error("argument must be a DateTime", -2)
+        }
+        return DllCall("tempus_ahk\datetime_compare", "Ptr", this.pointer, "Ptr", other_time.pointer, "Char")
+    }
+
+    gt(other_time) {
+        result := this.compare(other_time)
+        if (result = _Ordering.GREATER) {
+            return true
+        }  else {
+            return false
+        }
+    }
+
+    lt(other_time) {
+        result := this.compare(other_time)
+        if (result = _Ordering.LESS) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    eq(other_time) {
+        result := this.compare(other_time)
+        if (result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    gte(other_time) {
+        result := this.compare(other_time)
+        if (result = _Ordering.GREATER || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    lte(other_time) {
+        result := this.compare(other_time)
+        if (result = _Ordering.LESS || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
 }
 
 
@@ -1133,6 +1239,59 @@ class Time {
 
     ToString() {
         this.to_string()
+    }
+
+
+    compare(other_time) {
+        if !(other_time is Time) {
+            throw Error("argument must be a Time", -2)
+        }
+        return DllCall("tempus_ahk\time_compare", "Ptr", this.pointer, "Ptr", other_time.pointer, "Char")
+    }
+
+    gt(other_time) {
+        result := this.compare(other_time)
+        if (result = _Ordering.GREATER) {
+            return true
+        }  else {
+            return false
+        }
+    }
+
+    lt(other_time) {
+        result := this.compare(other_time)
+        if (result = _Ordering.LESS) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    eq(other_time) {
+        result := this.compare(other_time)
+        if (result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    gte(other_time) {
+        result := this.compare(other_time)
+        if (result = _Ordering.GREATER || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    lte(other_time) {
+        result := this.compare(other_time)
+        if (result = _Ordering.LESS || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
     }
 
 }

@@ -1,4 +1,5 @@
-use std::os::raw::c_longlong;
+use std::cmp::Ordering;
+use std::os::raw::{c_char, c_longlong};
 use std::str::FromStr;
 use jiff::civil::Date;
 use jiff::Error;
@@ -60,6 +61,15 @@ pub extern "C" fn date_to_string(td: &TempusDate, out_buff: AHKStringBuffer, buf
     let ret = td.date.to_string();
     string_into_ahk_buff(ret, out_buff, buff_len);
     0
+}
+
+#[no_mangle]
+pub extern "C" fn date_compare(td: &TempusDate, other_date: &TempusDate) -> c_char {
+    match td.date.cmp(&other_date.date) {
+        Ordering::Less => {-1}
+        Ordering::Equal => {0}
+        Ordering::Greater => {1}
+    }
 }
 
 #[no_mangle]

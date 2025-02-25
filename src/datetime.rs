@@ -1,4 +1,5 @@
-use std::os::raw::c_longlong;
+use std::cmp::Ordering;
+use std::os::raw::{c_char, c_longlong};
 use std::str::FromStr;
 use jiff::civil::DateTime;
 use jiff::Error;
@@ -60,6 +61,15 @@ pub extern "C" fn datetime_to_string(tdt: &TempusDateTime, out_buff: AHKStringBu
     let ret = tdt.datetime.to_string();
     string_into_ahk_buff(ret, out_buff, buff_len);
     0
+}
+
+#[no_mangle]
+pub extern "C" fn datetime_compare(tdt: &TempusDateTime, other_datetime: &TempusDateTime) -> c_char {
+    match tdt.datetime.cmp(&other_datetime.datetime) {
+        Ordering::Less => {-1}
+        Ordering::Equal => {0}
+        Ordering::Greater => {1}
+    }
 }
 
 #[no_mangle]
