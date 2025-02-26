@@ -527,7 +527,7 @@ pub extern "C" fn date_since_datetime(td: &TempusDate, other: &TempusDateTime, l
     }
 
 
-    match td.date.since(td) {
+    match td.date.since(dd) {
         Err(e) => {
             set_last_error_message(e.to_string());
             -1
@@ -574,7 +574,7 @@ pub extern "C" fn date_since_date(td: &TempusDate, other: &TempusDate, largest_i
     }
 
 
-    match td.date.since(td) {
+    match td.date.since(dd) {
         Err(e) => {
             set_last_error_message(e.to_string());
             -1
@@ -622,7 +622,7 @@ pub extern "C" fn date_until_datetime(td: &TempusDate, other: &TempusDateTime, l
     }
 
 
-    match td.date.until(td) {
+    match td.date.until(dd) {
         Err(e) => {
             set_last_error_message(e.to_string());
             -1
@@ -669,7 +669,7 @@ pub extern "C" fn date_until_date(td: &TempusDate, other: &TempusDate, largest_i
     }
 
 
-    match td.date.until(td) {
+    match td.date.until(dd) {
         Err(e) => {
             set_last_error_message(e.to_string());
             -1
@@ -680,6 +680,11 @@ pub extern "C" fn date_until_date(td: &TempusDate, other: &TempusDate, largest_i
             0
         }
     }
+}
+
+#[no_mangle]
+pub extern "C" fn date_duration_until() {
+    todo!()
 }
 
 
