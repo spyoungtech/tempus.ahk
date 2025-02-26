@@ -1789,7 +1789,7 @@ class Time {
         if !(span_interval is Span) {
             throw Error("Unsupported Type. Must be a Span type")
         }
-        pointer := DllCall("tempus_ahk\time_series", "Ptr", this.pointer, "Ptr", span_interval, "Ptr")
+        pointer := DllCall("tempus_ahk\time_series", "Ptr", this.pointer, "Ptr", span_interval.pointer, "Ptr")
         return TimeSeries(pointer)
     }
 }
