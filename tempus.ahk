@@ -1624,6 +1624,26 @@ class Time {
         }
         return Time(handle)
     }
+    saturating_sub(other) {
+        if (other is Span) {
+            pointer := DllCall("tempus_ahk\time_saturating_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else if (other is SignedDuration) {
+            pointer := DllCall("tempus_ahk\time_saturating_sub_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else {
+            throw Error("Unsupported Type. Must be Span or SignedDuration")
+        }
+        return Time(pointer)
+
+
+    saturating_add(other) {
+        if (other is Span) {
+            pointer := DllCall("tempus_ahk\time_saturating_add_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else if (other is SignedDuration) {
+            pointer := DllCall("tempus_ahk\time_saturating_add_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else {
+            throw Error("Unsupported Type. Must be Span or SignedDuration")
+        }
+        return Time(pointer)
 
     wrapping_add(other) {
         if (other is Span) {
