@@ -1684,6 +1684,14 @@ class Date {
         pointer := DllCall("tempus_ahk\date_duration_since", "Ptr", this.pointer, "Ptr", other_date.pointer, "Ptr")
         return SignedDuration(pointer)
     }
+    series(span_interval) {
+        ; TODO: support creating span from string arg?
+        if !(span_interval is Span) {
+            throw Error("Unsupported Type. Must be a Span type")
+        }
+        pointer := DllCall("tempus_ahk\date_series", "Ptr", this.pointer, "Ptr", span_interval.pointer, "Ptr")
+        return DateSeries(pointer)
+    }
 }
 
 
@@ -1905,6 +1913,32 @@ class TimeSeries {
                 throw "unexpected error"
             }
             t := Time(handle)
+            return true
+        }
+    }
+}
+
+
+class DateSeries {
+    __New(pointer) {
+        this.pointer := pointer
+    }
+
+    __Delete() {
+        DllCall("tempus_ahk\free_date_series", "Ptr", this.pointer, "Int64")
+    }
+
+    Call(&d) {
+        out_date := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\date_series_next", "Ptr", this.pointer, "Ptr", out_date, "Char")
+        if (retcode != 0) {
+            return false
+        } else {
+            handle := NumGet(out_date, 0, "Ptr")
+            if (handle = 0) {
+                throw "unexpected error"
+            }
+            d := Date(handle)
             return true
         }
     }

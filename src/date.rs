@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::ffi::c_short;
 use std::os::raw::{c_char, c_longlong};
 use std::str::FromStr;
-use jiff::civil::{Date, DateDifference, Era, Weekday};
+use jiff::civil::{Date, DateDifference, DateSeries, Era, Weekday};
 use jiff::{Error};
 use jiff::fmt::strtime::BrokenDownTime;
 use crate::datetime::TempusDateTime;
@@ -37,6 +37,12 @@ impl FromStr for TempusDate {
         Ok(TempusDate { date })
     }
 }
+
+#[repr(C)]
+pub struct TempusDateSeries{
+    series: DateSeries
+}
+
 
 #[no_mangle]
 pub extern "C" fn date_parse(ahk_time_string: AHKWstr, out_date: *mut *mut TempusDate) -> c_longlong {
@@ -695,7 +701,36 @@ pub extern "C" fn date_duration_since(td: &TempusDate, other: &TempusDate) -> Bo
 }
 
 #[no_mangle]
+pub extern "C" fn date_series(td: &TempusDate, tspan: &TempusSpan) -> Box<TempusDateSeries> {
+    let series = td.date.series(tspan.span);
+    Box::new(TempusDateSeries{series})
+}
+
+#[no_mangle]
+pub extern "C" fn date_series_next(tds: &mut TempusDateSeries, out_date: *mut *mut TempusDate) -> c_char {
+    match tds.series.next() {
+        None => {
+            -1
+        }
+        Some(date) => {
+            let tdate = TempusDate{date};
+            tdate.stuff_into(out_date);
+            0
+        }
+    }
+}
+
+#[no_mangle]
 pub extern "C" fn free_date(tz: Box<TempusDate>) -> c_longlong {
+    let raw = Box::into_raw(tz);
+    unsafe {
+        drop(Box::from_raw(raw))
+    }
+    0
+}
+
+#[no_mangle]
+pub extern "C" fn free_date_series(tz: Box<TempusDateSeries>) -> c_longlong {
     let raw = Box::into_raw(tz);
     unsafe {
         drop(Box::from_raw(raw))
