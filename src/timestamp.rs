@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use jiff::{Error, RoundMode, Timestamp, TimestampRound, Unit};
+use jiff::{Error, Timestamp, TimestampRound};
 
 use std::ffi::c_longlong;
 use std::fmt::{Display, Formatter};
@@ -11,7 +11,7 @@ use crate::zoned::TempusZoned;
 
 #[repr(C)]
 pub struct TempusTimestamp {
-    ts: Timestamp
+    pub ts: Timestamp
 }
 
 

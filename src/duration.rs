@@ -2,14 +2,14 @@ use std::cmp::Ordering;
 use std::ffi::{c_char, c_double, c_longlong};
 use std::str::FromStr;
 use jiff::{SignedDuration, Error, SignedDurationRound};
-use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message, unit_from_i8, round_mode_from_i8};
+use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message, unit_from_i8, round_mode_from_i8, AHKStringBuffer, string_into_ahk_buff};
 #[repr(C)]
 pub struct TempusSignedDuration {
-    duration: SignedDuration
+    pub duration: SignedDuration
 }
 
 impl TempusSignedDuration {
-    pub(crate) fn stuff_into(self, pointer: *mut *mut TempusSignedDuration) {
+    pub fn stuff_into(self, pointer: *mut *mut TempusSignedDuration) {
         let handle = Box::new(self);
         unsafe {
             *pointer = Box::into_raw(handle);
@@ -47,6 +47,33 @@ pub extern "C" fn signed_duration_parse(ahk_duration_str: AHKWstr, duration_out:
         }
     }
 }
+
+#[no_mangle]
+pub extern "C" fn signed_duration_string_length_friendly(tduration: &TempusSignedDuration) -> usize {
+    let duration = tduration.duration;
+    format!("{duration:#}").len()
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_to_string_friendly(tduration: &TempusSignedDuration, out_buff: AHKStringBuffer, buff_len: usize) -> c_longlong {
+    let duration = tduration.duration;
+    let ret = format!("{duration:#}");
+    string_into_ahk_buff(ret, out_buff, buff_len);
+    0
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_string_length(tduration: &TempusSignedDuration) -> usize {
+    tduration.duration.to_string().len()
+}
+
+#[no_mangle]
+pub extern "C" fn signed_duration_to_string(tduration: &TempusSignedDuration, out_buff: AHKStringBuffer, buff_len: usize) -> c_longlong {
+    let ret = tduration.duration.to_string();
+    string_into_ahk_buff(ret, out_buff, buff_len);
+    0
+}
+
 
 #[no_mangle]
 pub extern "C" fn signed_duration_as_secs(tsd: &TempusSignedDuration) -> f64 {

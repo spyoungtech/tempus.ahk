@@ -1,6 +1,5 @@
 #![allow(dead_code)]
 
-use std::cmp;
 use std::ffi::c_longlong;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
@@ -9,7 +8,7 @@ use crate::utils::{ahk_str_to_string, round_mode_from_i8, set_last_error_message
 
 #[repr(C)]
 pub struct TempusSpan {
-    span: Span
+    pub span: Span
 }
 
 impl Display for TempusSpan {
@@ -28,7 +27,7 @@ impl FromStr for TempusSpan {
 }
 
 impl TempusSpan {
-    pub(crate) fn stuff_into(self, pointer: *mut *mut TempusSpan) {
+    pub fn stuff_into(self, pointer: *mut *mut TempusSpan) {
         let handle = Box::new(self);
         unsafe {
             *pointer = Box::into_raw(handle);
@@ -228,6 +227,20 @@ pub extern "C" fn span_get_microseconds(tspan: &TempusSpan) -> c_longlong {
 #[no_mangle]
 pub extern "C" fn span_get_nanoseconds(tspan: &TempusSpan) -> c_longlong {
     tspan.span.get_nanoseconds()
+}
+
+#[no_mangle]
+pub extern "C" fn span_string_length_friendly(tspan: &TempusSpan) -> usize {
+    let span = tspan.span;
+    format!("{span:#}").len()
+}
+
+#[no_mangle]
+pub extern "C" fn span_to_string_friendly(tspan: &TempusSpan, out_buff: AHKStringBuffer, buff_len: usize) -> c_longlong {
+    let span = tspan.span;
+    let ret = format!("{span:#}");
+    string_into_ahk_buff(ret, out_buff, buff_len);
+    0
 }
 
 #[no_mangle]

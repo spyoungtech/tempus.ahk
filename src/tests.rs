@@ -41,6 +41,7 @@ fn get_dll_location() -> PathBuf {
 
 fn make_script(script_text: &str) -> String {
     let header = format!("\
+    #Warn All, Stdout\n\
     #DllLoad \"{}\" \n\
     #Include \"{}\"\n\
     stdout := FileOpen(\"*\", \"w\", \"UTF-8\")\n\
@@ -61,8 +62,8 @@ fn make_script(script_text: &str) -> String {
     try {{
         main()\n\
     }} catch Any as e {{\n\
-        message := Format(\"Error {{}} (line {{}}). The error message was: {{}}. Specifically: {{}}`nStack:`n{{}}\", e.what, e.line, e.message, e.extra, e.stack)\n\
-        writestderr(message)\n\
+        msg := Format(\"Error {{}} (line {{}}). The error message was: {{}}. Specifically: {{}}`nStack:`n{{}}\", e.what, e.line, e.message, e.extra, e.stack)\n\
+        writestderr(msg)\n\
         Exit 1\n\
     }}\n\
     \r\n", header, script_text)
@@ -451,4 +452,237 @@ fn test_signed_duration_round() {
     assert!(output.status.success());
 
 
+}
+
+#[test]
+fn test_date_parse() {
+    let script = make_script("d := Date.parse(\"2025-02-25\")\nwritestdout(d.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2025-02-25"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_parse() {
+    let script = make_script("t := Time.parse(\"15:22:45\")\nwritestdout(t.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("15:22:45"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_datetime_parse() {
+    let script = make_script("dt := DateTime.parse(\"2024-06-19 15:22:45\")\nwritestdout(dt.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2024-06-19T15:22:45"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_min_max() {
+    let script = make_script("t := Time.MAX()\nt2 := Time.MIN()\nwritestdout(t.gt(t2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_datetime_min_max() {
+    let script = make_script("t := DateTime.MAX()\nt2 := DateTime.MIN()\nwritestdout(t.gt(t2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_date_min_max() {
+    let script = make_script("t := Date.MAX()\nt2 := Date.MIN()\nwritestdout(t.gt(t2))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_date_new() {
+    let script = make_script("t := Date.new()\nwritestdout(t.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1970-01-01"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_datetime_new() {
+    let script = make_script("t := DateTime.new()\nwritestdout(t.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1970-01-01T00:00:00"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_new() {
+    let script = make_script("t := Time.new()\nwritestdout(t.to_string())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("00:00:00"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_checked_add_span() {
+    let script = make_script("t := Time.new(22, 35, 1, 0)\nspan1 := Span.new().nanoseconds(2500000000)\nexpected := Time.new(22, 35, 3, 500000000)\nwritestdout(t.checked_add(span1).eq(expected))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_checked_sub_span() {
+    let script = make_script("t := Time.new(22, 35, 3, 500000000)\nspan1 := Span.new().nanoseconds(2500000000)\nexpected := Time.new(22, 35, 1, 0)\nwritestdout(t.checked_sub(span1).eq(expected))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+
+#[test]
+fn test_time_until_time() {
+    let script = make_script("t := Time.new(22, 35, 1, 0)\nspan1 := Span.new().nanoseconds(2500000000)\nt2 := t.checked_add(span1)\nspan2 := t.until_time(t2)\nwritestdout(span2.eq(span1))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_since_time() {
+    let script = make_script("t := Time.new(22, 35, 1, 0)\nspan1 := Span.new().nanoseconds(2500000000)\nt2 := t.checked_add(span1)\nspan2 := t2.since(t)\nwritestdout(span2.eq(span1))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_duration_since() {
+    let script = make_script("t := Time.new(22, 35, 1, 0)\nspan1 := Span.new().nanoseconds(2500000000)\nt2 := t.checked_add(span1)\ndur := t2.duration_since(t)\nwritestdout(dur.to_string_friendly())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2s 500ms"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_duration_until() {
+    let script = make_script("t := Time.new(22, 35, 1, 0)\nspan1 := Span.new().nanoseconds(2500000000)\nt2 := t.checked_add(span1)\ndur := t.duration_until(t2)\nwritestdout(dur.to_string_friendly())");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2s 500ms"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_wrapping_add() {
+    let script = make_script("t := Time.new(23, 59, 59, 999999999)\nt2 := t.add(Span.new().nanoseconds(1))\nwritestdout(t2.eq(Time.MIN()))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+fn test_time_minute_hour_second() {
+    let script = make_script("t := Time.new(23, 59, 59, 999999999)\nwritestdout(Format(\"{}, {}, {}, {}\", t.hour(), t.minute(), t.second(), t.subsec_nanosecond()))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("23, 59, 59, 999999999"));
+    assert!(output.status.success());
+}
+
+fn test_datetime_components() {
+    let script = make_script("dt := DateTime.new(2025, 10, 9, 8, 7, 6, 5)\nwritestdout(Format(\"{}, {}, {}, {}, {}, {}, {}\", dt.year(), dt.month(), dt.day(), dt.hour(), dt.minute(), dt.second(), dt.subsec_nanosecond()))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("2025, 10, 9, 8, 7, 6, 5"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_round() {
+    let script = make_script("t := Time.parse(\"2024-06-20 16:24:59.5\")\nt2 := t.round(Unit.Second, 1, RoundMode.Trunc)\nexpected := Time.new(16, 24, 59, 0)\nwritestdout(t2.eq(expected))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_time_series() {
+    let script = make_script(r#"
+start := Time.MIN()
+for t in start.series(Span.new().hours(3)) {
+    writestdout(t.to_string())
+    writestdout("`n")
+}
+"#);
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from(r#"00:00:00
+03:00:00
+06:00:00
+09:00:00
+12:00:00
+15:00:00
+18:00:00
+21:00:00
+"#));
+    assert!(output.status.success());
 }

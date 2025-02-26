@@ -3,17 +3,24 @@
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/spyoungtech/tempus.ahk/build.yaml)](https://github.com/spyoungtech/tempus.ahk/actions/workflows/build.yaml)  [![GitHub Release](https://img.shields.io/github/v/release/spyoungtech/tempus.ahk?color=blue)](https://github.com/spyoungtech/tempus.ahk/releases)
 
 
-Tempus is a DateTime library for AutoHotkey. It is, essentially, a wrapper to expose the API of the 
-Rust [jiff crate](https://crates.io/crates/jiff) in AHK. 
+Tempus is a DateTime library for AutoHotkey. 
 
-So, to know what _tempus.ahk_ is about, is to know what _jiff_ is about:
+Right now, the API is usable, but not complete. Development towards completion is rapidly underway. See [API progress](#api-progress) for detailed status.
+
+## Acknowledgement
+
+`tempus.ahk` is built on top of [jiff](https://github.com/BurntSushi/jiff), which is authored by [Andrew Gallant](https://github.com/BurntSushi/) and other [contributors](https://github.com/BurntSushi/jiff/graphs/contributors). 
+We thank Andrew for his helpful nature, numerous contributions to the community. Moreover, we thank Andrew and other 
+other jiff contributors for providing/contributing to `jiff` under permissive licensing, allowing Tempus to exist.
+
+
+About _jiff_:
 
 > Jiff is a datetime library for Rust that encourages you to jump into the pit of success. The focus of this library is providing high level datetime primitives that are difficult to misuse and have reasonable performance. Jiff supports automatic and seamless integration with the Time Zone Database, DST aware arithmetic and rounding, formatting and parsing zone aware datetimes losslessly, \[...\] and a whole lot more.  
 > Jiff takes enormous inspiration from [Temporal](https://tc39.es/proposal-temporal/docs/index.html), which is a [TC39](https://tc39.es/) proposal to improve datetime handling in JavaScript.
 
-
-Right now, only a portion of the API is implemented, but development towards completion is rapidly underway.
-
+Tempus aims to provide to AutoHotkey users the same benefits that `jiff` provides for Rust users. 
+In most cases, Tempus simply provides a 1:1 bridge to `jiff`'s APIs.
 
 # Installation
 
@@ -32,7 +39,7 @@ See also: [Binary security](#binary-security).
 # Usage
 
 The exposed AHK API aims to mirror, as much as is reasonable, the API of `jiff`. Most of the usage is a straightforward 
-translation from [the rust API for jiff](https://docs.rs/jiff/latest/jiff/).
+translation from [the rust API for jiff](https://docs.rs/jiff/latest/jiff/) (so be sure to check out this documentation!).
 
 For example, in Rust with `jiff`:
 
@@ -49,7 +56,7 @@ Looks like this with `tempus.ahk`:
 #Include "tempus.ahk"
 
 time := Timestamp.parse("2024-07-11T01:14:00Z")
-MsgBox(time.as_second())
+MsgBox(time.as_second()) ; 1720660440
 ```
 
 ## Examples
@@ -465,8 +472,169 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 
 ## Date
 
+Jiff [Civil Date](https://docs.rs/jiff/latest/jiff/civil/struct.Date.html)
+
+- [x] `parse`
+- [x] `string_length`
+- [x] `to_string`
+- [x] `compare` (`gt`, `lt`, `eq`, `lte`, `gte`)
+- [x] `min`
+- [x] `max`
+- [x] `zero`
+- [x] `new`
+- [x] `year`
+- [x] `month`
+- [x] `day`
+- [x] `era_year` (returns just the year component without era)
+- [x] `era` ("BCE" or "CE" as a string)
+- [x] `strftime_length`
+- [x] `strftime`
+- [x] `strptime`
+- [x] `from_isoweekdate`
+- [x] `weekday`
+- [x] `day_of_year`
+- [x] `day_of_year_no_leap`
+- [x] `first_of_month`
+- [x] `last_of_month`
+- [x] `first_of_year`
+- [x] `last_of_year`
+- [x] `days_in_month`
+- [x] `days_in_year`
+- [x] `in_leap_year`
+- [x] `tomorrow`
+- [x] `yesterday`
+- [x] `nth_weekday_of_month`
+- [x] `nth_weekday`
+- [x] `to_isoweekdate`
+- [x] `in_tz`
+- [x] `to_zoned`
+- [x] `to_datetime`
+- [x] `checked_add`
+- [x] `checked_sub`
+- [x] `saturating_add`
+- [x] `saturating_sub`
+- [x] `since`
+- [x] `until` (as `until_date` because `until` is a reserved keyword)
+- [x] `duration_until`
+- [x] `duration_since`
+- [x] `series`
+- [ ] `with`
 
 ## Time
 
+Jiff [Civil Time](https://docs.rs/jiff/latest/jiff/civil/struct.Time.html)
+
+- [x] `string_length`
+- [x] `to_string`
+- [x] `parse`
+- [x] `compare` (`gt`, `lt`, `eq`, `lte`, `gte`)
+- [x] `MAX`
+- [x] `MIN`
+- [x] `new`
+- [x] `checked_add`
+- [x] `checked_sub`
+- [x] `wrapping_add` (alias `add`)
+- [x] `wrapping_sub` (alias `sub`)
+- [x] `since`
+- [x] `until` (as `until_time` because `until` is a reserved keyword)
+- [x] `duration_until`
+- [x] `duration_since`
+- [x] `midnight`
+- [x] `hour`
+- [x] `minute`
+- [x] `second`
+- [x] `millisecond`
+- [x] `microsecond`
+- [x] `nanosecond`
+- [x] `subsec_nanosecond`
+- [x] `round`
+- [x] `saturating_add`
+- [x] `saturating_sub`
+- [x] `series`
+- [ ] `with`
+
+
 ## DateTime
 
+Jiff [Civil DateTime](https://docs.rs/jiff/latest/jiff/civil/struct.DateTime.html)
+
+- [x] `parse`
+- [x] `string_length`
+- [x] `to_string`
+- [x] `compare` (`gt`, `lt`, `eq`, `lte`, `gte`)
+- [x] `MIN`
+- [x] `MAX`
+- [x] `ZERO`
+- [x] `new`
+- [x] `hour`
+- [x] `minute`
+- [x] `second`
+- [x] `millisecond`
+- [x] `microsecond`
+- [x] `nanosecond`
+- [x] `subsec_nanosecond`
+- [x] `year`
+- [x] `month`
+- [x] `day`
+- [x] `era_year` (only returns the year component without era)
+- [x] `era` ("CE" or "BCE" as a string)
+- [x] `strftime_length`
+- [x] `strftime`
+- [x] `strptime`
+- [x] `from_parts`
+- [x] `start_of_day`
+- [x] `end_of_day`
+- [x] `weekday`
+- [x] `day_of_year`
+- [x] `day_of_year_no_leap`
+- [x] `first_of_month`
+- [x] `last_of_month`
+- [x] `first_of_year`
+- [x] `last_of_year`
+- [x] `days_in_month`
+- [x] `days_in_year`
+- [x] `in_leap_year`
+- [x] `tomorrow`
+- [x] `yesterday`
+- [x] `nth_weekday_of_month`
+- [x] `nth_weekday`
+- [x] `to_isoweekdate`
+- [x] `to_date`
+- [x] `to_time`
+- [x] `to_zoned`
+- [x] `checked_add`
+- [x] `checked_sub`
+- [x] `saturating_add`
+- [x] `saturating_sub`
+- [x] `until_datetime`
+- [x] `until_date`
+- [x] `since_datetime`
+- [x] `since_date`
+- [x] `duration_until`
+- [x] `duration_since`
+- [x] `series`
+- [x] `round`
+- [ ] `with`
+
+## ISOWeekDate
+
+Jiff [Civil ISOWeekDate](https://docs.rs/jiff/latest/jiff/civil/struct.ISOWeekDate.html)
+
+- [x] `MIN`
+- [x] `MAX`
+- [x] `ZERO`
+- [x] `new`
+- [x] `from_date`
+- [x] `year`
+- [x] `week`
+- [x] `weekday`
+- [x] `first_of_week`
+- [x] `last_of_week`
+- [x] `first_of_year`
+- [x] `last_of_year`
+- [x] `tomorrow`
+- [x] `yesterday`
+- [x] `to_date`
+- [x] `days_in_year`
+- [x] `weeks_in_year`
+- [x] `in_long_year`

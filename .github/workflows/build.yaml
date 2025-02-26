@@ -13,6 +13,7 @@ env:
 
 jobs:
   build:
+    timeout-minutes: 5
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
