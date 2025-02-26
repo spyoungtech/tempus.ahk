@@ -1291,6 +1291,10 @@ class Date {
         return Date(handle)
     }
 
+    at(hour := 0, minute := 0, second := 0, subsec_nanosecond := 0) {
+        return DateTime.new(this.year(), this.month(), this.day(), hour, minute, second, subsec_nanosecond)
+    }
+
     strftime(format_str) {
         buff_length := DllCall("tempus_ahk\date_strftime_length", "Ptr", this.pointer, "WStr", format_str, "Int64")
         if buff_length < 0 {
