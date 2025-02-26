@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 use std::ffi::{c_char, c_int, c_longlong, c_short};
 use std::str::FromStr;
-use jiff::civil::{Time, TimeDifference, TimeRound};
+use jiff::civil::{Time, TimeDifference, TimeRound, TimeSeries};
 use jiff::{Error};
 use crate::datetime::TempusDateTime;
 use crate::duration::TempusSignedDuration;
@@ -12,6 +12,15 @@ use crate::utils::{ahk_str_to_string, round_mode_from_i8, set_last_error_message
 pub struct TempusTime {
     pub time: Time
 }
+
+#[repr(C)]
+pub struct TempusTimeSeries {
+    pub series: TimeSeries
+}
+
+
+
+
 
 impl FromStr for TempusTime {
     type Err = Error;
@@ -477,6 +486,25 @@ pub extern "C" fn saturating_sub_signed_duration(tt: &TempusTime, rhs: &TempusSi
     Box::new(TempusTime{time: tt.time.saturating_sub(rhs.duration)})
 }
 
+#[no_mangle]
+pub extern "C" fn time_series(tt: &TempusTime, tspan: &TempusSpan) -> Box<TempusTimeSeries> {
+    let series = tt.time.series(tspan.span);
+    Box::new(TempusTimeSeries{series})
+}
+
+#[no_mangle]
+pub extern "C" fn time_series_next(tseries: &mut TempusTimeSeries, out_time: *mut *mut TempusTime) -> c_char {
+    match tseries.series.next() {
+        None => {
+            -1
+        }
+        Some(time) => {
+            let ttime = TempusTime{time};
+            ttime.stuff_into(out_time);
+            0
+        }
+    }
+}
 
 #[no_mangle]
 pub extern "C" fn free_time(time: Box<TempusTime>) -> c_longlong {
@@ -487,3 +515,11 @@ pub extern "C" fn free_time(time: Box<TempusTime>) -> c_longlong {
     0
 }
 
+#[no_mangle]
+pub extern "C" fn free_time_series(timeseries: Box<TempusTimeSeries>) -> c_longlong {
+    let raw = Box::into_raw(timeseries);
+    unsafe {
+        drop(Box::from_raw(raw))
+    }
+    0
+}

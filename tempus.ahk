@@ -1445,6 +1445,31 @@ class DateTime {
 
 }
 
+class TimeSeries {
+    __New(pointer) {
+        this.pointer := pointer
+    }
+
+    __Delete() {
+        DllCall("tempus_ahk\free_time_series", "Ptr", this.pointer, "Int64")
+    }
+
+    Call(&t) {
+        out_time := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\time_series_next", "Ptr", this.pointer, "Ptr", out_time, "Char")
+        if (retcode != 0) {
+            return false
+        } else {
+            handle := NumGet(out_time, 0, "Ptr")
+            if (handle = 0) {
+                throw "unexpected error"
+            }
+            t := Time(handle)
+            return true
+        }
+    }
+}
+
 
 class Time {
     __New(pointer) {
@@ -1754,6 +1779,15 @@ class Time {
             throw "unexpected error"
         }
         return Time(handle)
+    }
+
+    series(span_interval) {
+        ; TODO: support creating span from string arg?
+        if !(span_interval is Span) {
+            throw Error("Unsupported Type. Must be a Span type")
+        }
+        pointer := DllCall("tempus_ahk\time_series", "Ptr", this.pointer, "Ptr", span_interval, "Ptr")
+        return TimeSeries(pointer)
     }
 }
 

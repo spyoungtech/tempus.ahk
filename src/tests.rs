@@ -661,3 +661,28 @@ fn test_time_round() {
     assert_eq!(stdout.to_string(), String::from("1"));
     assert!(output.status.success());
 }
+
+#[test]
+fn test_time_series() {
+    let script = make_script(r#"
+start := Time.MIN()
+for t in start.series(Span.new().hours(3)) {
+    writestdout(t.to_string())
+    writestdout("`n")
+}
+"#);
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from(r#"00:00:00,
+03:00:00
+06:00:00
+09:00:00
+12:00:00
+15:00:00
+18:00:00
+21:00:00
+"#));
+    assert!(output.status.success());
+}
