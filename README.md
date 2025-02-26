@@ -471,40 +471,75 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [ ] [following](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html#method.following)
 
 ## Date
+
+Jiff [Civil Date](https://docs.rs/jiff/latest/jiff/civil/struct.Date.html)
+
 - [x] `parse`
-- [x] `compare` (`gt`, `lt`, `gte`, `lte`, `eq`)
+- [x] `string_length`
 - [x] `to_string`
-- [x] `strftime`
-- [x] `strptime`
-- [x] `MIN`
-- [x] `MAX`
-- [x] `ZERO`
+- [x] `compare` (`gt`, `lt`, `eq`, `lte`, `gte`)
+- [x] `min`
+- [x] `max`
+- [x] `zero`
 - [x] `new`
 - [x] `year`
 - [x] `month`
 - [x] `day`
-- [x] `era_year` (only returns year component, use `era` to get era as string)
-- [x] `era` (return string "BCE" or "CE")
+- [x] `era_year` (returns just the year component without era)
+- [x] `era` ("BCE" or "CE" as a string)
+- [x] `strftime_length`
+- [x] `strftime`
+- [x] `strptime`
+- [x] `from_isoweekdate`
+- [x] `weekday`
+- [x] `day_of_year`
+- [x] `day_of_year_no_leap`
+- [x] `first_of_month`
+- [x] `last_of_month`
+- [x] `first_of_year`
+- [x] `last_of_year`
+- [x] `days_in_month`
+- [x] `days_in_year`
+- [x] `in_leap_year`
+- [x] `tomorrow`
+- [x] `yesterday`
+- [x] `nth_weekday_of_month`
+- [x] `nth_weekday`
+- [x] `to_isoweekdate`
+- [x] `in_tz`
+- [x] `to_zoned`
+- [x] `to_datetime`
+- [x] `checked_add`
+- [x] `checked_sub`
+- [x] `saturating_add`
+- [x] `saturating_sub`
+- [x] `since`
+- [x] `until` (as `until_date` because `until` is a reserved keyword)
+- [x] `duration_until`
+- [x] `duration_since`
+- [x] `series`
+- [ ] `with`
 
 ## Time
 
-- [x] `parse`
-- [x] `compare` (`gt`, `lt`, `gte`, `lte`, `eq`)
+Jiff [Civil Time](https://docs.rs/jiff/latest/jiff/civil/struct.Time.html)
+
+- [x] `string_length`
 - [x] `to_string`
-- [x] `MIN`
+- [x] `parse`
+- [x] `compare` (`gt`, `lt`, `eq`, `lte`, `gte`)
 - [x] `MAX`
-- [x] `midnight`
+- [x] `MIN`
 - [x] `new`
 - [x] `checked_add`
 - [x] `checked_sub`
 - [x] `wrapping_add` (alias `add`)
 - [x] `wrapping_sub` (alias `sub`)
-- [x] `until` (`until_time` since `until` is a reserved keyword in AHK)
 - [x] `since`
+- [x] `until` (as `until_time` because `until` is a reserved keyword)
 - [x] `duration_until`
 - [x] `duration_since`
-- [x] `on`
-- [x] `to_datetime`
+- [x] `midnight`
 - [x] `hour`
 - [x] `minute`
 - [x] `second`
@@ -512,22 +547,25 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `microsecond`
 - [x] `nanosecond`
 - [x] `subsec_nanosecond`
+- [x] `round`
+- [x] `saturating_add`
+- [x] `saturating_sub`
+- [x] `series`
+- [ ] `with`
 
 
 ## DateTime
 
+Jiff [Civil DateTime](https://docs.rs/jiff/latest/jiff/civil/struct.DateTime.html)
+
 - [x] `parse`
-- [x] `compare` (`gt`, `lt`, `gte`, `lte`, `eq`)
+- [x] `string_length`
 - [x] `to_string`
-- [x] `strftime`
-- [x] `strptime`
+- [x] `compare` (`gt`, `lt`, `eq`, `lte`, `gte`)
 - [x] `MIN`
 - [x] `MAX`
 - [x] `ZERO`
 - [x] `new`
-- [x] `year`
-- [x] `month`
-- [x] `day`
 - [x] `hour`
 - [x] `minute`
 - [x] `second`
@@ -535,8 +573,68 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `microsecond`
 - [x] `nanosecond`
 - [x] `subsec_nanosecond`
-- [x] `era_year` (only returns year component, use `era` to get era as string)
-- [x] `era` (return string "BCE" or "CE")
-
+- [x] `year`
+- [x] `month`
+- [x] `day`
+- [x] `era_year` (only returns the year component without era)
+- [x] `era` ("CE" or "BCE" as a string)
+- [x] `strftime_length`
+- [x] `strftime`
+- [x] `strptime`
+- [x] `from_parts`
+- [x] `start_of_day`
+- [x] `end_of_day`
+- [x] `weekday`
+- [x] `day_of_year`
+- [x] `day_of_year_no_leap`
+- [x] `first_of_month`
+- [x] `last_of_month`
+- [x] `first_of_year`
+- [x] `last_of_year`
+- [x] `days_in_month`
+- [x] `days_in_year`
+- [x] `in_leap_year`
+- [x] `tomorrow`
+- [x] `yesterday`
+- [x] `nth_weekday_of_month`
+- [x] `nth_weekday`
+- [x] `to_isoweekdate`
+- [x] `to_date`
+- [x] `to_time`
+- [x] `to_zoned`
+- [x] `checked_add`
+- [x] `checked_sub`
+- [x] `saturating_add`
+- [x] `saturating_sub`
+- [x] `until_datetime`
+- [x] `until_date`
+- [x] `since_datetime`
+- [x] `since_date`
+- [x] `duration_until`
+- [x] `duration_since`
+- [x] `series`
+- [x] `round`
+- [ ] `with`
 
 ## ISOWeekDate
+
+Jiff [Civil ISOWeekDate](https://docs.rs/jiff/latest/jiff/civil/struct.ISOWeekDate.html)
+
+- [x] `MIN`
+- [x] `MAX`
+- [x] `ZERO`
+- [x] `new`
+- [x] `from_date`
+- [x] `year`
+- [x] `week`
+- [x] `weekday`
+- [x] `first_of_week`
+- [x] `last_of_week`
+- [x] `first_of_year`
+- [x] `last_of_year`
+- [x] `tomorrow`
+- [x] `yesterday`
+- [x] `to_date`
+- [x] `days_in_year`
+- [x] `weeks_in_year`
+- [x] `in_long_year`
