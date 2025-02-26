@@ -83,8 +83,8 @@ pub extern "C" fn isoweekdate_first_of_week(tiwd: &TempusISOWeekDate, out_weekda
             -1
         }
         Ok(weekdate) => {
-            let tiwd = TempusISOWeekDate{weekdate};
-            tiwd.stuff_into(out_weekdate);
+            let new_tiwd = TempusISOWeekDate{weekdate};
+            new_tiwd.stuff_into(out_weekdate);
             0
         }
     }
@@ -98,8 +98,8 @@ pub extern "C" fn isoweekdate_last_of_week(tiwd: &TempusISOWeekDate, out_weekdat
             -1
         }
         Ok(weekdate) => {
-            let tiwd = TempusISOWeekDate{weekdate};
-            tiwd.stuff_into(out_weekdate);
+            let new_tiwd = TempusISOWeekDate{weekdate};
+            new_tiwd.stuff_into(out_weekdate);
             0
         }
     }
@@ -113,8 +113,8 @@ pub extern "C" fn isoweekdate_first_of_year(tiwd: &TempusISOWeekDate, out_weekda
             -1
         }
         Ok(weekdate) => {
-            let tiwd = TempusISOWeekDate{weekdate};
-            tiwd.stuff_into(out_weekdate);
+            let new_tiwd = TempusISOWeekDate{weekdate};
+            new_tiwd.stuff_into(out_weekdate);
             0
         }
     }
@@ -129,8 +129,8 @@ pub extern "C" fn isoweekdate_last_of_year(tiwd: &TempusISOWeekDate, out_weekdat
             -1
         }
         Ok(weekdate) => {
-            let tiwd = TempusISOWeekDate{weekdate};
-            tiwd.stuff_into(out_weekdate);
+            let new_tiwd = TempusISOWeekDate{weekdate};
+            new_tiwd.stuff_into(out_weekdate);
             0
         }
     }
@@ -144,8 +144,8 @@ pub extern "C" fn isoweekdate_tomorrow(tiwd: &TempusISOWeekDate, out_weekdate: *
             -1
         }
         Ok(weekdate) => {
-            let tiwd = TempusISOWeekDate{weekdate};
-            tiwd.stuff_into(out_weekdate);
+            let new_tiwd = TempusISOWeekDate{weekdate};
+            new_tiwd.stuff_into(out_weekdate);
             0
         }
     }
@@ -159,8 +159,8 @@ pub extern "C" fn isoweekdate_yesterday(tiwd: &TempusISOWeekDate, out_weekdate: 
             -1
         }
         Ok(weekdate) => {
-            let tiwd = TempusISOWeekDate{weekdate};
-            tiwd.stuff_into(out_weekdate);
+            let new_tiwd = TempusISOWeekDate{weekdate};
+            new_tiwd.stuff_into(out_weekdate);
             0
         }
     }

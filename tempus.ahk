@@ -81,7 +81,7 @@ class ISOWeekDate {
 
     static new(year, month, weekday) {
         out_weekdate := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\isoweekdate_new", "Short", year, "Char", week, "Char", weekday, "Ptr", out_weekdate, "Int64")
+        retcode := DllCall("tempus_ahk\isoweekdate_new", "Short", year, "Char", month, "Char", weekday, "Ptr", out_weekdate, "Int64")
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message))
@@ -1268,6 +1268,15 @@ class Date {
         return Date(handle)
     }
 
+    static from_iso_weekdate(isoweek) {
+        if !(isoweek is ISOWeekDate) {
+            throw Error("Unsupported Type. Must be ISOWeekDate", -2)
+        }
+        pointer := DllCall("tempus_ahk\date_from_isoweekdate", "Ptr", isoweek.pointer, "Ptr")
+        return Date(pointer)
+    }
+
+
     static parse(date_string) {
         out_date := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\date_parse", "WStr", date_string, "Ptr", out_date, "Int64")
@@ -1407,6 +1416,165 @@ class Date {
     era_year() {
         return DllCall("tempus_ahk\date_era_year", "Ptr", this.pointer, "Short")
     }
+
+    weekday() {
+        return DllCall("tempus_ahk\date_weekday", "Ptr", this.pointer, "Char")
+    }
+
+    day_of_year() {
+        return DllCall("tempus_ahk\date_day_of_year", "Ptr", this.pointer, "Short")
+    }
+
+    day_of_year_no_leap() {
+        ret := DllCall("tempus_ahk\date_day_of_year_no_leap", "Ptr", this.pointer, "Short")
+        if (ret = -1) {
+            return
+        } else {
+            return ret
+        }
+    }
+
+    first_of_month() {
+        pointer := DllCall("tempus_ahk\date_first_of_month", "Ptr", this.pointer, "Ptr")
+        return Date(pointer)
+    }
+    last_of_month() {
+        pointer := DllCall("tempus_ahk\date_last_of_month", "Ptr", this.pointer, "Ptr")
+        return Date(pointer)
+    }
+    first_of_year() {
+        pointer := DllCall("tempus_ahk\date_first_of_year", "Ptr", this.pointer, "Ptr")
+        return Date(pointer)
+    }
+    last_of_year() {
+        pointer := DllCall("tempus_ahk\date_last_of_year", "Ptr", this.pointer, "Ptr")
+        return Date(pointer)
+    }
+
+    days_in_month() {
+        return DllCall("tempus_ahk\date_days_in_month", "Ptr", this.pointer, "Char")
+    }
+
+    days_in_year() {
+        return DllCall("tempus_ahk\date_days_in_year", "Ptr", this.pointer, "Short")
+    }
+
+    in_leap_year() {
+        ret := DllCall("tempus_ahk\date_in_leap_year", "Ptr", this.pointer, "Char")
+        if (ret = 1) {
+            return true
+        } else if (ret = 0) {
+            return false
+        } else {
+            throw "unexpected error"
+        }
+    }
+    tomorrow() {
+        out_date := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\date_tomorrow", "Ptr", this.pointer, "Ptr", out_date, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_weekdate, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Date(handle)
+    }
+    yesterday() {
+        out_date := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\date_yesterday", "Ptr", this.pointer, "Ptr", out_date, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_weekdate, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Date(handle)
+    }
+
+    nth_weekday_of_month(nth, weekday_i) {
+        out_date := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\date_nth_weekday_of_month", "Ptr", this.pointer, "Char", nth, "Char", weekday_i, "Ptr", out_date, "Int64")
+        if (retcode != 0) {
+            throw Error(Format("error({}): {}", retcode, message))
+        }
+        handle := NumGet(outdate, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Date(handle)
+    }
+
+    nth_weekday(nth, weekday_i) {
+        out_date := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\date_nth_weekday_of_month", "Ptr", this.pointer, "Int", nth, "Char", weekday_i, "Ptr", out_date, "Int64")
+        if (retcode != 0) {
+            throw Error(Format("error({}): {}", retcode, message))
+        }
+        handle := NumGet(outdate, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Date(handle)
+    }
+
+    to_isoweekdate() {
+        pointer := DllCall("tempus_ahk\date_to_isoweekdate", "Ptr", this.pointer)
+        return ISOWeekDate(pointer)
+    }
+
+    in_tz(time_zone_name) {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\date_in_tz", "Ptr", this.pointer, "WStr", time_zone_name, "Ptr", out_zoned, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message))
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    to_zoned(tz) {
+        if !(tz is Timezone) {
+            throw Error("unsupported type. Must be Timezone", -2)
+        }
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\date_to_zoned", "Ptr", this,pointer, "Ptr", tz.pointer, "Ptr", out_zoned, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message))
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    to_datetime(t) {
+        if !(t is Time) {
+            throw Error("unsupported type. Must be Time", -2)
+        }
+        out_datetime := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\date_to_datetime", "Ptr", this,pointer, "Ptr", tz.pointer, "Ptr", out_datetime, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message))
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return DateTime(handle)
+    }
+
 
 }
 

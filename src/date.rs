@@ -2,10 +2,14 @@ use std::cmp::Ordering;
 use std::ffi::c_short;
 use std::os::raw::{c_char, c_longlong};
 use std::str::FromStr;
-use jiff::civil::{Date, Era};
-use jiff::Error;
+use jiff::civil::{Date, Era, Weekday};
+use jiff::{Error, Zoned};
 use jiff::fmt::strtime::BrokenDownTime;
+use crate::isoweekdate::TempusISOWeekDate;
+use crate::time::TempusTime;
+use crate::tz::TempusTimeZone;
 use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
+use crate::zoned::TempusZoned;
 
 #[repr(C)]
 pub struct TempusDate {
@@ -216,6 +220,203 @@ pub extern "C" fn date_strptime(ahk_format_str: AHKWstr, ahk_time_str: AHKWstr, 
         }
     }
 }
+
+
+#[no_mangle]
+pub extern "C" fn date_from_isoweekdate(tiwd: &TempusISOWeekDate) -> Box<TempusDate> {
+    Box::new(TempusDate{date: Date::from_iso_week_date(tiwd.weekdate)})
+}
+
+#[no_mangle]
+pub extern "C" fn date_weekday(td: &TempusDate) -> c_char {
+    td.date.weekday().to_sunday_one_offset()
+}
+
+#[no_mangle]
+pub extern "C" fn date_day_of_year(td: &TempusDate) -> c_short {
+    td.date.day_of_year()
+}
+
+#[no_mangle]
+pub extern "C" fn date_day_of_year_no_leap(td: &TempusDate) -> c_short {
+    match td.date.day_of_year_no_leap() {
+        None => {
+            -1
+        }
+        Some(d) => {
+            d
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_first_of_month(td: &TempusDate) -> Box<TempusDate> {
+    Box::new(TempusDate{date: td.date.first_of_month()})
+}
+
+#[no_mangle]
+pub extern "C" fn date_last_of_month(td: &TempusDate) -> Box<TempusDate> {
+    Box::new(TempusDate{date: td.date.last_of_month()})
+}
+
+#[no_mangle]
+pub extern "C" fn date_first_of_year(td: &TempusDate) -> Box<TempusDate> {
+    Box::new(TempusDate{date: td.date.first_of_year()})
+}
+
+#[no_mangle]
+pub extern "C" fn date_last_of_year(td: &TempusDate) -> Box<TempusDate> {
+    Box::new(TempusDate{date: td.date.last_of_year()})
+}
+
+#[no_mangle]
+pub extern "C" fn date_days_in_month(td: &TempusDate) -> c_char {
+    td.date.days_in_month()
+}
+
+#[no_mangle]
+pub extern "C" fn date_days_in_year(td: &TempusDate) -> c_short {
+    td.date.days_in_year()
+}
+
+#[no_mangle]
+pub extern "C" fn date_in_leap_year(td: &TempusDate) -> c_char {
+    td.date.in_leap_year() as i8
+}
+
+#[no_mangle]
+pub extern "C" fn date_tomorrow(td: &TempusDate, out_date: *mut *mut TempusDate) -> c_longlong {
+    match td.date.tomorrow() {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(date) => {
+            let new_td = TempusDate{date};
+            new_td.stuff_into(out_date);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_yesterday(td: &TempusDate, out_date: *mut *mut TempusDate) -> c_longlong {
+    match td.date.yesterday() {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(date) => {
+            let new_td = TempusDate{date};
+            new_td.stuff_into(out_date);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_nth_weekday_of_month(td: &TempusDate, nth: i8, weekday_i: i8, out_date: *mut *mut TempusDate) -> i64 {
+    let weekday = match Weekday::from_sunday_one_offset(weekday_i) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            return -1
+        }
+        Ok(weekday) => weekday
+    };
+    match td.date.nth_weekday_of_month(nth, weekday) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -2
+        }
+        Ok(date) => {
+            let new_td = TempusDate{date};
+            new_td.stuff_into(out_date);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_nth_weekday(td: &TempusDate, nth: i32, weekday_i: i8, out_date: *mut *mut TempusDate) -> i64 {
+    let weekday = match Weekday::from_sunday_one_offset(weekday_i) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            return -1
+        }
+        Ok(weekday) => weekday
+    };
+    match td.date.nth_weekday(nth, weekday) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -2
+        }
+        Ok(date) => {
+            let new_td = TempusDate{date};
+            new_td.stuff_into(out_date);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_to_isoweekdate(td: &TempusDate) -> Box<TempusISOWeekDate> {
+    Box::new(TempusISOWeekDate{weekdate: td.date.iso_week_date()})
+}
+
+#[no_mangle]
+pub extern "C" fn date_in_tz(td: &TempusDate, time_zone_name: AHKWstr, out_zoned: *mut *mut TempusZoned) -> i64 {
+    match ahk_str_to_string(time_zone_name) {
+        Err(_) => {
+            set_last_error_message("failed to process time zone name as rust string".to_string());
+            -1
+        }
+        Ok(time_zone_string) => {
+            match td.date.in_tz(&time_zone_string) {
+                Err(e) => {
+                    set_last_error_message(e.to_string());
+                    -2
+                }
+                Ok(zoned) => {
+                    let tzoned = TempusZoned{zoned};
+                    tzoned.stuff_into(out_zoned);
+                    0
+                }
+            }
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_to_zoned(td: &TempusDate, tz: &TempusTimeZone, out_zoned: *mut *mut TempusZoned) -> i64 {
+    match td.date.to_zoned(*tz.tz) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(zoned) => {
+            let tzoned = TempusZoned{zoned};
+            tzoned.stuff_into(out_zoned);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_to_datetime(td: &TempusDate, tt: &TempusTime, out_zoned: *mut *mut TempusZoned) -> i64 {
+    match td.date.to_datetime(tt.time) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(zoned) => {
+            let tzoned = TempusZoned{zoned};
+            tzoned.stuff_into(out_zoned);
+            0
+        }
+    }
+}
+
+
 
 
 #[no_mangle]
