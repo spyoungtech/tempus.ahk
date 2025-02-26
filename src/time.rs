@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 use std::ffi::{c_char, c_int, c_longlong, c_short};
 use std::str::FromStr;
-use jiff::civil::{Time, TimeDifference};
+use jiff::civil::{Time, TimeDifference, TimeRound};
 use jiff::{Error};
 use crate::datetime::TempusDateTime;
 use crate::duration::TempusSignedDuration;
@@ -423,6 +423,39 @@ pub extern "C" fn time_subsec_nanosecond(tt: &TempusTime) -> c_int {
     tt.time.subsec_nanosecond()
 }
 
+#[no_mangle]
+pub extern "C" fn time_round(tt: &TempusTime, smallest_i: i8, increment: i64, round_mode_i: i8, out_time: *mut *mut TempusTime) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e);
+            return -1
+        }
+        Ok(round_mode) => {round_mode}
+    };
+    let mut rounder = TimeRound::new().increment(increment).mode(round_mode);
+    if smallest_i >= 0 {
+        match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -2
+            }
+            Ok(unit) => {
+                rounder = rounder.smallest(unit);
+            }
+        }
+    }
+    match tt.time.round(rounder) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -3
+        }
+        Ok(time) => {
+            let new_tt = TempusTime{time};
+            new_tt.stuff_into(out_time);
+            0
+        }
+    }
+}
 
 #[no_mangle]
 pub extern "C" fn free_time(time: Box<TempusTime>) -> c_longlong {

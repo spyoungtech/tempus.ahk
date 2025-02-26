@@ -650,3 +650,13 @@ fn test_datetime_components() {
     assert_eq!(stdout.to_string(), String::from("2025, 10, 9, 8, 7, 6, 5"));
     assert!(output.status.success());
 }
+
+fn test_time_round() {
+    let script = make_script("t := Time.parse(\"2024-06-20 16:24:59.5\")\nt2 := t.round(Unit.Second, 1, RoundMode.Trunc)\nexpected := Time.new(16, 24, 59, 0)\nwritestdout(t2.eq(expected))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
