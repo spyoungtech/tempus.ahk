@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::ffi::c_short;
 use std::os::raw::{c_char, c_longlong};
 use std::str::FromStr;
-use jiff::civil::{Date, Era, Weekday};
+use jiff::civil::{Date, DateDifference, Era, Weekday};
 use jiff::{Error};
 use jiff::fmt::strtime::BrokenDownTime;
 use crate::datetime::TempusDateTime;
@@ -11,7 +11,7 @@ use crate::isoweekdate::TempusISOWeekDate;
 use crate::span::TempusSpan;
 use crate::time::TempusTime;
 use crate::tz::TempusTimeZone;
-use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
+use crate::utils::{ahk_str_to_string, round_mode_from_i8, set_last_error_message, string_into_ahk_buff, unit_from_i8, AHKStringBuffer, AHKWstr};
 use crate::zoned::TempusZoned;
 
 #[repr(C)]
@@ -490,6 +490,196 @@ pub extern "C" fn date_saturating_add_signed_duration(td: &TempusDate, rhs: &Tem
 #[no_mangle]
 pub extern "C" fn date_saturating_sub_signed_duration(td: &TempusDate, rhs: &TempusSignedDuration) -> Box<TempusDate> {
     Box::new(TempusDate{date: td.date.saturating_sub(rhs.duration)})
+}
+
+
+#[no_mangle]
+pub extern "C" fn date_since_datetime(td: &TempusDate, other: &TempusDateTime, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e);
+            return -2
+        }
+        Ok(round_mode) => round_mode,
+    };
+    let mut dd = DateDifference::from(other.datetime).mode(round_mode).increment(increment);
+
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.largest(unit);
+    }
+
+
+    match td.date.since(td) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_since_date(td: &TempusDate, other: &TempusDate, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e);
+            return -2
+        }
+        Ok(round_mode) => round_mode,
+    };
+    let mut dd = DateDifference::from(other.date).mode(round_mode).increment(increment);
+
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.largest(unit);
+    }
+
+
+    match td.date.since(td) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+
+#[no_mangle]
+pub extern "C" fn date_until_datetime(td: &TempusDate, other: &TempusDateTime, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e);
+            return -2
+        }
+        Ok(round_mode) => round_mode,
+    };
+    let mut dd = DateDifference::from(other.datetime).mode(round_mode).increment(increment);
+
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.largest(unit);
+    }
+
+
+    match td.date.until(td) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_until_date(td: &TempusDate, other: &TempusDate, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e);
+            return -2
+        }
+        Ok(round_mode) => round_mode,
+    };
+    let mut dd = DateDifference::from(other.date).mode(round_mode).increment(increment);
+
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.largest(unit);
+    }
+
+
+    match td.date.until(td) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
 }
 
 
