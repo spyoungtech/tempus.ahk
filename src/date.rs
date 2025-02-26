@@ -6,7 +6,9 @@ use jiff::civil::{Date, Era, Weekday};
 use jiff::{Error};
 use jiff::fmt::strtime::BrokenDownTime;
 use crate::datetime::TempusDateTime;
+use crate::duration::TempusSignedDuration;
 use crate::isoweekdate::TempusISOWeekDate;
+use crate::span::TempusSpan;
 use crate::time::TempusTime;
 use crate::tz::TempusTimeZone;
 use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
@@ -192,7 +194,7 @@ pub extern "C" fn date_strftime(td: &TempusDate, ahk_format_str: AHKWstr, out_bu
 }
 
 #[no_mangle]
-pub extern "C" fn date_strptime(ahk_format_str: AHKWstr, ahk_time_str: AHKWstr, out_date: *mut *mut TempusDate) -> i64 {
+pub extern "C" fn date_strptime(ahk_format_str: AHKWstr, ahk_time_str: AHKWstr, out_date: *mut *mut TempusDate) -> c_longlong {
     match ahk_str_to_string(ahk_format_str) {
         Err(_) => {
             set_last_error_message("failed to read format string".to_string());
@@ -316,7 +318,7 @@ pub extern "C" fn date_yesterday(td: &TempusDate, out_date: *mut *mut TempusDate
 }
 
 #[no_mangle]
-pub extern "C" fn date_nth_weekday_of_month(td: &TempusDate, nth: i8, weekday_i: i8, out_date: *mut *mut TempusDate) -> i64 {
+pub extern "C" fn date_nth_weekday_of_month(td: &TempusDate, nth: i8, weekday_i: i8, out_date: *mut *mut TempusDate) -> c_longlong {
     let weekday = match Weekday::from_sunday_one_offset(weekday_i) {
         Err(e) => {
             set_last_error_message(e.to_string());
@@ -338,7 +340,7 @@ pub extern "C" fn date_nth_weekday_of_month(td: &TempusDate, nth: i8, weekday_i:
 }
 
 #[no_mangle]
-pub extern "C" fn date_nth_weekday(td: &TempusDate, nth: i32, weekday_i: i8, out_date: *mut *mut TempusDate) -> i64 {
+pub extern "C" fn date_nth_weekday(td: &TempusDate, nth: i32, weekday_i: i8, out_date: *mut *mut TempusDate) -> c_longlong {
     let weekday = match Weekday::from_sunday_one_offset(weekday_i) {
         Err(e) => {
             set_last_error_message(e.to_string());
@@ -365,7 +367,7 @@ pub extern "C" fn date_to_isoweekdate(td: &TempusDate) -> Box<TempusISOWeekDate>
 }
 
 #[no_mangle]
-pub extern "C" fn date_in_tz(td: &TempusDate, time_zone_name: AHKWstr, out_zoned: *mut *mut TempusZoned) -> i64 {
+pub extern "C" fn date_in_tz(td: &TempusDate, time_zone_name: AHKWstr, out_zoned: *mut *mut TempusZoned) -> c_longlong {
     match ahk_str_to_string(time_zone_name) {
         Err(_) => {
             set_last_error_message("failed to process time zone name as rust string".to_string());
@@ -388,7 +390,7 @@ pub extern "C" fn date_in_tz(td: &TempusDate, time_zone_name: AHKWstr, out_zoned
 }
 
 #[no_mangle]
-pub extern "C" fn date_to_zoned(td: &TempusDate, tz: &TempusTimeZone, out_zoned: *mut *mut TempusZoned) -> i64 {
+pub extern "C" fn date_to_zoned(td: &TempusDate, tz: &TempusTimeZone, out_zoned: *mut *mut TempusZoned) -> c_longlong {
     match td.date.to_zoned(tz.tz.clone()) {
         Err(e) => {
             set_last_error_message(e.to_string());
@@ -408,6 +410,87 @@ pub extern "C" fn date_to_datetime(td: &TempusDate, tt: &TempusTime) -> Box<Temp
 }
 
 
+#[no_mangle]
+pub extern "C" fn date_checked_add_span(td: &TempusDate, other: &TempusSpan, out_date: *mut *mut TempusDate) -> c_longlong {
+    match td.date.checked_add(other.span) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(date) => {
+            let tdate = TempusDate{date};
+            tdate.stuff_into(out_date);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_checked_sub_span(td: &TempusDate, other: &TempusSpan, out_date: *mut *mut TempusDate) -> c_longlong {
+    match td.date.checked_sub(other.span) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(date) => {
+            let tdate = TempusDate{date};
+            tdate.stuff_into(out_date);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_checked_add_signed_duration(td: &TempusDate, other: &TempusSignedDuration, out_date: *mut *mut TempusDate) -> c_longlong {
+    match td.date.checked_add(other.duration) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(date) => {
+            let tdate = TempusDate{date};
+            tdate.stuff_into(out_date);
+            0
+        }
+    }
+}
+
+
+
+#[no_mangle]
+pub extern "C" fn date_checked_sub_signed_duration(td: &TempusDate, other: &TempusSignedDuration, out_date: *mut *mut TempusDate) -> c_longlong {
+    match td.date.checked_sub(other.duration) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(date) => {
+            let tdate = TempusDate{date};
+            tdate.stuff_into(out_date);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn date_saturating_add_span(td: &TempusDate, rhs: &TempusSpan) -> Box<TempusDate> {
+    Box::new(TempusDate{date: td.date.saturating_add(rhs.span)})
+}
+
+#[no_mangle]
+pub extern "C" fn date_saturating_sub_span(td: &TempusDate, rhs: &TempusSpan) -> Box<TempusDate> {
+    Box::new(TempusDate{date: td.date.saturating_sub(rhs.span)})
+}
+
+#[no_mangle]
+pub extern "C" fn date_saturating_add_signed_duration(td: &TempusDate, rhs: &TempusSignedDuration) -> Box<TempusDate> {
+    Box::new(TempusDate{date: td.date.saturating_add(rhs.duration)})
+}
+
+#[no_mangle]
+pub extern "C" fn date_saturating_sub_signed_duration(td: &TempusDate, rhs: &TempusSignedDuration) -> Box<TempusDate> {
+    Box::new(TempusDate{date: td.date.saturating_sub(rhs.duration)})
+}
 
 
 #[no_mangle]

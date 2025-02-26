@@ -467,22 +467,22 @@ pub extern "C" fn time_round(tt: &TempusTime, smallest_i: i8, increment: i64, ro
 }
 
 #[no_mangle]
-pub extern "C" fn saturating_add_span(tt: &TempusTime, rhs: &TempusSpan) -> Box<TempusTime> {
+pub extern "C" fn time_saturating_add_span(tt: &TempusTime, rhs: &TempusSpan) -> Box<TempusTime> {
     Box::new(TempusTime{time: tt.time.saturating_add(rhs.span)})
 }
 
 #[no_mangle]
-pub extern "C" fn saturating_add_signed_duration(tt: &TempusTime, rhs: &TempusSignedDuration) -> Box<TempusTime> {
+pub extern "C" fn time_saturating_add_signed_duration(tt: &TempusTime, rhs: &TempusSignedDuration) -> Box<TempusTime> {
     Box::new(TempusTime{time: tt.time.saturating_add(rhs.duration)})
 }
 
 #[no_mangle]
-pub extern "C" fn saturating_sub_span(tt: &TempusTime, rhs: &TempusSpan) -> Box<TempusTime> {
+pub extern "C" fn time_saturating_sub_span(tt: &TempusTime, rhs: &TempusSpan) -> Box<TempusTime> {
     Box::new(TempusTime{time: tt.time.saturating_sub(rhs.span)})
 }
 
 #[no_mangle]
-pub extern "C" fn saturating_sub_signed_duration(tt: &TempusTime, rhs: &TempusSignedDuration) -> Box<TempusTime> {
+pub extern "C" fn time_saturating_sub_signed_duration(tt: &TempusTime, rhs: &TempusSignedDuration) -> Box<TempusTime> {
     Box::new(TempusTime{time: tt.time.saturating_sub(rhs.duration)})
 }
 

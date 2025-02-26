@@ -1476,7 +1476,7 @@ class Date {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message), -2)
         }
-        handle := NumGet(out_weekdate, 0, "Ptr")
+        handle := NumGet(out_date, 0, "Ptr")
         if (handle = 0) {
             throw "unexpected error"
         }
@@ -1489,7 +1489,7 @@ class Date {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message), -2)
         }
-        handle := NumGet(out_weekdate, 0, "Ptr")
+        handle := NumGet(out_date, 0, "Ptr")
         if (handle = 0) {
             throw "unexpected error"
         }
@@ -1502,7 +1502,7 @@ class Date {
         if (retcode != 0) {
             throw Error(Format("error({}): {}", retcode, message))
         }
-        handle := NumGet(outdate, 0, "Ptr")
+        handle := NumGet(out_date, 0, "Ptr")
         if (handle = 0) {
             throw "unexpected error"
         }
@@ -1515,7 +1515,7 @@ class Date {
         if (retcode != 0) {
             throw Error(Format("error({}): {}", retcode, message))
         }
-        handle := NumGet(outdate, 0, "Ptr")
+        handle := NumGet(out_date, 0, "Ptr")
         if (handle = 0) {
             throw "unexpected error"
         }
@@ -1566,6 +1566,68 @@ class Date {
         return DateTime(pointer)
     }
 
+    checked_add(other) {
+        out_date := Buffer(A_PtrSize)
+        if (other is Span) {
+            retcode := DllCall("tempus_ahk\date_checked_add_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_date, "Int64")
+        } else if (other is SignedDuration) {
+            retcode := DllCall("tempus_ahk\date_checked_add_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_date, "Int64")
+        } else {
+            throw Error("Unsupported type. Must be Span or SignedDuration", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_date, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Date(handle)
+    }
+
+    checked_sub(other) {
+        out_date := Buffer(A_PtrSize)
+        if (other is Span) {
+            retcode := DllCall("tempus_ahk\date_checked_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_date, "Int64")
+        } else if (other is SignedDuration) {
+            retcode := DllCall("tempus_ahk\date_checked_sub_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_date, "Int64")
+        } else {
+            throw Error("Unsupported type. Must be Span or SignedDuration", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_date, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Date(handle)
+    }
+
+    saturating_sub(other) {
+        if (other is Span) {
+            pointer := DllCall("tempus_ahk\time_saturating_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else if (other is SignedDuration) {
+            pointer := DllCall("tempus_ahk\time_saturating_sub_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else {
+            throw Error("Unsupported Type. Must be Span or SignedDuration")
+        }
+        return Date(pointer)
+    }
+
+
+    saturating_add(other) {
+        if (other is Span) {
+            pointer := DllCall("tempus_ahk\date_saturating_add_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else if (other is SignedDuration) {
+            pointer := DllCall("tempus_ahk\date_saturating_add_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else {
+            throw Error("Unsupported Type. Must be Span or SignedDuration")
+        }
+        return Date(pointer)
+    }
 
 }
 
