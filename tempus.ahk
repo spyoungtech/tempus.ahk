@@ -1500,6 +1500,7 @@ class Date {
         out_date := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\date_nth_weekday_of_month", "Ptr", this.pointer, "Char", nth, "Char", weekday_i, "Ptr", out_date, "Int64")
         if (retcode != 0) {
+            message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message))
         }
         handle := NumGet(out_date, 0, "Ptr")
@@ -1513,6 +1514,7 @@ class Date {
         out_date := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\date_nth_weekday_of_month", "Ptr", this.pointer, "Int", nth, "Char", weekday_i, "Ptr", out_date, "Int64")
         if (retcode != 0) {
+            message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message))
         }
         handle := NumGet(out_date, 0, "Ptr")
@@ -1546,7 +1548,7 @@ class Date {
             throw Error("unsupported type. Must be Timezone", -2)
         }
         out_zoned := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\date_to_zoned", "Ptr", this,pointer, "Ptr", tz.pointer, "Ptr", out_zoned, "Int64")
+        retcode := DllCall("tempus_ahk\date_to_zoned", "Ptr", this.pointer, "Ptr", tz.pointer, "Ptr", out_zoned, "Int64")
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message))
