@@ -1610,9 +1610,9 @@ class Date {
 
     saturating_sub(other) {
         if (other is Span) {
-            pointer := DllCall("tempus_ahk\time_saturating_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+            pointer := DllCall("tempus_ahk\date_saturating_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
         } else if (other is SignedDuration) {
-            pointer := DllCall("tempus_ahk\time_saturating_sub_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+            pointer := DllCall("tempus_ahk\date_saturating_sub_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
         } else {
             throw Error("Unsupported Type. Must be Span or SignedDuration")
         }
@@ -1652,10 +1652,10 @@ class Date {
 
     since(other, largest_unit := -1, smallest_unit := -1, increment := 1, round_mode := RoundMode.HalfExpand) {
         out_span := Buffer(A_PtrSize)
-        if (other is Time) {
-            retcode := DllCall("tempus_ahk\time_since_time", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+        if (other is Date) {
+            retcode := DllCall("tempus_ahk\date_since_date", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
         } else if (other is DateTime) {
-            retcode := DllCall("tempus_ahk\time_since_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+            retcode := DllCall("tempus_ahk\date_since_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
         } else {
             throw Error("Unsupported Type. Must be Time or DateTime", -2)
         }
@@ -1669,6 +1669,7 @@ class Date {
         }
         return Span(handle)
     }
+
     duration_until(other_date) {
         if !(other_date is Date) {
             throw Error("Unsupported Type. Must be Date", -2)
@@ -1732,17 +1733,28 @@ class DateTime {
     }
 
     static parse(date_string) {
-        out_date := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\datetime_parse", "WStr", date_string, "Ptr", out_date, "Int64")
+        out_datetime := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_parse", "WStr", date_string, "Ptr", out_datetime, "Int64")
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message), -2)
         }
-        handle := NumGet(out_date, 0, "Ptr")
+        handle := NumGet(out_datetime, 0, "Ptr")
         if (handle = 0) {
             throw "unexpected error"
         }
         return DateTime(handle)
+    }
+
+    static from_parts(date_part, time_part) {
+        if !(date_part is Date) {
+            throw Error("Unsupported type for date_part. Must be Date")
+        }
+        if !(time_part is Time) {
+            throw Error("Unsupported type for time_part. Must be Time")
+        }
+        pointer := DllCall("tempus_ahk\datetime_from_parts", "Ptr", date_part.pointer, "Ptr", time_part.pointer, "Ptr")
+        return DateTime(pointer)
     }
 
     strftime(format_str) {
@@ -1839,6 +1851,262 @@ class DateTime {
         return DllCall("tempus_ahk\datetime_era_year", "Ptr", this.pointer, "Short")
     }
 
+    weekday() {
+        return DllCall("tempus_ahk\datetime_weekday", "Ptr", this.pointer, "Short")
+    }
+
+    day_of_year() {
+        return DllCall("tempus_ahk\datetime_day_of_year", "Ptr", this.pointer, "Short")
+    }
+
+    day_of_year_no_leap() {
+        ret := DllCall("tempus_ahk\datetime_day_of_year_no_leap", "Ptr", this.pointer, "Short")
+        if (ret = -1) {
+            return
+        } else {
+            return ret
+        }
+    }
+
+    first_of_month() {
+        pointer := DllCall("tempus_ahk\datetime_first_of_month", "Ptr", this.pointer, "Ptr")
+        return DateTime(pointer)
+    }
+    last_of_month() {
+        pointer := DllCall("tempus_ahk\datetime_last_of_month", "Ptr", this.pointer, "Ptr")
+        return DateTime(pointer)
+    }
+    first_of_year() {
+        pointer := DllCall("tempus_ahk\datetime_first_of_year", "Ptr", this.pointer, "Ptr")
+        return DateTime(pointer)
+    }
+    last_of_year() {
+        pointer := DllCall("tempus_ahk\datetime_last_of_year", "Ptr", this.pointer, "Ptr")
+        return DateTime(pointer)
+    }
+
+    days_in_month() {
+        return DllCall("tempus_ahk\datetime_days_in_month", "Ptr", this.pointer, "Char")
+    }
+
+    days_in_year() {
+        return DllCall("tempus_ahk\datetime_days_in_year", "Ptr", this.pointer, "Short")
+    }
+
+    in_leap_year() {
+        ret := DllCall("tempus_ahk\datetime_in_leap_year", "Ptr", this.pointer, "Char")
+        if (ret = 1) {
+            return true
+        } else if (ret = 0) {
+            return false
+        } else {
+            throw "unexpected error"
+        }
+    }
+    tomorrow() {
+        out_datetime := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_tomorrow", "Ptr", this.pointer, "Ptr", out_datetime, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_datetime, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return DateTime(handle)
+    }
+    yesterday() {
+        out_datetime := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_yesterday", "Ptr", this.pointer, "Ptr", out_datetime, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_datetime, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return DateTime(handle)
+    }
+
+    nth_weekday_of_month(nth, weekday_i) {
+        out_datetime := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_nth_weekday_of_month", "Ptr", this.pointer, "Char", nth, "Char", weekday_i, "Ptr", out_datetime, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message))
+        }
+        handle := NumGet(out_datetime, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return DateTime(handle)
+    }
+
+    nth_weekday(nth, weekday_i) {
+        out_datetime := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_nth_weekday_of_month", "Ptr", this.pointer, "Int", nth, "Char", weekday_i, "Ptr", out_datetime, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message))
+        }
+        handle := NumGet(out_datetime, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return DateTime(handle)
+    }
+
+    to_isoweekdate() {
+        pointer := DllCall("tempus_ahk\datetime_to_isoweekdate", "Ptr", this.pointer)
+        return ISOWeekDate(pointer)
+    }
+
+    to_date() {
+        pointer := DllCall("tempus_ahk\datetime_to_date", "Ptr", this.pointer)
+        return Date(pointer)
+    }
+
+    to_time() {
+        pointer := DllCall("tempus_ahk\datetime_to_time", "Ptr", this.pointer)
+        return Time(pointer)
+    }
+
+    to_zoned(tz) {
+        if !(tz is Timezone) {
+            throw Error("unsupported type. Must be Timezone", -2)
+        }
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_to_zoned", "Ptr", this.pointer, "Ptr", tz.pointer, "Ptr", out_zoned, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message))
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    checked_add(other) {
+        out_datetime := Buffer(A_PtrSize)
+        if (other is Span) {
+            retcode := DllCall("tempus_ahk\datetime_checked_add_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_datetime, "Int64")
+        } else if (other is SignedDuration) {
+            retcode := DllCall("tempus_ahk\datetime_checked_add_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_datetime, "Int64")
+        } else {
+            throw Error("Unsupported type. Must be Span or SignedDuration", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_datetime, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return DateTime(handle)
+    }
+
+    checked_sub(other) {
+        out_datetime := Buffer(A_PtrSize)
+        if (other is Span) {
+            retcode := DllCall("tempus_ahk\datetime_checked_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_datetime, "Int64")
+        } else if (other is SignedDuration) {
+            retcode := DllCall("tempus_ahk\datetime_checked_sub_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_datetime, "Int64")
+        } else {
+            throw Error("Unsupported type. Must be Span or SignedDuration", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_datetime, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return DateTime(handle)
+    }
+    saturating_sub(other) {
+        if (other is Span) {
+            pointer := DllCall("tempus_ahk\datetime_saturating_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else if (other is SignedDuration) {
+            pointer := DllCall("tempus_ahk\datetime_saturating_sub_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else {
+            throw Error("Unsupported Type. Must be Span or SignedDuration")
+        }
+        return DateTime(pointer)
+    }
+
+    saturating_add(other) {
+        if (other is Span) {
+            pointer := DllCall("tempus_ahk\datetime_saturating_add_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else if (other is SignedDuration) {
+            pointer := DllCall("tempus_ahk\datetime_saturating_add_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else {
+            throw Error("Unsupported Type. Must be Span or SignedDuration")
+        }
+        return DateTime(pointer)
+    }
+
+    until_date(other, largest_unit := -1, smallest_unit := -1, increment := 1, round_mode := RoundMode.HalfExpand) {
+        out_span := Buffer(A_PtrSize)
+        if (other is Date) {
+            retcode := DllCall("tempus_ahk\datetime_until_date", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+        } else if (other is DateTime) {
+            retcode := DllCall("tempus_ahk\datetime_until_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+        } else {
+            throw Error("Unsupported Type. Must be Time or DateTime", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+
+    since(other, largest_unit := -1, smallest_unit := -1, increment := 1, round_mode := RoundMode.HalfExpand) {
+        out_span := Buffer(A_PtrSize)
+        if (other is Date) {
+            retcode := DllCall("tempus_ahk\datetime_since_date", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+        } else if (other is DateTime) {
+            retcode := DllCall("tempus_ahk\datetime_since_datetime", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+        } else {
+            throw Error("Unsupported Type. Must be Time or DateTime", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+
+    duration_until(other_date) {
+        if !(other_date is DateTime) {
+            throw Error("Unsupported Type. Must be Date", -2)
+        }
+        pointer := DllCall("tempus_ahk\datetime_duration_until", "Ptr", this.pointer, "Ptr", other_date.pointer, "Ptr")
+        return SignedDuration(pointer)
+    }
+
+    duration_since(other_date) {
+        if !(other_date is DateTime) {
+            throw Error("Unsupported Type. Must be Date", -2)
+        }
+        pointer := DllCall("tempus_ahk\datetime_duration_since", "Ptr", this.pointer, "Ptr", other_date.pointer, "Ptr")
+        return SignedDuration(pointer)
+    }
+
     compare(other_time) {
         if !(other_time is DateTime) {
             throw Error("argument must be a DateTime", -2)
@@ -1889,6 +2157,29 @@ class DateTime {
         } else {
             return false
         }
+    }
+
+    round(smallest_unit := -1, increment := 1, round_mode := RoundMode.HalfExpand) {
+        out_datetime := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_round", "Ptr", this.pointer, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_datetime, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_datetime, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return DateTime(handle)
+    }
+
+    series(span_interval) {
+        ; TODO: support creating span from string arg?
+        if !(span_interval is Span) {
+            throw Error("Unsupported Type. Must be a Span type")
+        }
+        pointer := DllCall("tempus_ahk\datetime_series", "Ptr", this.pointer, "Ptr", span_interval.pointer, "Ptr")
+        return DateTimeSeries(pointer)
     }
 
 }
@@ -1943,6 +2234,32 @@ class DateSeries {
         }
     }
 }
+
+class DateTimeSeries {
+    __New(pointer) {
+        this.pointer := pointer
+    }
+
+    __Delete() {
+        DllCall("tempus_ahk\free_datetime_series", "Ptr", this.pointer, "Int64")
+    }
+
+    Call(&dt) {
+        out_date := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_series_next", "Ptr", this.pointer, "Ptr", out_date, "Char")
+        if (retcode != 0) {
+            return false
+        } else {
+            handle := NumGet(out_date, 0, "Ptr")
+            if (handle = 0) {
+                throw "unexpected error"
+            }
+            dt := DateTime(handle)
+            return true
+        }
+    }
+}
+
 
 
 class Time {
