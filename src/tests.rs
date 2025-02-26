@@ -651,6 +651,7 @@ fn test_datetime_components() {
     assert!(output.status.success());
 }
 
+#[test]
 fn test_time_round() {
     let script = make_script("t := Time.parse(\"2024-06-20 16:24:59.5\")\nt2 := t.round(Unit.Second, 1, RoundMode.Trunc)\nexpected := Time.new(16, 24, 59, 0)\nwritestdout(t2.eq(expected))");
     let output = run_script(script);
