@@ -675,7 +675,7 @@ for t in start.series(Span.new().hours(3)) {
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert_eq!(stderr, "");
-    assert_eq!(stdout.to_string(), String::from(r#"00:00:00,
+    assert_eq!(stdout.to_string(), String::from(r#"00:00:00
 03:00:00
 06:00:00
 09:00:00
