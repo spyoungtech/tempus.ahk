@@ -1562,17 +1562,8 @@ class Date {
         if !(t is Time) {
             throw Error("unsupported type. Must be Time", -2)
         }
-        out_datetime := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\date_to_datetime", "Ptr", this,pointer, "Ptr", tz.pointer, "Ptr", out_datetime, "Int64")
-        if (retcode != 0) {
-            message := _get_last_error()
-            throw Error(Format("error({}): {}", retcode, message))
-        }
-        handle := NumGet(out_zoned, 0, "Ptr")
-        if (handle = 0) {
-            throw "unexpected error"
-        }
-        return DateTime(handle)
+        pointer := DllCall("tempus_ahk\date_to_datetime", "Ptr", this,pointer, "Ptr", t.pointer, "Ptr")
+        return DateTime(pointer)
     }
 
 

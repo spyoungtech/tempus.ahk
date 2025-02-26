@@ -3,8 +3,9 @@ use std::ffi::c_short;
 use std::os::raw::{c_char, c_longlong};
 use std::str::FromStr;
 use jiff::civil::{Date, Era, Weekday};
-use jiff::{Error, Zoned};
+use jiff::{Error};
 use jiff::fmt::strtime::BrokenDownTime;
+use crate::datetime::TempusDateTime;
 use crate::isoweekdate::TempusISOWeekDate;
 use crate::time::TempusTime;
 use crate::tz::TempusTimeZone;
@@ -388,7 +389,7 @@ pub extern "C" fn date_in_tz(td: &TempusDate, time_zone_name: AHKWstr, out_zoned
 
 #[no_mangle]
 pub extern "C" fn date_to_zoned(td: &TempusDate, tz: &TempusTimeZone, out_zoned: *mut *mut TempusZoned) -> i64 {
-    match td.date.to_zoned(*tz.tz) {
+    match td.date.to_zoned(tz.tz.clone()) {
         Err(e) => {
             set_last_error_message(e.to_string());
             -1
@@ -402,18 +403,8 @@ pub extern "C" fn date_to_zoned(td: &TempusDate, tz: &TempusTimeZone, out_zoned:
 }
 
 #[no_mangle]
-pub extern "C" fn date_to_datetime(td: &TempusDate, tt: &TempusTime, out_zoned: *mut *mut TempusZoned) -> i64 {
-    match td.date.to_datetime(tt.time) {
-        Err(e) => {
-            set_last_error_message(e.to_string());
-            -1
-        }
-        Ok(zoned) => {
-            let tzoned = TempusZoned{zoned};
-            tzoned.stuff_into(out_zoned);
-            0
-        }
-    }
+pub extern "C" fn date_to_datetime(td: &TempusDate, tt: &TempusTime) -> Box<TempusDateTime> {
+    Box::new(TempusDateTime{datetime: td.date.to_datetime(tt.time)})
 }
 
 
