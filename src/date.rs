@@ -683,10 +683,16 @@ pub extern "C" fn date_until_date(td: &TempusDate, other: &TempusDate, largest_i
 }
 
 #[no_mangle]
-pub extern "C" fn date_duration_until() {
-    todo!()
+pub extern "C" fn date_duration_until(td: &TempusDate, other: &TempusDate) -> Box<TempusSignedDuration> {
+    let duration = td.date.duration_until(other.date);
+    Box::new(TempusSignedDuration{duration})
 }
 
+#[no_mangle]
+pub extern "C" fn date_duration_since(td: &TempusDate, other: &TempusDate) -> Box<TempusSignedDuration> {
+    let duration = td.date.duration_since(other.date);
+    Box::new(TempusSignedDuration{duration})
+}
 
 #[no_mangle]
 pub extern "C" fn free_date(tz: Box<TempusDate>) -> c_longlong {

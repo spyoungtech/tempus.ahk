@@ -1669,6 +1669,21 @@ class Date {
         }
         return Span(handle)
     }
+    duration_until(other_date) {
+        if !(other_date is Date) {
+            throw Error("Unsupported Type. Must be Date", -2)
+        }
+        pointer := DllCall("tempus_ahk\date_duration_until", "Ptr", this.pointer, "Ptr", other_date.pointer, "Ptr")
+        return SignedDuration(pointer)
+    }
+
+    duration_since(other_date) {
+        if !(other_date is Date) {
+            throw Error("Unsupported Type. Must be Date", -2)
+        }
+        pointer := DllCall("tempus_ahk\date_duration_since", "Ptr", this.pointer, "Ptr", other_date.pointer, "Ptr")
+        return SignedDuration(pointer)
+    }
 }
 
 
