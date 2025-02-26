@@ -1649,6 +1649,7 @@ class Time {
         }
         return Time(handle)
     }
+
     saturating_sub(other) {
         if (other is Span) {
             pointer := DllCall("tempus_ahk\time_saturating_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
@@ -1658,6 +1659,7 @@ class Time {
             throw Error("Unsupported Type. Must be Span or SignedDuration")
         }
         return Time(pointer)
+    }
 
 
     saturating_add(other) {
@@ -1669,6 +1671,7 @@ class Time {
             throw Error("Unsupported Type. Must be Span or SignedDuration")
         }
         return Time(pointer)
+    }
 
     wrapping_add(other) {
         if (other is Span) {
