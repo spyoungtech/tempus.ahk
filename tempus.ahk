@@ -1724,7 +1724,7 @@ class Time {
 
     round(smallest_unit := -1, increment := 1, round_mode := RoundMode.HalfExpand) {
         out_time := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\time_round", "Ptr", this.pointer, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Int64")
+        retcode := DllCall("tempus_ahk\time_round", "Ptr", this.pointer, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_time, "Int64")
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message), -2)
@@ -1736,3 +1736,4 @@ class Time {
         return Time(handle)
     }
 }
+
