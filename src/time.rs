@@ -188,14 +188,7 @@ pub extern "C" fn time_checked_sub_signed_duration(tt: &TempusTime, other: &Temp
 }
 
 #[no_mangle]
-pub extern "C" fn time_until_time(tt: &TempusTime, other: &TempusTime, unit_i: i8, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
-    let unit = match unit_from_i8(unit_i) {
-        Err(e) => {
-            set_last_error_message(e);
-            return -1
-        }
-        Ok(unit) => unit,
-    };
+pub extern "C" fn time_until_time(tt: &TempusTime, other: &TempusTime, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
     let round_mode = match round_mode_from_i8(round_mode_i) {
         Err(e) => {
             set_last_error_message(e);
@@ -203,8 +196,31 @@ pub extern "C" fn time_until_time(tt: &TempusTime, other: &TempusTime, unit_i: i
         }
         Ok(round_mode) => round_mode,
     };
+    let mut td = TimeDifference::from(other.time).mode(round_mode).increment(increment);
 
-    let td = TimeDifference::from(other.time).largest(unit).mode(round_mode);
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        td = td.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        td = td.largest(unit);
+    }
+
+
     match tt.time.until(td) {
         Err(e) => {
             set_last_error_message(e.to_string());
@@ -218,16 +234,8 @@ pub extern "C" fn time_until_time(tt: &TempusTime, other: &TempusTime, unit_i: i
     }
 }
 
-
 #[no_mangle]
-pub extern "C" fn time_until_datetime(tt: &TempusTime, other: &TempusDateTime, unit_i: i8, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
-    let unit = match unit_from_i8(unit_i) {
-        Err(e) => {
-            set_last_error_message(e);
-            return -1
-        }
-        Ok(unit) => unit,
-    };
+pub extern "C" fn time_until_datetime(tt: &TempusTime, other: &TempusDateTime, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
     let round_mode = match round_mode_from_i8(round_mode_i) {
         Err(e) => {
             set_last_error_message(e);
@@ -235,8 +243,31 @@ pub extern "C" fn time_until_datetime(tt: &TempusTime, other: &TempusDateTime, u
         }
         Ok(round_mode) => round_mode,
     };
+    let mut td = TimeDifference::from(other.datetime).mode(round_mode).increment(increment);
 
-    let td = TimeDifference::from(other.datetime).largest(unit).mode(round_mode);
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        td = td.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        td = td.largest(unit);
+    }
+
+
     match tt.time.until(td) {
         Err(e) => {
             set_last_error_message(e.to_string());
@@ -250,18 +281,8 @@ pub extern "C" fn time_until_datetime(tt: &TempusTime, other: &TempusDateTime, u
     }
 }
 
-
-
-
 #[no_mangle]
-pub extern "C" fn time_since_time(tt: &TempusTime, other: &TempusTime, unit_i: i8, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
-    let unit = match unit_from_i8(unit_i) {
-        Err(e) => {
-            set_last_error_message(e);
-            return -1
-        }
-        Ok(unit) => unit,
-    };
+pub extern "C" fn time_since_time(tt: &TempusTime, other: &TempusTime, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
     let round_mode = match round_mode_from_i8(round_mode_i) {
         Err(e) => {
             set_last_error_message(e);
@@ -269,8 +290,31 @@ pub extern "C" fn time_since_time(tt: &TempusTime, other: &TempusTime, unit_i: i
         }
         Ok(round_mode) => round_mode,
     };
+    let mut td = TimeDifference::from(other.time).mode(round_mode).increment(increment);
 
-    let td = TimeDifference::from(other.time).largest(unit).mode(round_mode);
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        td = td.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        td = td.largest(unit);
+    }
+
+
     match tt.time.since(td) {
         Err(e) => {
             set_last_error_message(e.to_string());
@@ -284,16 +328,8 @@ pub extern "C" fn time_since_time(tt: &TempusTime, other: &TempusTime, unit_i: i
     }
 }
 
-
 #[no_mangle]
-pub extern "C" fn time_since_datetime(tt: &TempusTime, other: &TempusDateTime, unit_i: i8, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
-    let unit = match unit_from_i8(unit_i) {
-        Err(e) => {
-            set_last_error_message(e);
-            return -1
-        }
-        Ok(unit) => unit,
-    };
+pub extern "C" fn time_since_datetime(tt: &TempusTime, other: &TempusDateTime, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
     let round_mode = match round_mode_from_i8(round_mode_i) {
         Err(e) => {
             set_last_error_message(e);
@@ -301,8 +337,31 @@ pub extern "C" fn time_since_datetime(tt: &TempusTime, other: &TempusDateTime, u
         }
         Ok(round_mode) => round_mode,
     };
+    let mut td = TimeDifference::from(other.datetime).mode(round_mode).increment(increment);
 
-    let td = TimeDifference::from(other.datetime).largest(unit).mode(round_mode);
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        td = td.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        td = td.largest(unit);
+    }
+
+
     match tt.time.since(td) {
         Err(e) => {
             set_last_error_message(e.to_string());
@@ -315,7 +374,6 @@ pub extern "C" fn time_since_datetime(tt: &TempusTime, other: &TempusDateTime, u
         }
     }
 }
-
 
 #[no_mangle]
 pub extern "C" fn time_duration_until(tt: &TempusTime, other: &TempusTime) -> Box<TempusSignedDuration> {

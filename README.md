@@ -474,6 +474,8 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `parse`
 - [x] `compare` (`gt`, `lt`, `gte`, `lte`, `eq`)
 - [x] `to_string`
+- [x] `strftime`
+- [x] `strptime`
 - [x] `MIN`
 - [x] `MAX`
 - [x] `ZERO`
@@ -495,10 +497,12 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `new`
 - [x] `checked_add`
 - [x] `checked_sub`
-- [x] `wrapping_add`
-- [x] `wrapping_sub`
+- [x] `wrapping_add` (alias `add`)
+- [x] `wrapping_sub` (alias `sub`)
 - [x] `until` (`until_time` since `until` is a reserved keyword in AHK)
 - [x] `since`
+- [x] `duration_until`
+- [x] `duration_since`
 - [x] `on`
 - [x] `to_datetime`
 - [x] `hour`
@@ -515,11 +519,12 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] `parse`
 - [x] `compare` (`gt`, `lt`, `gte`, `lte`, `eq`)
 - [x] `to_string`
+- [x] `strftime`
+- [x] `strptime`
 - [x] `MIN`
 - [x] `MAX`
 - [x] `ZERO`
 - [x] `new`
-
 - [x] `year`
 - [x] `month`
 - [x] `day`
