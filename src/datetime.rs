@@ -3,6 +3,7 @@ use std::os::raw::{c_char, c_int, c_longlong, c_short};
 use std::str::FromStr;
 use jiff::civil::{DateTime, Era};
 use jiff::Error;
+use jiff::fmt::strtime::BrokenDownTime;
 use crate::utils::{ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, AHKWstr};
 
 #[repr(C)]
@@ -165,6 +166,93 @@ pub extern "C" fn datetime_era(tdt: &TempusDateTime) -> c_char {
     }
 }
 
+
+#[no_mangle]
+pub extern "C" fn datetime_strftime_length(tdt: &TempusDateTime, ahk_format_str: AHKWstr) -> isize {
+    match ahk_str_to_string(ahk_format_str) {
+        Err(_) => {
+            -1
+        }
+        Ok(format_str) => {
+            let bdt = BrokenDownTime::from(tdt.datetime);
+            let mut buf = String::new();
+            match bdt.format(format_str, &mut buf) {
+                Err(e) => {
+                    set_last_error_message(e.to_string());
+                    -2
+                }
+                Ok(_) => {
+                    match isize::try_from(buf.len()) {
+                        Err(e) => {
+                            set_last_error_message(e.to_string());
+                            -3
+                        }
+                        Ok(ret) => {
+                            ret
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn datetime_strftime(tdt: &TempusDateTime, ahk_format_str: AHKWstr, out_buff: AHKStringBuffer, buff_len: usize) -> c_longlong {
+    if buff_len == 0 {
+        return -1
+    }
+    match ahk_str_to_string(ahk_format_str) {
+        Err(_) => {
+            -1
+        }
+        Ok(format_str) => {
+            let bdt = BrokenDownTime::from(tdt.datetime);
+            let mut buf = String::new();
+            match bdt.format(format_str, &mut buf) {
+                Err(e) => {
+                    set_last_error_message(e.to_string());
+                    -2
+                }
+                Ok(_) => {
+                    string_into_ahk_buff(buf, out_buff, buff_len);
+                    0
+                }
+            }
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn datetime_strptime(ahk_format_str: AHKWstr, ahk_time_str: AHKWstr, out_date: *mut *mut TempusDateTime) -> i64 {
+    match ahk_str_to_string(ahk_format_str) {
+        Err(_) => {
+            set_last_error_message("failed to read format string".to_string());
+            -1
+        }
+        Ok(format_str) => {
+            match ahk_str_to_string(ahk_time_str) {
+                Err(_) => {
+                    set_last_error_message("failed to read time string".to_string());
+                    -1
+                }
+                Ok(time_str) => {
+                    match DateTime::strptime(format_str, time_str) {
+                        Err(e) => {
+                            set_last_error_message(e.to_string());
+                            -2
+                        }
+                        Ok(datetime) => {
+                            let tts = TempusDateTime{datetime};
+                            tts.stuff_into(out_date);
+                            0
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 #[no_mangle]
 pub extern "C" fn free_datetime(tdt: Box<TempusDateTime>) -> c_longlong {

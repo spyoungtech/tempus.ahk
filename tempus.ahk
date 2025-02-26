@@ -1117,6 +1117,44 @@ class Date {
         }
         return Date(handle)
     }
+
+    strftime(format_str) {
+        buff_length := DllCall("tempus_ahk\date_strftime_length", "Ptr", this.pointer, "WStr", format_str, "Int64")
+        if buff_length < 0 {
+            error_code := buff_length
+            if (error_code = -2 || error_code = -3) {
+                message := _get_last_error()
+                throw Error(Format("error {}", message), -2)
+            }
+            else {
+                throw "unexpected error getting buff length"
+            }
+        }
+        buff := Buffer(buff_length+1, 0)
+        retcode := DllCall("tempus_ahk\date_strftime", "Ptr", this.pointer, "WStr", format_str, "Ptr", buff, "UInt64", buff.Size, "Int64")
+        if (retcode = 0) {
+            ret := StrGet(buff, "UTF-8")
+            return ret
+        } else {
+            message := _get_last_error()
+            throw Error(Format("error: {}", message), -2)
+        }
+    }
+
+    static strptime(format_str, time_str) {
+        out_date := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\date_strptime", "WStr", format_str, "WStr", time_str, "Ptr", out_date)
+        if (retcode < 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_date, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Date(handle)
+    }
+
     to_string() {
         buff_length := DllCall("tempus_ahk\date_string_length", "Ptr", this.pointer, "UInt64")
         buff := Buffer(buff_length+1, 0)
@@ -1249,6 +1287,43 @@ class DateTime {
         out_date := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\datetime_parse", "WStr", date_string, "Ptr", out_date, "Int64")
         if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_date, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return DateTime(handle)
+    }
+
+    strftime(format_str) {
+        buff_length := DllCall("tempus_ahk\datetime_strftime_length", "Ptr", this.pointer, "WStr", format_str, "Int64")
+        if buff_length < 0 {
+            error_code := buff_length
+            if (error_code = -2 || error_code = -3) {
+                message := _get_last_error()
+                throw Error(Format("error {}", message), -2)
+            }
+            else {
+                throw "unexpected error getting buff length"
+            }
+        }
+        buff := Buffer(buff_length+1, 0)
+        retcode := DllCall("tempus_ahk\datetime_strftime", "Ptr", this.pointer, "WStr", format_str, "Ptr", buff, "UInt64", buff.Size, "Int64")
+        if (retcode = 0) {
+            ret := StrGet(buff, "UTF-8")
+            return ret
+        } else {
+            message := _get_last_error()
+            throw Error(Format("error: {}", message), -2)
+        }
+    }
+
+    static strptime(format_str, time_str) {
+        out_date := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_strptime", "WStr", format_str, "WStr", time_str, "Ptr", out_date)
+        if (retcode < 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message), -2)
         }
