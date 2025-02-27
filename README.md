@@ -387,7 +387,6 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total)
 - [x] [round](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.round)
 - [ ] [to_duration](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.to_duration)
-- [ ] Others (trait impls (to_string, parse/from_str, etc.), arithmetic, comparisons)
 
 ## SignedDuration
 
