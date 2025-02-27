@@ -189,7 +189,17 @@ span2 := Span.new().days(30)
 span1.gt(span2, true) ; OK!
 ```
 
+You can also specify a relative timeframe in the form of a Date, DateTime, or Zoned object. This is neccessary 
+when your span includes calendar components beyond weeks.
 
+```AutoHotkey
+span1 := Span.new().weeks(4)
+span2 := Span.new().days(30)
+
+; use relative time to resolve the ambiguity
+relative_to := Zoned.now()
+span1.gt(span2, relative_to) ; OK!
+```
 
 ### SignedDuration
 
