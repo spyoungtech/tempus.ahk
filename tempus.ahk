@@ -3018,12 +3018,12 @@ class DateTimeSeries {
     }
 
     Call(&dt) {
-        out_date := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\datetime_series_next", "Ptr", this.pointer, "Ptr", out_date, "Char")
+        out_datetime := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_series_next", "Ptr", this.pointer, "Ptr", out_datetime, "Char")
         if (retcode != 0) {
             return false
         } else {
-            handle := NumGet(out_date, 0, "Ptr")
+            handle := NumGet(out_datetime, 0, "Ptr")
             if (handle = 0) {
                 throw "unexpected error"
             }
