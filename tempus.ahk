@@ -842,22 +842,22 @@ class Zoned {
 
     to_datetime() {
         pointer := DllCall("tempus_ahk\zoned_to_datetime", "Ptr", this.pointer, "Ptr")
-        return Timestamp(pointer)
+        return DateTime(pointer)
     }
 
     to_date() {
         pointer := DllCall("tempus_ahk\zoned_to_date", "Ptr", this.pointer, "Ptr")
-        return Timestamp(pointer)
+        return Date(pointer)
     }
 
     to_time() {
         pointer := DllCall("tempus_ahk\zoned_to_time", "Ptr", this.pointer, "Ptr")
-        return Timestamp(pointer)
+        return Time(pointer)
     }
 
     to_isoweekdate() {
         pointer := DllCall("tempus_ahk\zoned_to_isoweekdate", "Ptr", this.pointer, "Ptr")
-        return Timestamp(pointer)
+        return ISOWeekDate(pointer)
     }
 
 
@@ -1865,11 +1865,11 @@ class Span {
             days_are_24_hours := false
         }
         if (relative_options is Date) {
-            retcode := DllCall("tempus_ahk\span_compare_relative_to_date", "Ptr", this.pointer, "Ptr", other_span.pointer, "Ptr", relative_options, "Char")
+            retcode := DllCall("tempus_ahk\span_compare_relative_to_date", "Ptr", this.pointer, "Ptr", other_span.pointer, "Ptr", relative_options.pointer, "Char")
         } else if (relative_options is DateTime) {
-            retcode := DllCall("tempus_ahk\span_compare_relative_to_datetime", "Ptr", this.pointer, "Ptr", other_span.pointer, "Ptr", relative_options, "Char")
+            retcode := DllCall("tempus_ahk\span_compare_relative_to_datetime", "Ptr", this.pointer, "Ptr", other_span.pointer, "Ptr", relative_options.pointer, "Char")
         } else if (relative_options is Zoned) {
-            retcode := DllCall("tempus_ahk\span_compare_relative_to_zoned", "Ptr", this.pointer, "Ptr", other_span.pointer, "Ptr", relative_options, "Char")
+            retcode := DllCall("tempus_ahk\span_compare_relative_to_zoned", "Ptr", this.pointer, "Ptr", other_span.pointer, "Ptr", relative_options.pointer, "Char")
         } else {
             retcode := DllCall("tempus_ahk\span_compare", "Ptr", this.pointer, "Ptr", other_span.pointer, "Char", days_are_24_hours, "Char")
         }
@@ -1934,11 +1934,11 @@ class Span {
             days_are_24_hours := false
         }
         if (relative_options is Date) {
-            retcode := DllCall("tempus_ahk\span_total_relative_to_date", "Ptr", this.pointer, "Char", unit, "Ptr", relative_options, "DoubleP", &out_buff:=0.0, "Int64")
+            retcode := DllCall("tempus_ahk\span_total_relative_to_date", "Ptr", this.pointer, "Char", unit, "Ptr", relative_options.pointer, "DoubleP", &out_buff:=0.0, "Int64")
         } else if (relative_options is DateTime) {
-            retcode := DllCall("tempus_ahk\span_total_relative_to_datetime", "Ptr", this.pointer, "Char", unit, "Ptr", relative_options, "DoubleP", &out_buff:=0.0, "Int64")
+            retcode := DllCall("tempus_ahk\span_total_relative_to_datetime", "Ptr", this.pointer, "Char", unit, "Ptr", relative_options.pointer, "DoubleP", &out_buff:=0.0, "Int64")
         } else if (relative_options is Zoned) {
-            retcode := DllCall("tempus_ahk\span_total_relative_to_zoned", "Ptr", this.pointer, "Char", unit, "Ptr", relative_options, "DoubleP", &out_buff:=0.0, "Int64")
+            retcode := DllCall("tempus_ahk\span_total_relative_to_zoned", "Ptr", this.pointer, "Char", unit, "Ptr", relative_options.pointer, "DoubleP", &out_buff:=0.0, "Int64")
         } else {
             retcode := DllCall("tempus_ahk\span_total", "Ptr", this.pointer, "Char", unit, "Char", days_are_24_hours, "DoubleP", &out_buff:=0.0, "Int64")
         }
@@ -1959,11 +1959,11 @@ class Span {
         }
         out_span := Buffer(A_PtrSize)
         if (relative_options is Date) {
-            retcode := DllCall("tempus_ahk\span_round_relative_to_date", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Ptr", relative_options, "Ptr", out_span, "Int64")
+            retcode := DllCall("tempus_ahk\span_round_relative_to_date", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Ptr", relative_options.pointer, "Ptr", out_span, "Int64")
         } else if (relative_options is DateTime) {
-            retcode := DllCall("tempus_ahk\span_round_relative_to_datetime", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Ptr", relative_options, "Ptr", out_span, "Int64")
+            retcode := DllCall("tempus_ahk\span_round_relative_to_datetime", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Ptr", relative_options.pointer, "Ptr", out_span, "Int64")
         } else if (relative_options is Zoned) {
-            retcode := DllCall("tempus_ahk\span_round_relative_to_zoned", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Ptr", relative_options, "Ptr", out_span, "Int64")
+            retcode := DllCall("tempus_ahk\span_round_relative_to_zoned", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Ptr", relative_options.pointer, "Ptr", out_span, "Int64")
         } else {
             retcode := DllCall("tempus_ahk\span_round", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Char", days_are_24_hours, "Ptr", out_span, "Int64")
         }
