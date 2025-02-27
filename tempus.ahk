@@ -581,6 +581,522 @@ class Zoned {
         return Zoned(ptr)
     }
 
+    static new(ts, tz) {
+        if !(ts is Timestamp) {
+            throw Error("Unsupported type for first argument. Must be Timestamp", -2)
+        }
+        if !(tz is Timezone) {
+            throw Error("Unsupported type for second argument. Must be Timezone", -2)
+        }
+        pointer := DllCall("tempus_ahk\zoned_new", "Ptr", ts.pointer, "Ptr", tz.pointer, "Ptr")
+        return Zoned(pointer)
+    }
+
+    with_time_zone(tz) {
+        if !(tz is Timezone) {
+            throw Error("argument must be Timezone", -2)
+        }
+        pointer := DllCall("zoned_with_time_zone", "Ptr", this.pointer, "Ptr", tz.pointer, "Int64")
+        return Zoned(pointer)
+    }
+
+    in_tz(tz_name) {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_in_tz", "Ptr", this.pointer, "WStr", tz_name, "Ptr", out_zoned, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    year() {
+        return DllCall("tempus_ahk\zoned_year", "Ptr", this.pointer, "Short")
+    }
+    month() {
+        return DllCall("tempus_ahk\zoned_month", "Ptr", this.pointer, "Char")
+    }
+    day() {
+        return DllCall("tempus_ahk\zoned_day", "Ptr", this.pointer, "Char")
+    }
+    hour() {
+        return DllCall("tempus_ahk\zoned_hour", "Ptr", this.pointer, "Char")
+    }
+    minute() {
+        return DllCall("tempus_ahk\zoned_minute", "Ptr", this.pointer, "Char")
+    }
+    second() {
+        return DllCall("tempus_ahk\zoned_second", "Ptr", this.pointer, "Char")
+    }
+    millisecond() {
+        return DllCall("tempus_ahk\zoned_millisecond", "Ptr", this.pointer, "Short")
+    }
+    microsecond() {
+        return DllCall("tempus_ahk\zoned_microsecond", "Ptr", this.pointer, "Short")
+    }
+    nanosecond() {
+        return DllCall("tempus_ahk\zoned_nanosecond", "Ptr", this.pointer, "Short")
+    }
+    subsec_nanosecond() {
+        return DllCall("tempus_ahk\zoned_subsec_nanosecond", "Ptr", this.pointer, "Int")
+    }
+
+    era() {
+        ret := DllCall("tempus_ahk\zoned_era", "Ptr", this.pointer, "Char")
+        if (ret = -1) {
+            return "BCE"
+        } else if (ret = 1) {
+            return "CE"
+        } else {
+            throw "unexpected error"
+        }
+    }
+
+    era_year() {
+        return DllCall("tempus_ahk\zoned_era_year", "Ptr", this.pointer, "Short")
+    }
+
+    weekday() {
+        return DllCall("tempus_ahk\zoned_weekday", "Ptr", this.pointer, "Short")
+    }
+
+    day_of_year() {
+        return DllCall("tempus_ahk\zoned_day_of_year", "Ptr", this.pointer, "Short")
+    }
+
+    day_of_year_no_leap() {
+        ret := DllCall("tempus_ahk\zoned_day_of_year_no_leap", "Ptr", this.pointer, "Short")
+        if (ret = -1) {
+            return
+        } else {
+            return ret
+        }
+    }
+
+    first_of_month() {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_first_of_month", "Ptr", this.pointer, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    start_of_day() {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_start_of_day", "Ptr", this.pointer, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+    end_of_day() {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_end_of_day", "Ptr", this.pointer, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+
+
+    last_of_month() {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_last_of_month", "Ptr", this.pointer, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    first_of_year() {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_first_of_year", "Ptr", this.pointer, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    last_of_year() {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_last_of_year", "Ptr", this.pointer, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    days_in_month() {
+        return DllCall("tempus_ahk\zoned_days_in_month", "Ptr", this.pointer, "Char")
+    }
+
+    days_in_year() {
+        return DllCall("tempus_ahk\zoned_days_in_year", "Ptr", this.pointer, "Short")
+    }
+
+    in_leap_year() {
+        ret := DllCall("tempus_ahk\zoned_in_leap_year", "Ptr", this.pointer, "Char")
+        if (ret = 1) {
+            return true
+        } else if (ret = 0) {
+            return false
+        } else {
+            throw "unexpected error"
+        }
+    }
+    tomorrow() {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_tomorrow", "Ptr", this.pointer, "Ptr", out_zoned, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+    yesterday() {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_yesterday", "Ptr", this.pointer, "Ptr", out_zoned, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    nth_weekday_of_month(nth, weekday_i) {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_nth_weekday_of_month", "Ptr", this.pointer, "Char", nth, "Char", weekday_i, "Ptr", out_zoned, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message))
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    nth_weekday(nth, weekday_i) {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_nth_weekday_of_month", "Ptr", this.pointer, "Int", nth, "Char", weekday_i, "Ptr", out_zoned, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message))
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    to_timestamp() {
+        pointer := DllCall("tempus_ahk\zoned_to_timestamp", "Ptr", this.pointer, "Ptr")
+        return Timestamp(pointer)
+    }
+
+    to_datetime() {
+        pointer := DllCall("tempus_ahk\zoned_to_datetime", "Ptr", this.pointer, "Ptr")
+        return Timestamp(pointer)
+    }
+
+    to_date() {
+        pointer := DllCall("tempus_ahk\zoned_to_date", "Ptr", this.pointer, "Ptr")
+        return Timestamp(pointer)
+    }
+
+    to_time() {
+        pointer := DllCall("tempus_ahk\zoned_to_time", "Ptr", this.pointer, "Ptr")
+        return Timestamp(pointer)
+    }
+
+    to_isoweekdate() {
+        pointer := DllCall("tempus_ahk\zoned_to_isoweekdate", "Ptr", this.pointer, "Ptr")
+        return Timestamp(pointer)
+    }
+
+
+    checked_add(other) {
+        out_zoned := Buffer(A_PtrSize)
+        if (other is Span) {
+            retcode := DllCall("tempus_ahk\zoned_checked_add_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_zoned, "Int64")
+        } else if (other is SignedDuration) {
+            retcode := DllCall("tempus_ahk\zoned_checked_add_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_zoned, "Int64")
+        } else {
+            throw Error("Unsupported type. Must be Span or SignedDuration", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    checked_sub(other) {
+        out_zoned := Buffer(A_PtrSize)
+        if (other is Span) {
+            retcode := DllCall("tempus_ahk\zoned_checked_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_zoned, "Int64")
+        } else if (other is SignedDuration) {
+            retcode := DllCall("tempus_ahk\zoned_checked_sub_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_zoned, "Int64")
+        } else {
+            throw Error("Unsupported type. Must be Span or SignedDuration", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    since_zoned(other, largest_unit := -1, smallest_unit := -1, increment := 1, round_mode := RoundMode.HalfExpand) {
+        out_span := Buffer(A_PtrSize)
+        if (other is Zoned) {
+            retcode := DllCall("tempus_ahk\zoned_since_zoned", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+        } else {
+            throw Error("Unsupported Type. Must be Zoned", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+
+    until_zoned(other, largest_unit := -1, smallest_unit := -1, increment := 1, round_mode := RoundMode.HalfExpand) {
+        out_span := Buffer(A_PtrSize)
+        if (other is Zoned) {
+            retcode := DllCall("tempus_ahk\zoned_until_zoned", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+        } else {
+            throw Error("Unsupported Type. Must be Zoned", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
+
+    saturating_add(other) {
+        if (other is Span) {
+            pointer := DllCall("tempus_ahk\zoned_saturating_add_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else if (other is SignedDuration) {
+            pointer := DllCall("tempus_ahk\zoned_saturating_add_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else {
+            throw Error("Unsupported Type. Must be Span or SignedDuration")
+        }
+        return Zoned(pointer)
+    }
+
+    saturating_sub(other) {
+        if (other is Span) {
+            pointer := DllCall("tempus_ahk\zoned_saturating_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else if (other is SignedDuration) {
+            pointer := DllCall("tempus_ahk\zoned_saturating_sub_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr")
+        } else {
+            throw Error("Unsupported Type. Must be Span or SignedDuration")
+        }
+        return Zoned(pointer)
+    }
+
+    strftime(format_str) {
+        buff_length := DllCall("tempus_ahk\zoned_strftime_length", "Ptr", this.pointer, "WStr", format_str, "Int64")
+        if buff_length < 0 {
+            error_code := buff_length
+            if (error_code = -2 || error_code = -3) {
+                message := _get_last_error()
+                throw Error(Format("error({}): {}", error_code, message), -2)
+            }
+            else {
+                throw "unexpected error getting buff length"
+            }
+        }
+        buff := Buffer(buff_length+1, 0)
+        retcode := DllCall("tempus_ahk\zoned_strftime", "Ptr", this.pointer, "WStr", format_str, "Ptr", buff, "UInt64", buff.Size, "Int64")
+        if (retcode = 0) {
+            ret := StrGet(buff, "UTF-8")
+            return ret
+        } else {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+    }
+
+    static strptime(format_str, time_str) {
+        out_ts := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\zoned_strptime", "WStr", format_str, "WStr", time_str, "Ptr", out_ts)
+        if (retcode < 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_ts, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    duration_until(other_time) {
+        if !(other_time is Zoned) {
+            throw Error("Unsupported Type. Must be Zoned", -2)
+        }
+        pointer := DllCall("tempus_ahk\zoned_duration_until", "Ptr", this.pointer, "Ptr", other_time.pointer, "Ptr")
+        return SignedDuration(pointer)
+    }
+    duration_since(other_time) {
+        if !(other_time is Zoned) {
+            throw Error("Unsupported Type. Must be Zoned", -2)
+        }
+        pointer := DllCall("tempus_ahk\zoned_duration_since", "Ptr", this.pointer, "Ptr", other_time.pointer, "Ptr")
+        return SignedDuration(pointer)
+    }
+
+    to_string() {
+        buff_length := DllCall("tempus_ahk\zoned_string_length", "Ptr", this.pointer, "UInt64")
+        buff := Buffer(buff_length+1, 0)
+        retcode := DllCall("tempus_ahk\zoned_to_string", "Ptr", this.pointer, "Ptr", buff, "UInt64", buff.Size)
+        ret := StrGet(buff, "UTF-8")
+        return ret
+    }
+
+    ToString() {
+        return this.to_string()
+    }
+    round(round_unit, increment := 1, round_mode := RoundMode.HalfExpand) {
+        if round_unit < 0 {
+            throw Error("Invalid round unit.", -2)
+        }
+        if round_unit > 5 {
+            throw Error("Largest allowed unit is Unit.Hour", -2)
+        }
+        if (round_mode < 1 || round_mode > 9) {
+            throw Error("Invalid round mode", -2)
+        }
+        out_zoned := Buffer(A_PtrSize)
+
+        retcode := DllCall("tempus_ahk\zoned_round", "Ptr", this.pointer, "Char", round_unit, "Int64", increment, "Char", round_mode, "Ptr", out_zoned, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error ({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_zoned, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Zoned(handle)
+    }
+
+    compare(other_zoned) {
+        if !(other_zoned is Zoned) {
+            throw Error("unsupported type. Must be Zoned", -2)
+        }
+        return DllCall("tempus_ahk\zoned_compare", "Ptr", this.pointer, "Ptr", other_zoned.pointer, "Char")
+    }
+
+    gt(other_zoned) {
+        result := this.compare(other_zoned)
+        if (result = _Ordering.GREATER) {
+            return true
+        }  else {
+            return false
+        }
+    }
+
+    lt(other_zoned) {
+        result := this.compare(other_zoned)
+        if (result = _Ordering.LESS) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    eq(other_zoned) {
+        result := this.compare(other_zoned)
+        if (result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    gte(other_zoned) {
+        result := this.compare(other_zoned)
+        if (result = _Ordering.GREATER || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    lte(other_zoned) {
+        result := this.compare(other_zoned)
+        if (result = _Ordering.LESS || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
     static parse(time_string) {
         ts_out := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\zoned_parse", "WStr", time_string, "Ptr", ts_out, "Int64")
@@ -2199,6 +2715,11 @@ class DateTime {
             throw "unexpected error"
         }
         return DateTime(handle)
+    }
+
+    start_of_day() {
+        pointer := DllCall("tempus_ahk\datetime_start_of_day")
+        return DateTime(pointer)
     }
 
     to_isoweekdate() {

@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::os::raw::{c_char, c_int, c_longlong, c_short};
+use std::ffi::{c_char, c_int, c_longlong, c_short};
 use std::str::FromStr;
 use jiff::civil::{DateTime, DateTimeDifference, DateTimeRound, DateTimeSeries, Era, Weekday};
 use jiff::Error;
