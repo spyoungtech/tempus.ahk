@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use jiff::{Error, Timestamp, TimestampDifference, TimestampRound};
+use jiff::{Error, Timestamp, TimestampDifference, TimestampRound, TimestampSeries};
 
 use std::ffi::{c_char, c_int, c_longlong};
 use std::fmt::{Display, Formatter};
@@ -11,6 +11,12 @@ use crate::span::TempusSpan;
 use crate::tz::TempusTimeZone;
 use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, unit_from_i8, round_mode_from_i8};
 use crate::zoned::TempusZoned;
+
+
+#[repr(C)]
+pub struct TempusTimestampSeries {
+    pub series: TimestampSeries
+}
 
 #[repr(C)]
 pub struct TempusTimestamp {
@@ -727,9 +733,24 @@ pub extern "C" fn timestamp_duration_since(tts: &TempusTimestamp, other: &Tempus
     Box::new(TempusSignedDuration{duration})
 }
 
+#[no_mangle]
+pub extern "C" fn timestamp_series(tts: &TempusTimestamp, tspan: &TempusSpan) -> Box<TempusTimestampSeries> {
+    let series = tts.ts.series(tspan.span);
+    Box::new(TempusTimestampSeries{series})
+}
+
 
 #[no_mangle]
 pub extern "C" fn free_timestamp(ts: Box<TempusTimestamp>) -> c_longlong {
+    let raw = Box::into_raw(ts);
+    unsafe {
+        drop(Box::from_raw(raw))
+    }
+    0
+}
+
+#[no_mangle]
+pub extern "C" fn free_timestamp_series(ts: Box<TempusTimestampSeries>) -> c_longlong {
     let raw = Box::into_raw(ts);
     unsafe {
         drop(Box::from_raw(raw))
