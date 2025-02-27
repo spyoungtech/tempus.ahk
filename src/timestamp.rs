@@ -715,6 +715,17 @@ pub extern "C" fn timestamp_since_zoned(tts: &TempusTimestamp, other: &TempusZon
     }
 }
 
+#[no_mangle]
+pub extern "C" fn timestamp_duration_until(tts: &TempusTimestamp, other: &TempusTimestamp) -> Box<TempusSignedDuration> {
+    let duration = tts.ts.duration_until(other.ts);
+    Box::new(TempusSignedDuration{duration})
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_duration_since(tts: &TempusTimestamp, other: &TempusTimestamp) -> Box<TempusSignedDuration> {
+    let duration = tts.ts.duration_since(other.ts);
+    Box::new(TempusSignedDuration{duration})
+}
 
 
 #[no_mangle]

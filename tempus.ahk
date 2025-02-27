@@ -891,6 +891,20 @@ class Timestamp {
         return Span(handle)
     }
 
+    duration_until(other_time) {
+        if !(other_time is Timestamp) {
+            throw Error("Unsupported Type. Must be Timestamp", -2)
+        }
+        pointer := DllCall("tempus_ahk\timestamp_duration_until", "Ptr", this.pointer, "Ptr", other_time.pointer, "Ptr")
+        return SignedDuration(pointer)
+    }
+    duration_since(other_time) {
+        if !(other_time is Timestamp) {
+            throw Error("Unsupported Type. Must be Timestamp", -2)
+        }
+        pointer := DllCall("tempus_ahk\timestamp_duration_since", "Ptr", this.pointer, "Ptr", other_time.pointer, "Ptr")
+        return SignedDuration(pointer)
+    }
     to_string() {
         buff_length := DllCall("tempus_ahk\timestamp_string_length", "Ptr", this.pointer, "UInt64")
         buff := Buffer(buff_length+1, 0)
