@@ -5,13 +5,13 @@
 
 Tempus is a DateTime library for AutoHotkey. 
 
-Right now, the API is usable, but not complete. Development towards completion is rapidly underway. See [API progress](#api-progress) for detailed status.
+Right now, the API is mostly complete, but some additional changes are expected, potentially including breaking changes. See [API progress](#api-progress) for detailed status.
 
 ## Acknowledgement
 
 `tempus.ahk` is built on top of [jiff](https://github.com/BurntSushi/jiff), which is authored by [Andrew Gallant](https://github.com/BurntSushi/) and other [contributors](https://github.com/BurntSushi/jiff/graphs/contributors). 
-We thank Andrew for his helpful nature, numerous contributions to the community. Moreover, we thank Andrew and other 
-other jiff contributors for providing/contributing to `jiff` under permissive licensing, allowing Tempus to exist.
+We thank Andrew for his helpful nature and numerous contributions to the community. Moreover, we thank Andrew for 
+authoring and publishing `jiff` under permissive licenses, allowing Tempus to exist.
 
 
 About _jiff_:
@@ -297,56 +297,57 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 
 - [x] [now](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.now)
 - [x] `parse` (equivalent of `let ts: Zoned = "2024-07-11T01:14:00Z".parse()`) -- `Zoned.parse(mystring)` in AHK
-- [ ] [new](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.new)
+- [x] [new](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.new)
 - [ ] [with](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.with)
-- [ ] [with_time_zone](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.with_time_zone)
-- [ ] [in_tz](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.in_tz)
-- [ ] [time_zone](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.time_zone)
-- [ ] [year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.year)
-- [ ] [era_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.era_year)
-- [ ] [month](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.month)
-- [ ] [day](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.day)
-- [ ] [hour](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.hour)
-- [ ] [minute](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.minute)
-- [ ] [second](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.second)
-- [ ] [millisecond](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.millisecond)
-- [ ] [microsecond](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.microsecond)
-- [ ] [nanosecond](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.nanosecond)
-- [ ] [subsec_nanosecond](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.subsec_nanosecond)
-- [ ] [weekday](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.weekday)
-- [ ] [day_of_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.day_of_year)
-- [ ] [day_of_year_no_leap](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.day_of_year_no_leap)
-- [ ] [start_of_day](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.start_of_day)
-- [ ] [end_of_day](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.end_of_day)
-- [ ] [first_of_month](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.first_of_month)
-- [ ] [last_of_month](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.last_of_month)
-- [ ] [days_in_month](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.days_in_month)
-- [ ] [first_of_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.first_of_year)
-- [ ] [last_of_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.last_of_year)
-- [ ] [days_in_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.days_in_year)
-- [ ] [in_leap_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.in_leap_year)
-- [ ] [tomorrow](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.tomorrow)
-- [ ] [yesterday](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.yesterday)
-- [ ] [nth_weekday_of_month](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.nth_weekday_of_month)
-- [ ] [nth_weekday](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.nth_weekday)
-- [ ] [timestamp](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.timestamp)
-- [ ] [datetime](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.datetime)
-- [ ] [date](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.date)
-- [ ] [time](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.time)
-- [ ] [iso_week_date](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.iso_week_date)
-- [ ] [offset](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.offset)
-- [ ] [checked_add](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.checked_add)
-- [ ] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.checked_sub)
-- [ ] [saturating_add](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.saturating_add)
-- [ ] [saturating_sub](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.saturating_sub)
-- [ ] [until](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.until)
-- [ ] [since](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.since)
-- [ ] [duration_until](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.duration_until)
-- [ ] [duration_since](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.duration_since)
-- [ ] [round](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.round)
-- [ ] [strptime](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.strptime)
-- [ ] [strftime](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.strftime)
-- [ ] Others (trait impls (to_string, parse/from_str, etc.), arithmetic, comparisons)
+- [x] [with_time_zone](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.with_time_zone)
+- [x] [in_tz](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.in_tz)
+- [x] [time_zone](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.time_zone)
+- [x] [year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.year)
+- [x] [era_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.era_year)
+- [x] [month](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.month)
+- [x] [day](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.day)
+- [x] [hour](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.hour)
+- [x] [minute](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.minute)
+- [x] [second](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.second)
+- [x] [millisecond](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.millisecond)
+- [x] [microsecond](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.microsecond)
+- [x] [nanosecond](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.nanosecond)
+- [x] [subsec_nanosecond](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.subsec_nanosecond)
+- [x] [weekday](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.weekday)
+- [x] [day_of_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.day_of_year)
+- [x] [day_of_year_no_leap](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.day_of_year_no_leap)
+- [x] [start_of_day](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.start_of_day)
+- [x] [end_of_day](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.end_of_day)
+- [x] [first_of_month](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.first_of_month)
+- [x] [last_of_month](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.last_of_month)
+- [x] [days_in_month](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.days_in_month)
+- [x] [first_of_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.first_of_year)
+- [x] [last_of_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.last_of_year)
+- [x] [days_in_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.days_in_year)
+- [x] [in_leap_year](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.in_leap_year)
+- [x] [tomorrow](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.tomorrow)
+- [x] [yesterday](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.yesterday)
+- [x] [nth_weekday_of_month](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.nth_weekday_of_month)
+- [x] [nth_weekday](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.nth_weekday)
+- [x] [timestamp](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.timestamp)
+- [x] [datetime](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.datetime)
+- [x] [date](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.date)
+- [x] [time](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.time)
+- [x] [iso_week_date](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.iso_week_date)
+- [x] [offset](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.offset)
+- [x] [checked_add](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.checked_add)
+- [x] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.checked_sub)
+- [x] [saturating_add](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.saturating_add)
+- [x] [saturating_sub](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.saturating_sub)
+- [x] [until](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.until)
+- [x] [since](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.since)
+- [x] [duration_until](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.duration_until)
+- [x] [duration_since](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.duration_since)
+- [x] [round](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.round)
+- [x] [strptime](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.strptime)
+- [x] [strftime](https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.strftime)
+- [x] cmp (`compare`, `lt`, `gt`, `gte`, `lte`, `eq`)
+
 
 ## Span
 
