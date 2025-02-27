@@ -631,18 +631,13 @@ class Timestamp {
 
 
     static parse(time_string) {
-        ts_out := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\timestamp_parse", "WStr", time_string, "Ptr", ts_out, "Int64")
-
-        if (retcode = 0) {
-            handle := NumGet(ts_out, 0, "Ptr")
-        } else if (retcode = -2) {
+        out_ts := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\timestamp_parse", "WStr", time_string, "Ptr", out_ts, "Int64")
+        if (retcode != 0) {
             message := _get_last_error()
-            throw Error(Format("error {}", message), -2)
-        } else {
-            throw "Unexpected error"
+            throw Error(Format("error({}): {}", retcode, message), -2)
         }
-
+        handle := NumGet(out_ts, 0, "Ptr")
         if (handle = 0) {
             throw "unexpected error"
         }
@@ -658,12 +653,10 @@ class Timestamp {
         }
         handle := NumGet(out_ts, 0, "Ptr")
         if (handle = 0) {
-            throw Error(Format("error({}): {}", retcode, message), -2)
+            throw "unexpected error"
         }
         return Timestamp(handle)
     }
-
-
 
     as_millisecond() {
         return DllCall("tempus_ahk\timestamp_as_millisecond", "Ptr", this.pointer, "Int64")
@@ -680,78 +673,58 @@ class Timestamp {
     static from_second(s) {
         out_ts := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\timestamp_from_second", "Int64", s, "Ptr", out_ts, "Int64")
-        if (retcode = 0) {
-            handle := NumGet(out_ts, 0, "Ptr")
-        } else if (retcode = -2) {
+        if (retcode != 0) {
             message := _get_last_error()
-            throw Error(Format("Error: {}", message), -2)
-        } else {
-            throw "unexpected error"
+            throw Error(Format("error({}): {}", retcode, message), -2)
         }
-
+        handle := NumGet(out_ts, 0, "Ptr")
         if (handle = 0) {
             throw "unexpected error"
         }
-
         return Timestamp(handle)
 
     }
     static from_millisecond(s) {
         out_ts := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\timestamp_from_millisecond", "Int64", s, "Ptr", out_ts, "Int64")
-        if (retcode = 0) {
-            handle := NumGet(out_ts, 0, "Ptr")
-        } else if (retcode = -2) {
+        if (retcode != 0) {
             message := _get_last_error()
-            throw Error(Format("Error: {}", message), -2)
-        } else {
-            throw "unexpected error"
+            throw Error(Format("error({}): {}", retcode, message), -2)
         }
-
+        handle := NumGet(out_ts, 0, "Ptr")
         if (handle = 0) {
             throw "unexpected error"
         }
-
         return Timestamp(handle)
 
     }
     static from_microsecond(s) {
         out_ts := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\timestamp_from_microsecond", "Int64", s, "Ptr", out_ts, "Int64")
-        if (retcode = 0) {
-            handle := NumGet(out_ts, 0, "Ptr")
-        } else if (retcode = -2) {
+        if (retcode != 0) {
             message := _get_last_error()
-            throw Error(Format("Error: {}", message), -2)
-        } else {
-            throw "unexpected error"
+            throw Error(Format("error({}): {}", retcode, message), -2)
         }
-
+        handle := NumGet(out_ts, 0, "Ptr")
         if (handle = 0) {
             throw "unexpected error"
         }
-
         return Timestamp(handle)
 
     }
 
     in_tz(timezone) {
-        zoned_ptr := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\timestamp_parse", "WStr", timezone, "Ptr", this.pointer, "Ptr", zoned_ptr, "Int64")
-        if (retcode = 0) {
-            handle := NumGet(zoned_ptr, 0, "Ptr")
-        } else if (retcode = -2) {
+        out_zoned := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\timestamp_parse", "WStr", timezone, "Ptr", this.pointer, "Ptr", out_zoned, "Int64")
+        if (retcode != 0) {
             message := _get_last_error()
-            throw Error(Format("error {}", message), -2)
-        } else {
-            throw "Unexpected error"
+            throw Error(Format("error({}): {}", retcode, message), -2)
         }
-
+        handle := NumGet(out_zoned, 0, "Ptr")
         if (handle = 0) {
             throw "unexpected error"
         }
         return Zoned(handle)
-
     }
 
     to_string() {
@@ -772,7 +745,7 @@ class Timestamp {
             error_code := buff_length
             if (error_code = -2 || error_code = -3) {
                 message := _get_last_error()
-                throw Error(Format("error {}", message), -2)
+                throw Error(Format("error({}): {}", error_code, message), -2)
             }
             else {
                 throw "unexpected error getting buff length"
@@ -785,7 +758,7 @@ class Timestamp {
             return ret
         } else {
             message := _get_last_error()
-            throw Error(Format("error: {}", message), -2)
+            throw Error(Format("error({}): {}", retcode, message), -2)
         }
     }
 
