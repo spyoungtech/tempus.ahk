@@ -1,4 +1,5 @@
 use std::ffi::c_longlong;
+use jiff::Error;
 use jiff::tz::TimeZone;
 use crate::utils::{ahk_str_to_string, set_last_error_message, AHKWstr};
 
@@ -54,6 +55,29 @@ pub extern "C" fn timezone_utc() -> Box<TempusTimeZone> {
 #[no_mangle]
 pub extern "C" fn timezone_unknown() -> Box<TempusTimeZone> {
     Box::new(TempusTimeZone{tz: TimeZone::unknown()})
+}
+
+#[no_mangle]
+pub extern "C" fn timezone_posix(posix_tz_str: AHKWstr, out_tz: *mut *mut TempusTimeZone) -> c_longlong {
+    match ahk_str_to_string(posix_tz_str) {
+        Err(_) => {
+            set_last_error_message("bad AHK string".to_string());
+            -1
+        }
+        Ok(tz_string) => {
+            match TimeZone::posix(&tz_string) {
+                Err(e) => {
+                    set_last_error_message(e.to_string());
+                    -2
+                }
+                Ok(tz) => {
+                    let ttz = TempusTimeZone { tz };
+                    ttz.stuff_into(out_tz);
+                    0
+                }
+            }
+        }
+    }
 }
 
 #[no_mangle]
