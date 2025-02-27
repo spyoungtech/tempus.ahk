@@ -620,8 +620,8 @@ class Timestamp {
         return Timestamp(ptr)
     }
 
-    static MIN() {
-        ptr := DllCall("tempus_ahk\timestamp_min", "Ptr")
+    static MAX() {
+        ptr := DllCall("tempus_ahk\timestamp_max", "Ptr")
         return Timestamp(ptr)
     }
     static UNIX_EPOCH() {
@@ -851,7 +851,45 @@ class Timestamp {
         return Timestamp(handle)
     }
 
+    until_time(other, largest_unit := -1, smallest_unit := -1, increment := 1, round_mode := RoundMode.HalfExpand) {
+        out_span := Buffer(A_PtrSize)
+        if (other is Timestamp) {
+            retcode := DllCall("tempus_ahk\timestamp_until_timestamp", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+        } else if (other is Zoned) {
+            retcode := DllCall("tempus_ahk\timestamp_until_zoned", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+        } else {
+            throw Error("Unsupported Type. Must be Timestamp or Zoned", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
 
+    since(other, largest_unit := -1, smallest_unit := -1, increment := 1, round_mode := RoundMode.HalfExpand) {
+        out_span := Buffer(A_PtrSize)
+        if (other is Timestamp) {
+            retcode := DllCall("tempus_ahk\timestamp_since_timestamp", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+        } else if (other is Zoned) {
+            retcode := DllCall("tempus_ahk\timestamp_since_zoned", "Ptr", this.pointer, "Ptr", other.pointer, "Char", largest_unit, "Char", smallest_unit, "Int64", increment, "Char", round_mode, "Ptr", out_span, "Int64")
+        } else {
+            throw Error("Unsupported Type. Must be Timestamp or Zoned", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_span, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Span(handle)
+    }
 
     to_string() {
         buff_length := DllCall("tempus_ahk\timestamp_string_length", "Ptr", this.pointer, "UInt64")

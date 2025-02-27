@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use jiff::{Error, Timestamp, TimestampRound, Zoned};
+use jiff::{Error, Timestamp, TimestampDifference, TimestampRound};
 
 use std::ffi::{c_char, c_int, c_longlong};
 use std::fmt::{Display, Formatter};
@@ -524,6 +524,198 @@ pub extern "C" fn timestamp_saturating_sub_signed_duration(tts: &TempusTimestamp
         }
     }
 }
+
+#[no_mangle]
+pub extern "C" fn timestamp_until_timestamp(tts: &TempusTimestamp, other: &TempusTimestamp, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e);
+            return -2
+        }
+        Ok(round_mode) => round_mode,
+    };
+    let mut dd = TimestampDifference::from(other.ts).mode(round_mode).increment(increment);
+
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.largest(unit);
+    }
+
+
+    match tts.ts.until(dd) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_until_zoned(tts: &TempusTimestamp, other: &TempusZoned, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e);
+            return -2
+        }
+        Ok(round_mode) => round_mode,
+    };
+    let mut dd = TimestampDifference::from(other.zoned.clone()).mode(round_mode).increment(increment);
+
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.largest(unit);
+    }
+
+
+    match tts.ts.until(dd) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+
+#[no_mangle]
+pub extern "C" fn timestamp_since_timestamp(tts: &TempusTimestamp, other: &TempusTimestamp, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e);
+            return -2
+        }
+        Ok(round_mode) => round_mode,
+    };
+    let mut dd = TimestampDifference::from(other.ts).mode(round_mode).increment(increment);
+
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.largest(unit);
+    }
+
+
+    match tts.ts.since(dd) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+
+#[no_mangle]
+pub extern "C" fn timestamp_since_zoned(tts: &TempusTimestamp, other: &TempusZoned, largest_i: i8, smallest_i: i8, increment: i64, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e);
+            return -2
+        }
+        Ok(round_mode) => round_mode,
+    };
+    let mut dd = TimestampDifference::from(other.zoned.clone()).mode(round_mode).increment(increment);
+
+    if smallest_i >= 0 {
+        let unit = match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.smallest(unit);
+    }
+
+    if largest_i >= 0 {
+        let unit = match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e);
+                return -1
+            }
+            Ok(unit) => unit,
+        };
+        dd = dd.largest(unit);
+    }
+
+
+    match tts.ts.since(dd) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(span) => {
+            let new_span = TempusSpan{span};
+            new_span.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+
 
 #[no_mangle]
 pub extern "C" fn free_timestamp(ts: Box<TempusTimestamp>) -> c_longlong {
