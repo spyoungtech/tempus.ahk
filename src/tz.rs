@@ -1,5 +1,4 @@
 use std::ffi::c_longlong;
-use jiff::Error;
 use jiff::tz::TimeZone;
 use crate::utils::{ahk_str_to_string, set_last_error_message, AHKWstr};
 
