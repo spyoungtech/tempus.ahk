@@ -256,7 +256,7 @@ fn test_span_compare_fails_non_span() {
     let output = run_script(script);
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
-    assert!(stderr.contains("Only spans can be compared with spans"));
+    assert!(stderr.contains("Can only compare to another Span"));
     assert_eq!(stdout.to_string(), String::from(""));
     assert!(!output.status.success());
 }
