@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+use std::cmp::Ordering;
 use jiff::{Error, Timestamp, TimestampDifference, TimestampRound, TimestampSeries};
 
 use std::ffi::{c_char, c_int, c_longlong};
@@ -739,6 +740,15 @@ pub extern "C" fn timestamp_series(tts: &TempusTimestamp, tspan: &TempusSpan) ->
     Box::new(TempusTimestampSeries{series})
 }
 
+
+#[no_mangle]
+pub extern "C" fn timestamp_compare(tts: &TempusTimestamp, other: &TempusTimestamp) -> c_char {
+    match tts.ts.cmp(&other.ts) {
+        Ordering::Less => {-1}
+        Ordering::Equal => {0}
+        Ordering::Greater => {1}
+    }
+}
 
 #[no_mangle]
 pub extern "C" fn free_timestamp(ts: Box<TempusTimestamp>) -> c_longlong {

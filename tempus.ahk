@@ -963,6 +963,59 @@ class Timestamp {
         }
     }
 
+    compare(other_timestamp) {
+        if !(other_timestamp is Timestamp) {
+            throw Error("unsupported type. Must be Timestamp", -2)
+        }
+        return DllCall("tempus_ahk\timestamp_compare", "Ptr", this.pointer, "Ptr", other_timestamp.pointer, "Char")
+    }
+
+    gt(other_timestamp) {
+        result := this.compare(other_timestamp)
+        if (result = _Ordering.GREATER) {
+            return true
+        }  else {
+            return false
+        }
+    }
+
+    lt(other_timestamp) {
+        result := this.compare(other_timestamp)
+        if (result = _Ordering.LESS) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    eq(other_timestamp) {
+        result := this.compare(other_timestamp)
+        if (result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    gte(other_timestamp) {
+        result := this.compare(other_timestamp)
+        if (result = _Ordering.GREATER || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    lte(other_timestamp) {
+        result := this.compare(other_timestamp)
+        if (result = _Ordering.LESS || result = _Ordering.EQUAL) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+
     round(round_unit, increment := 1, round_mode := RoundMode.HalfExpand) {
         if round_unit < 0 {
             throw Error("Invalid round unit.", -2)
