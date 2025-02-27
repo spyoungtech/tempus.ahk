@@ -285,7 +285,7 @@ fn test_span_compare_24_hours() {
 
 #[test]
 fn test_span_compare_relative() {
-    let script = make_script("span1 := Span.new().days(30)\nspan2 := Span.new().weeks(3)\nrelative_to := DateTime.now()\nwritestdout(span1.gt(span2, relative_to))");
+    let script = make_script("span1 := Span.new().days(30)\nspan2 := Span.new().weeks(3)\nrelative_to := Zoned.now()\nwritestdout(span1.gt(span2, relative_to))");
     let output = run_script(script);
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
