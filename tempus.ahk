@@ -670,6 +670,16 @@ class Timestamp {
         return DllCall("tempus_ahk\timestamp_as_second", "Ptr", this.pointer, "Int64")
     }
 
+    subsec_millisecond() {
+        return DllCall("tempus_ahk\timestamp_subsec_millisecond", "Ptr", this.pointer, "Int")
+    }
+    subsec_microsecond() {
+        return DllCall("tempus_ahk\timestamp_subsec_microsecond", "Ptr", this.pointer, "Int")
+    }
+    subsec_nanosecond() {
+        return DllCall("tempus_ahk\timestamp_subsec_nanosecond", "Ptr", this.pointer, "Int")
+    }
+
     static from_second(s) {
         out_ts := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\timestamp_from_second", "Int64", s, "Ptr", out_ts, "Int64")
@@ -713,6 +723,28 @@ class Timestamp {
 
     }
 
+    static from_duration(duration) {
+        if !(duration is SignedDuration) {
+            throw Error("Unsupported Type. Must be SignedDuration")
+        }
+        out_ts := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\timestamp_from_duration", "Ptr", duration.pointer, "Ptr", out_ts, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_ts, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Timestamp(handle)
+    }
+
+    as_duration() {
+        pointer := DllCall("tempus_ahk\timestamp_as_duration", "Ptr", this.pointer, "Ptr")
+        return SignedDuration(pointer)
+    }
+
     in_tz(timezone) {
         out_zoned := Buffer(A_PtrSize)
         retcode := DllCall("tempus_ahk\timestamp_parse", "WStr", timezone, "Ptr", this.pointer, "Ptr", out_zoned, "Int64")
@@ -726,6 +758,100 @@ class Timestamp {
         }
         return Zoned(handle)
     }
+
+    to_zoned(tz) {
+        if !(tz is Timezone) {
+            throw Error("Unsupported type. Must be Timezone", -2)
+        }
+        pointer := DllCall("tempus_ahk\timestamp_to_zoned", "Ptr", this.pointer, "Ptr", tz.pointer, "Ptr")
+        return Zoned(pointer)
+    }
+
+    signum() {
+        return DllCall("tempus_ahk\timestamp_signum", "Ptr", this.pointer, "Char")
+    }
+
+    checked_add(other) {
+        out_ts := Buffer(A_PtrSize)
+        if (other is Span) {
+            retcode := DllCall("tempus_ahk\timestamp_checked_add_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_ts, "Int64")
+        } else if (other is SignedDuration) {
+            retcode := DllCall("tempus_ahk\timestamp_checked_add_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_ts, "Int64")
+        } else {
+            throw Error("Unsupported type. Must be Span or SignedDuration", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_ts, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Timestamp(handle)
+    }
+
+    checked_sub(other) {
+        out_ts := Buffer(A_PtrSize)
+        if (other is Span) {
+            retcode := DllCall("tempus_ahk\timestamp_checked_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_ts, "Int64")
+        } else if (other is SignedDuration) {
+            retcode := DllCall("tempus_ahk\timestamp_checked_sub_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_ts, "Int64")
+        } else {
+            throw Error("Unsupported type. Must be Span or SignedDuration", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_ts, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Timestamp(handle)
+    }
+
+    saturating_add(other) {
+        out_ts := Buffer(A_PtrSize)
+        if (other is Span) {
+            retcode := DllCall("tempus_ahk\timestamp_saturating_add_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_ts, "Int64")
+        } else if (other is SignedDuration) {
+            retcode := DllCall("tempus_ahk\timestamp_saturating_add_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_ts, "Int64")
+        } else {
+            throw Error("Unsupported type. Must be Span or SignedDuration", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_ts, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Timestamp(handle)
+    }
+
+    saturating_sub(other) {
+        out_ts := Buffer(A_PtrSize)
+        if (other is Span) {
+            retcode := DllCall("tempus_ahk\timestamp_saturating_sub_span", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_ts, "Int64")
+        } else if (other is SignedDuration) {
+            retcode := DllCall("tempus_ahk\timestamp_saturating_sub_signed_duration", "Ptr", this.pointer, "Ptr", other.pointer, "Ptr", out_ts, "Int64")
+        } else {
+            throw Error("Unsupported type. Must be Span or SignedDuration", -2)
+        }
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_ts, 0, "Ptr")
+        if (handle = 0) {
+            throw "unexpected error"
+        }
+        return Timestamp(handle)
+    }
+
+
 
     to_string() {
         buff_length := DllCall("tempus_ahk\timestamp_string_length", "Ptr", this.pointer, "UInt64")
@@ -774,10 +900,6 @@ class Timestamp {
             throw "unexpected error"
         }
         return Timestamp(handle)
-    }
-
-    static UNIX_EPOCH() {
-        return Timestamp.from_second(0)
     }
 
     is_zero() {

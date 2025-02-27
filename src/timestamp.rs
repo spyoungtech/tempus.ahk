@@ -1,11 +1,14 @@
 #![allow(dead_code)]
 
-use jiff::{Error, Timestamp, TimestampRound};
+use jiff::{Error, Timestamp, TimestampRound, Zoned};
 
-use std::ffi::c_longlong;
+use std::ffi::{c_char, c_int, c_longlong};
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 use jiff::fmt::strtime::BrokenDownTime;
+use crate::duration::TempusSignedDuration;
+use crate::span::TempusSpan;
+use crate::tz::TempusTimeZone;
 use crate::utils::{AHKWstr, ahk_str_to_string, set_last_error_message, string_into_ahk_buff, AHKStringBuffer, unit_from_i8, round_mode_from_i8};
 use crate::zoned::TempusZoned;
 
@@ -355,8 +358,172 @@ pub extern "C" fn timestamp_new(seconds: i64, nanoseconds: i32, out_ts: *mut *mu
     }
 }
 
+#[no_mangle]
+pub extern "C" fn timestamp_from_duration(tduration: &TempusSignedDuration, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    match Timestamp::from_duration(tduration.duration) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(ts) => {
+            let tts = TempusTimestamp{ts};
+            tts.stuff_into(out_ts);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_subsec_millisecond(tts: &TempusTimestamp) -> c_int {
+    tts.ts.subsec_millisecond()
+}
+#[no_mangle]
+pub extern "C" fn timestamp_subsec_microsecond(tts: &TempusTimestamp) -> c_int {
+    tts.ts.subsec_microsecond()
+}
+#[no_mangle]
+pub extern "C" fn timestamp_subsec_nanosecond(tts: &TempusTimestamp) -> c_int {
+    tts.ts.subsec_nanosecond()
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_as_duration(tts: &TempusTimestamp) -> Box<TempusSignedDuration> {
+    Box::new(TempusSignedDuration{duration: tts.ts.as_duration()})
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_signum(tts: &TempusTimestamp) -> c_char {
+    tts.ts.signum()
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_to_zoned(tts: &TempusTimestamp, ttz: &TempusTimeZone) -> Box<TempusZoned> {
+    Box::new(TempusZoned{zoned: tts.ts.to_zoned(ttz.tz.clone())})
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_checked_add_span(tts: &TempusTimestamp, other: &TempusSpan, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    match tts.ts.checked_add(other.span) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(ts) => {
+            let new_tts = TempusTimestamp{ts};
+            new_tts.stuff_into(out_ts);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_checked_sub_span(tts: &TempusTimestamp, other: &TempusSpan, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    match tts.ts.checked_sub(other.span) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(ts) => {
+            let new_tts = TempusTimestamp{ts};
+            new_tts.stuff_into(out_ts);
+            0
+        }
+    }
+}
 
 
+
+#[no_mangle]
+pub extern "C" fn timestamp_checked_add_signed_duration(tts: &TempusTimestamp, other: &TempusSignedDuration, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    match tts.ts.checked_add(other.duration) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(ts) => {
+            let new_tts = TempusTimestamp{ts};
+            new_tts.stuff_into(out_ts);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_checked_sub_signed_duration(tts: &TempusTimestamp, other: &TempusSignedDuration, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    match tts.ts.checked_sub(other.duration) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(ts) => {
+            let new_tts = TempusTimestamp{ts};
+            new_tts.stuff_into(out_ts);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_saturating_add_span(tts: &TempusTimestamp, rhs: &TempusSpan, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    match tts.ts.saturating_add(rhs.span) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(ts) => {
+            let new_tts = TempusTimestamp{ts};
+            new_tts.stuff_into(out_ts);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_saturating_sub_span(tts: &TempusTimestamp, rhs: &TempusSpan, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    match tts.ts.saturating_sub(rhs.span) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(ts) => {
+            let new_tts = TempusTimestamp{ts};
+            new_tts.stuff_into(out_ts);
+            0
+        }
+    }
+}
+
+
+#[no_mangle]
+pub extern "C" fn timestamp_saturating_add_signed_duration(tts: &TempusTimestamp, rhs: &TempusSignedDuration, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    match tts.ts.saturating_add(rhs.duration) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(ts) => {
+            let new_tts = TempusTimestamp{ts};
+            new_tts.stuff_into(out_ts);
+            0
+        }
+    }
+}
+
+
+#[no_mangle]
+pub extern "C" fn timestamp_saturating_sub_signed_duration(tts: &TempusTimestamp, rhs: &TempusSignedDuration, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    match tts.ts.saturating_sub(rhs.duration) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(ts) => {
+            let new_tts = TempusTimestamp{ts};
+            new_tts.stuff_into(out_ts);
+            0
+        }
+    }
+}
 
 #[no_mangle]
 pub extern "C" fn free_timestamp(ts: Box<TempusTimestamp>) -> c_longlong {
