@@ -4,7 +4,10 @@ use std::ffi::c_longlong;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 use jiff::{Error, Span, SpanCompare, SpanRelativeTo, SpanRound, SpanTotal};
+use crate::date::TempusDate;
+use crate::datetime::TempusDateTime;
 use crate::utils::{ahk_str_to_string, round_mode_from_i8, set_last_error_message, string_into_ahk_buff, unit_from_i8, AHKStringBuffer, AHKWstr};
+use crate::zoned::TempusZoned;
 
 #[repr(C)]
 pub struct TempusSpan {
@@ -430,6 +433,76 @@ pub extern "C" fn span_total(tspan: &TempusSpan, unit_i: i8, days_are_24_hours_i
                 }
                 0
             }
+        }
+    }
+}
+
+
+#[no_mangle]
+pub extern "C" fn span_total_relative_to_date(tspan: &TempusSpan, unit_i: i8, tdate: &TempusDate, out_f64: *mut f64) -> c_longlong {
+    let unit = match unit_from_i8(unit_i) {
+        Ok(u) => u,
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            return -2
+        }
+    };
+    match tspan.span.total((unit, tdate.date)) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -3
+        }
+        Ok(res) => {
+            unsafe {
+                out_f64.replace(res);
+            }
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn span_total_relative_to_datetime(tspan: &TempusSpan, unit_i: i8, tdt: &TempusDateTime, out_f64: *mut f64) -> c_longlong {
+    let unit = match unit_from_i8(unit_i) {
+        Ok(u) => u,
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            return -2
+        }
+    };
+    match tspan.span.total((unit, tdt.datetime)) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -3
+        }
+        Ok(res) => {
+            unsafe {
+                out_f64.replace(res);
+            }
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn span_total_relative_to_zoned(tspan: &TempusSpan, unit_i: i8, tzoned: &TempusZoned, out_f64: *mut f64) -> c_longlong {
+    let unit = match unit_from_i8(unit_i) {
+        Ok(u) => u,
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            return -2
+        }
+    };
+    match tspan.span.total((unit, &tzoned.zoned)) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -3
+        }
+        Ok(res) => {
+            unsafe {
+                out_f64.replace(res);
+            }
+            0
         }
     }
 }
