@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 use std::ffi::c_short;
-use std::os::raw::{c_char, c_longlong};
+use std::ffi::{c_char, c_longlong};
 use std::str::FromStr;
 use jiff::civil::{Date, DateDifference, DateSeries, Era, Weekday};
 use jiff::{Error};

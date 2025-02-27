@@ -1,5 +1,5 @@
 use std::ffi::{c_char, c_short};
-use std::os::raw::c_longlong;
+use std::ffi::c_longlong;
 use jiff::civil::{ISOWeekDate, Weekday};
 use crate::date::TempusDate;
 use crate::utils::set_last_error_message;
