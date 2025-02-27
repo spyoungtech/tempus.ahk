@@ -615,6 +615,20 @@ class Timestamp {
         return Timestamp(ptr)
     }
 
+    static MIN() {
+        ptr := DllCall("tempus_ahk\timestamp_min", "Ptr")
+        return Timestamp(ptr)
+    }
+
+    static MIN() {
+        ptr := DllCall("tempus_ahk\timestamp_min", "Ptr")
+        return Timestamp(ptr)
+    }
+    static UNIX_EPOCH() {
+        ptr := DllCall("tempus_ahk\timestamp_unix_epoch", "Ptr")
+        return Timestamp(ptr)
+    }
+
 
     static parse(time_string) {
         ts_out := Buffer(A_PtrSize)
@@ -634,6 +648,22 @@ class Timestamp {
         }
         return Timestamp(handle)
     }
+
+    static new(second, nanosecond) {
+        out_ts := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\timestamp_new", "Int64", second, "Int", nanosecond, "Ptr", out_ts, "Int64")
+        if (retcode != 0) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        handle := NumGet(out_ts, 0, "Ptr")
+        if (handle = 0) {
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        return Timestamp(handle)
+    }
+
+
 
     as_millisecond() {
         return DllCall("tempus_ahk\timestamp_as_millisecond", "Ptr", this.pointer, "Int64")

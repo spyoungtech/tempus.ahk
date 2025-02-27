@@ -326,6 +326,39 @@ pub extern "C" fn timestamp_parse(ahk_time_string: AHKWstr, out_ts: *mut *mut Te
 
 
 #[no_mangle]
+pub extern "C" fn timestamp_min() -> Box<TempusTimestamp> {
+    Box::new(TempusTimestamp{ts: Timestamp::MIN})
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_max() -> Box<TempusTimestamp> {
+    Box::new(TempusTimestamp{ts: Timestamp::MAX})
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_unix_epoch() -> Box<TempusTimestamp> {
+    Box::new(TempusTimestamp{ts: Timestamp::UNIX_EPOCH})
+}
+
+#[no_mangle]
+pub extern "C" fn timestamp_new(seconds: i64, nanoseconds: i32, out_ts: *mut *mut TempusTimestamp) -> c_longlong {
+    match Timestamp::new(seconds, nanoseconds) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -1
+        }
+        Ok(ts) => {
+            let tts = TempusTimestamp{ts};
+            tts.stuff_into(out_ts);
+            0
+        }
+    }
+}
+
+
+
+
+#[no_mangle]
 pub extern "C" fn free_timestamp(ts: Box<TempusTimestamp>) -> c_longlong {
     let raw = Box::into_raw(ts);
     unsafe {
