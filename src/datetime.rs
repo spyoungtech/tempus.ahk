@@ -736,6 +736,18 @@ pub extern "C" fn datetime_series(tdt: &TempusDateTime, tspan: &TempusSpan) -> B
     Box::new(TempusDateTimeSeries{series: tdt.datetime.series(tspan.span)})
 }
 
+#[no_mangle]
+pub extern "C" fn datetime_series_next(tds: &mut TempusDateTimeSeries, out_datetime: *mut *mut TempusDateTime) -> c_longlong {
+    match tds.series.next() {
+        None => -1,
+        Some(datetime) => {
+            let tdt = TempusDateTime{datetime};
+            tdt.stuff_into(out_datetime);
+            0
+        }
+    }
+}
+
 
 #[no_mangle]
 pub extern "C" fn datetime_round(tdt: &TempusDateTime, smallest_i: i8, increment: i64, round_mode_i: i8, out_datetime: *mut *mut TempusDateTime) -> c_longlong {

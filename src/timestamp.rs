@@ -740,6 +740,18 @@ pub extern "C" fn timestamp_series(tts: &TempusTimestamp, tspan: &TempusSpan) ->
     Box::new(TempusTimestampSeries{series})
 }
 
+#[no_mangle]
+pub extern "C" fn timestamp_series_next(ttss: &mut TempusTimestampSeries, out_timestamp: *mut *mut TempusTimestamp) -> c_longlong {
+    match ttss.series.next() {
+        None => -1,
+        Some(ts) => {
+            let tts = TempusTimestamp{ts};
+            tts.stuff_into(out_timestamp);
+            0
+        }
+    }
+}
+
 
 #[no_mangle]
 pub extern "C" fn timestamp_compare(tts: &TempusTimestamp, other: &TempusTimestamp) -> c_char {

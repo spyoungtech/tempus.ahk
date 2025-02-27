@@ -395,7 +395,7 @@ class SignedDuration {
     }
 
     signum() {
-        return DllCall("tempus_ahk\signed_duration_is_negative", "Ptr", this.pointer, "Char")
+        return DllCall("tempus_ahk\signed_duration_signum", "Ptr", this.pointer, "Char")
     }
 
     checked_neg() {
@@ -596,7 +596,7 @@ class Zoned {
         if !(tz is Timezone) {
             throw Error("argument must be Timezone", -2)
         }
-        pointer := DllCall("zoned_with_time_zone", "Ptr", this.pointer, "Ptr", tz.pointer, "Int64")
+        pointer := DllCall("tempus_ahk\zoned_with_time_zone", "Ptr", this.pointer, "Ptr", tz.pointer, "Int64")
         return Zoned(pointer)
     }
 
@@ -823,7 +823,7 @@ class Zoned {
 
     nth_weekday(nth, weekday_i) {
         out_zoned := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\zoned_nth_weekday_of_month", "Ptr", this.pointer, "Int", nth, "Char", weekday_i, "Ptr", out_zoned, "Int64")
+        retcode := DllCall("tempus_ahk\zoned_nth_weekday", "Ptr", this.pointer, "Int", nth, "Char", weekday_i, "Ptr", out_zoned, "Int64")
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message))
@@ -1263,7 +1263,7 @@ class Timestamp {
 
     in_tz(timezone) {
         out_zoned := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\timestamp_parse", "WStr", timezone, "Ptr", this.pointer, "Ptr", out_zoned, "Int64")
+        retcode := DllCall("tempus_ahk\timestamp_in_tz", "WStr", timezone, "Ptr", this.pointer, "Ptr", out_zoned, "Int64")
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message), -2)
@@ -1273,6 +1273,11 @@ class Timestamp {
             throw "unexpected error"
         }
         return Zoned(handle)
+    }
+
+    time_zone() {
+        pointer := DllCall("tempus_ahk\zoned_time_zone")
+        return Timezone(pointer)
     }
 
     to_zoned(tz) {
@@ -2271,7 +2276,7 @@ class Date {
 
     nth_weekday(nth, weekday_i) {
         out_date := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\date_nth_weekday_of_month", "Ptr", this.pointer, "Int", nth, "Char", weekday_i, "Ptr", out_date, "Int64")
+        retcode := DllCall("tempus_ahk\date_nth_weekday", "Ptr", this.pointer, "Int", nth, "Char", weekday_i, "Ptr", out_date, "Int64")
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message))
@@ -2705,7 +2710,7 @@ class DateTime {
 
     nth_weekday(nth, weekday_i) {
         out_datetime := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\datetime_nth_weekday_of_month", "Ptr", this.pointer, "Int", nth, "Char", weekday_i, "Ptr", out_datetime, "Int64")
+        retcode := DllCall("tempus_ahk\datetime_nth_weekday", "Ptr", this.pointer, "Int", nth, "Char", weekday_i, "Ptr", out_datetime, "Int64")
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message))
@@ -2719,6 +2724,10 @@ class DateTime {
 
     start_of_day() {
         pointer := DllCall("tempus_ahk\datetime_start_of_day")
+        return DateTime(pointer)
+    }
+    end_of_day() {
+        pointer := DllCall("tempus_ahk\datetime_end_of_day")
         return DateTime(pointer)
     }
 
@@ -3009,12 +3018,12 @@ class DateTimeSeries {
     }
 
     Call(&dt) {
-        out_date := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\datetime_series_next", "Ptr", this.pointer, "Ptr", out_date, "Char")
+        out_datetime := Buffer(A_PtrSize)
+        retcode := DllCall("tempus_ahk\datetime_series_next", "Ptr", this.pointer, "Ptr", out_datetime, "Char")
         if (retcode != 0) {
             return false
         } else {
-            handle := NumGet(out_date, 0, "Ptr")
+            handle := NumGet(out_datetime, 0, "Ptr")
             if (handle = 0) {
                 throw "unexpected error"
             }
