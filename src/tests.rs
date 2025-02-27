@@ -307,7 +307,29 @@ fn test_span_total() {
 }
 
 #[test]
+fn test_span_total_relative() {
+    let script = make_script("span1 := Span.new().days(3).minutes(10)\nrelative_to := DateTime.new(2025, 2, 27, 12, 0, 0)\nwritestdout(span1.total(Unit.Second, relative_to))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("259800.0"));
+    assert!(output.status.success());
+}
+
+#[test]
 fn test_span_round() {
+    let script = make_script("span1 := Span.parse(\"PT23h50m3.123s\")\nexpected := Span.new().hours(24)\nrounded := span1.round(Unit.Minute, 30,,,Zoned.now())\nwritestdout(expected.eq(rounded))");
+    let output = run_script(script);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr, "");
+    assert_eq!(stdout.to_string(), String::from("1"));
+    assert!(output.status.success());
+}
+
+#[test]
+fn test_span_round_relative() {
     let script = make_script("span1 := Span.parse(\"PT23h50m3.123s\")\nexpected := Span.new().hours(24)\nrounded := span1.round(Unit.Minute, 30)\nwritestdout(expected.eq(rounded))");
     let output = run_script(script);
     let stdout = String::from_utf8_lossy(&output.stdout);
