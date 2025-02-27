@@ -508,7 +508,15 @@ pub extern "C" fn span_total_relative_to_zoned(tspan: &TempusSpan, unit_i: i8, t
 }
 
 #[no_mangle]
-pub extern "C" fn span_round(tspan: &TempusSpan, smallest_i: i8, increment: i64, largest_i: i8, round_mode_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
+pub extern "C" fn span_round(tspan: &TempusSpan, smallest_i: i8, increment: i64, largest_i: i8, round_mode_i: i8, days_are_24_hours_i: i8, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let days_are_24_hours = match days_are_24_hours_i {
+        0 => false,
+        1 => true,
+        _ => {
+            set_last_error_message("invalid options".to_string());
+            return -1
+        }
+    };
     let round_mode = match round_mode_from_i8(round_mode_i) {
         Err(e) => {
             set_last_error_message(e.to_string());
@@ -517,6 +525,150 @@ pub extern "C" fn span_round(tspan: &TempusSpan, smallest_i: i8, increment: i64,
         Ok(mode) => mode
     };
     let mut rounder = SpanRound::new().mode(round_mode).increment(increment);
+    if days_are_24_hours {
+        rounder = rounder.days_are_24_hours();
+    }
+
+    if smallest_i >= 0 {
+        match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                return -2
+            }
+            Ok(smallest) => {
+                rounder = rounder.smallest(smallest)
+            }
+        };
+    }
+    if largest_i >= 0 {
+        match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                return -3
+            }
+            Ok(largest) => {
+                rounder = rounder.largest(largest);
+            }
+        }
+    }
+
+    match tspan.span.round(rounder) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -4
+        }
+        Ok(rounded) => {
+            let new_tts = TempusSpan{span: rounded};
+            new_tts.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+
+#[no_mangle]
+pub extern "C" fn span_round_relative_to_date(tspan: &TempusSpan, smallest_i: i8, increment: i64, largest_i: i8, round_mode_i: i8, tdate: &TempusDate, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            return -1
+        }
+        Ok(mode) => mode
+    };
+    let mut rounder = SpanRound::new().mode(round_mode).increment(increment).relative(tdate.date);
+    if smallest_i >= 0 {
+        match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                return -2
+            }
+            Ok(smallest) => {
+                rounder = rounder.smallest(smallest)
+            }
+        };
+    }
+    if largest_i >= 0 {
+        match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                return -3
+            }
+            Ok(largest) => {
+                rounder = rounder.largest(largest);
+            }
+        }
+    }
+
+    match tspan.span.round(rounder) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -4
+        }
+        Ok(rounded) => {
+            let new_tts = TempusSpan{span: rounded};
+            new_tts.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+
+#[no_mangle]
+pub extern "C" fn span_round_relative_to_datetime(tspan: &TempusSpan, smallest_i: i8, increment: i64, largest_i: i8, round_mode_i: i8, tdt: &TempusDateTime, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            return -1
+        }
+        Ok(mode) => mode
+    };
+    let mut rounder = SpanRound::new().mode(round_mode).increment(increment).relative(tdt.datetime);
+    if smallest_i >= 0 {
+        match unit_from_i8(smallest_i) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                return -2
+            }
+            Ok(smallest) => {
+                rounder = rounder.smallest(smallest)
+            }
+        };
+    }
+    if largest_i >= 0 {
+        match unit_from_i8(largest_i) {
+            Err(e) => {
+                set_last_error_message(e.to_string());
+                return -3
+            }
+            Ok(largest) => {
+                rounder = rounder.largest(largest);
+            }
+        }
+    }
+
+    match tspan.span.round(rounder) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -4
+        }
+        Ok(rounded) => {
+            let new_tts = TempusSpan{span: rounded};
+            new_tts.stuff_into(out_span);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn span_round_relative_to_zoned(tspan: &TempusSpan, smallest_i: i8, increment: i64, largest_i: i8, round_mode_i: i8, tzoned: &TempusZoned, out_span: *mut *mut TempusSpan) -> c_longlong {
+    let round_mode = match round_mode_from_i8(round_mode_i) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            return -1
+        }
+        Ok(mode) => mode
+    };
+    let mut rounder = SpanRound::new().mode(round_mode).increment(increment).relative(&tzoned.zoned);
     if smallest_i >= 0 {
         match unit_from_i8(smallest_i) {
             Err(e) => {

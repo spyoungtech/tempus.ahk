@@ -1916,7 +1916,7 @@ class Span {
         if (relative_options == 0 || relative_options == 1) {
             days_are_24_hours := relative_options
         } else {
-            days_are_24_hours := 0
+            days_are_24_hours := false
         }
         if (relative_options is Date) {
             retcode := DllCall("tempus_ahk\span_total_relative_to_date", "Ptr", this.pointer, "Char", unit, "Ptr", relative_options, "DoubleP", &out_buff:=0.0, "Int64")
@@ -1936,9 +1936,23 @@ class Span {
         }
     }
 
-    round(smallest := -1, increment := 1, largest := -1, round_mode := RoundMode.HalfExpand) {
+    round(smallest := -1, increment := 1, largest := -1, round_mode := RoundMode.HalfExpand, relative_options := -1) {
+        if (relative_options == 0 || relative_options == 1) {
+            days_are_24_hours := relative_options
+        } else {
+            days_are_24_hours := false
+        }
         out_span := Buffer(A_PtrSize)
-        retcode := DllCall("tempus_ahk\span_round", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Ptr", out_span, "Int64")
+        if (relative_options is Date) {
+            retcode := DllCall("tempus_ahk\span_round_relative_to_date", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Ptr", relative_options, "Ptr", out_span, "Int64")
+        } else if (relative_options is DateTime) {
+            retcode := DllCall("tempus_ahk\span_round_relative_to_datetime", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Ptr", relative_options, "Ptr", out_span, "Int64")
+        } else if (relative_options is Zoned) {
+            retcode := DllCall("tempus_ahk\span_round_relative_to_zoned", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Ptr", relative_options, "Ptr", out_span, "Int64")
+        } else {
+            retcode := DllCall("tempus_ahk\span_round", "Ptr", this.pointer, "Char", smallest, "Int64", increment, "Char", largest, "Char", round_mode, "Char", days_are_24_hours, "Ptr", out_span, "Int64")
+        }
+
         if (retcode != 0) {
             message := _get_last_error()
             throw Error(Format("error({}): {}", retcode, message), -2)
