@@ -1854,21 +1854,36 @@ class Span {
         return Span(handle)
     }
 
-    compare(other_span, days_are_24_hours := false) {
-        if other_span is Span {
-            retcode := DllCall("tempus_ahk\span_compare", "Ptr", this.pointer, "Ptr", other_span.pointer, "Char", days_are_24_hours, "Char")
-            if (retcode < -1) {
-                message := _get_last_error()
-                throw Error(Format("error({}): {}", retcode, message), -2)
-            }
-            return retcode
-        } else {
-            throw Error("Only spans can be compared with spans", -2)
+    compare(other_span, relative_options := -1) {
+        if !(other_span is Span) {
+            throw Error("Unsupported type. Can only compare to another Span", -2)
         }
+
+        if (relative_options == 0 || relative_options == 1) {
+            days_are_24_hours := relative_options
+        } else {
+            days_are_24_hours := false
+        }
+        if (relative_options is Date) {
+            retcode := DllCall("tempus_ahk\span_compare_relative_to_date", "Ptr", this.pointer, "Ptr", other_span.pointer, "Ptr", relative_options, "Char")
+        } else if (relative_options is DateTime) {
+            retcode := DllCall("tempus_ahk\span_compare_relative_to_datetime", "Ptr", this.pointer, "Ptr", other_span.pointer, "Ptr", relative_options, "Char")
+        } else if (relative_options is Zoned) {
+            retcode := DllCall("tempus_ahk\span_compare_relative_to_zoned", "Ptr", this.pointer, "Ptr", other_span.pointer, "Ptr", relative_options, "Char")
+        } else {
+            retcode := DllCall("tempus_ahk\span_compare", "Ptr", this.pointer, "Ptr", other_span.pointer, "Char", days_are_24_hours, "Char")
+        }
+
+        if (retcode < -1) {
+            message := _get_last_error()
+            throw Error(Format("error({}): {}", retcode, message), -2)
+        }
+        return retcode
+
     }
 
-    gt(other_span, days_are_24_hours := false) {
-        result := this.compare(other_span, days_are_24_hours)
+    gt(other_span, relative_options := -1) {
+        result := this.compare(other_span, relative_options)
         if (result = _Ordering.GREATER) {
             return true
         }  else {
@@ -1876,8 +1891,8 @@ class Span {
         }
     }
 
-    lt(other_span, days_are_24_hours := false) {
-        result := this.compare(other_span, days_are_24_hours)
+    lt(other_span, relative_options := -1) {
+        result := this.compare(other_span, relative_options)
         if (result = _Ordering.LESS) {
             return true
         } else {
@@ -1885,8 +1900,8 @@ class Span {
         }
     }
 
-    eq(other_span, days_are_24_hours := false) {
-        result := this.compare(other_span, days_are_24_hours)
+    eq(other_span, relative_options := -1) {
+        result := this.compare(other_span, relative_options)
         if (result = _Ordering.EQUAL) {
             return true
         } else {
@@ -1894,8 +1909,8 @@ class Span {
         }
     }
 
-    gte(other_span, days_are_24_hours := false) {
-        result := this.compare(other_span, days_are_24_hours)
+    gte(other_span, relative_options := -1) {
+        result := this.compare(other_span, relative_options)
         if (result = _Ordering.GREATER || result = _Ordering.EQUAL) {
             return true
         } else {
@@ -1903,8 +1918,8 @@ class Span {
         }
     }
 
-    lte(other_span, days_are_24_hours := false) {
-        result := this.compare(other_span, days_are_24_hours)
+    lte(other_span, relative_options := -1) {
+        result := this.compare(other_span, relative_options)
         if (result = _Ordering.LESS || result = _Ordering.EQUAL) {
             return true
         } else {

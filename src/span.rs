@@ -392,6 +392,39 @@ pub extern "C" fn span_compare(tspan: &TempusSpan, other_span: &TempusSpan, days
 }
 
 #[no_mangle]
+pub extern "C" fn span_compare_relative_to_date(tspan: &TempusSpan, other_span: &TempusSpan, tdate: &TempusDate) -> i8 {
+    match tspan.span.compare(SpanCompare::from((other_span.span, SpanRelativeTo::from(tdate.date)))) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -3
+        }
+        Ok(result) => {result as i8}
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn span_compare_relative_to_datetime(tspan: &TempusSpan, other_span: &TempusSpan, tdt: &TempusDateTime) -> i8 {
+    match tspan.span.compare(SpanCompare::from((other_span.span, SpanRelativeTo::from(tdt.datetime)))) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -3
+        }
+        Ok(result) => {result as i8}
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn span_compare_relative_to_zoned(tspan: &TempusSpan, other_span: &TempusSpan, tzoned: &TempusZoned) -> i8 {
+    match tspan.span.compare(SpanCompare::from((other_span.span, SpanRelativeTo::from(&tzoned.zoned)))) {
+        Err(e) => {
+            set_last_error_message(e.to_string());
+            -3
+        }
+        Ok(result) => {result as i8}
+    }
+}
+
+#[no_mangle]
 pub extern "C" fn span_total(tspan: &TempusSpan, unit_i: i8, days_are_24_hours_i: i8, out_f64: *mut f64) -> c_longlong {
     let days_are_24_hours = match days_are_24_hours_i {
         0 => false,

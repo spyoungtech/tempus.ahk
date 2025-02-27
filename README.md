@@ -189,7 +189,7 @@ span2 := Span.new().days(30)
 span1.gt(span2, true) ; OK!
 ```
 
-Support for specifying a relative timeframe is not yet available.
+
 
 ### SignedDuration
 
@@ -384,11 +384,8 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [checked_add](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_add) (for `Span` only so far)
 - [x] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_sub)
 - [x] [compare](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.compare)
-- [ ] [compare](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.compare) (with relative timeframe)
 - [x] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total)
-- [ ] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total) (with relative timeframe)
 - [x] [round](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.round)
-- [ ] [round](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.round) (with relative timeframe)
 - [ ] [to_duration](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.to_duration)
 - [ ] Others (trait impls (to_string, parse/from_str, etc.), arithmetic, comparisons)
 
