@@ -59,31 +59,60 @@ time := Timestamp.parse("2024-07-11T01:14:00Z")
 MsgBox(time.as_second()) ; 1720660440
 ```
 
+As in `jiff`, tempus encourages users to primarily make use of the `Zoned` and `Timestamp` types, which unlike civil 
+types, are unambiguous and point to a true instant in time.
+
+Currently, the documentation is a bit thin (keeping in mind there are some ~350 methods here!) - but most of the examples 
+directly from the [jiff documentation](https://docs.rs/jiff/latest/jiff/) will likely translate how you might expect 
+based on the examples we do have here.
+
 ## Examples
+
+```AutoHotkey
+ts := Timestamp.parse("2024-07-11T01:14:00Z")
+ts_zoned := ts.in_tz("America/New_York").checked_add(Span.parse("1 month 2 hours"))
+MsgBox(ts_zoned.to_string()) ; 2024-08-10T23:14:00-04:00[America/New_York]
+; Or, if you want an RFC3339 formatted string:
+MsgBox(ts_zoned.to_timestamp().to_string()) ; 2024-08-11T03:14:00Z
+```
 
 ### Timestamp
 
 Jiff [Timestamp](https://docs.rs/jiff/latest/jiff/struct.Timestamp.html)
 
-`Timestamp.strptime` / `Timestamp.as_second`
-
-```AutoHotkey
-ts := Timestamp.strptime("%F %H:%M %:z", "2024-07-14 21:14 -04:00")
-MsgBox(ts.as_second()) ; 1721006040
-```
 
 `Timestamp.parse` / `Timestamp.to_string`
 
 ```AutoHotkey
+#Include "tempus.ahk"
+
 ts := Timestamp.parse("2024-01-01T00:00:00Z")
 MsgBox(ts.to_string()) ; 2024-01-01T00:00:00Z
+```
+
+`Timestamp.strptime` / `Timestamp.as_second`
+
+```AutoHotkey
+#Include "tempus.ahk"
+ts := Timestamp.strptime("%F %H:%M %:z", "2024-07-14 21:14 -04:00")
+MsgBox(ts.as_second()) ; 1721006040
 ```
 
 `Timestamp.strftime` / `Timestamp.from_second`
 
 ```AutoHotkey
+#Include "tempus.ahk"
 ts := Timestamp.from_second(86400)
 MsgBox(ts.strftime("%a %b %e %I:%M:%S %p UTC %Y")) ; Fri Jan  2 12:00:00 AM UTC 1970
+```
+
+`Timestamp.UNIX_EPOCH` corresponds to `1970-01-01T00:00:00.000000000`
+
+```AutoHotkey
+#Include "tempus.ahk"
+
+ts := Timestamp.UNIX_EPOCH()
+MsgBox(ts.to_string()) ; 1970-01-01T00:00:00
 ```
 
 `Timestamp.round`
@@ -124,6 +153,18 @@ RoundMode := {
     HalfTrunc: 8,
     HalfEven: 9,
 }
+```
+### Zoned
+
+A `Zoned` can also be parsed from just a time zone aware date (but the time zone annotation is still required). In this case, the time is set to midnight:
+
+```AutoHotkey
+zdt := Zoned.parse("2024-06-19[America/New_York]")
+MsgBox(zdt.to_string()) ; 2024-06-19T00:00:00-04:00[America/New_York]
+; ... although it isn't always midnight, in the case of a time zone
+; transition at midnight!
+zdt := Zoned.parse("2015-10-18[America/Sao_Paulo]")
+MsgBox(zdt.to_string()) ; 2015-10-18T01:00:00-02:00[America/Sao_Paulo]
 ```
 
 ### Span
@@ -390,9 +431,9 @@ things like trait impls, arithmetic, comparisons and more). But may give you an 
 - [x] [is_negative](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.is_negative)
 - [x] [is_zero](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.is_zero)
 - [ ] ~~[fieldwise](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.fieldwise)~~
-- [x] [checked_mul](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_mul) (for `Span` only so far)
+- [x] [checked_mul](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_mul) 
 - [x] [checked_add](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_add) (for `Span` only so far)
-- [x] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_sub)
+- [x] [checked_sub](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.checked_sub) (for `Span` only so far)
 - [x] [compare](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.compare)
 - [x] [total](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.total)
 - [x] [round](https://docs.rs/jiff/latest/jiff/struct.Span.html#method.round)
