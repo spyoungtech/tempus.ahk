@@ -31,8 +31,24 @@ the DLL can also be used with AHK v1, but no such script is provided.
 From the [releases page](https://github.com/spyoungtech/tempus.ahk/releases) you can download the compiled
 `tempus_ahk.dll` file and `tempus.ahk` file (or the `tempus_ahk.zip` containing these). To ensure Dll loading works correctly, you should ensure that 
 `tempus_ahk.dll` is somewhere on the Dll Library load search path, such as in the working directory, or 
-a directory on `PATH`. Alternatively, you may provide your own `DllLoad` directive before `#Include tempus.ahk` to load the DLL. See 
-[DllLoad](https://www.autohotkey.com/docs/v2/lib/_DllLoad.htm) for more information.
+a directory on `PATH`. See [DllLoad](https://www.autohotkey.com/docs/v2/lib/_DllLoad.htm) for more information.
+
+With the DLL in a proper location, simply add the `#Include` to your script:
+
+```AutoHotkey
+; adjust this to a different location, if necessary
+#Include "tempus.ahk"
+```
+
+If you have trouble with the DLL not loading properly or you cannot place it in a proper location on PATH, 
+you may provide your own `DllLoad` directive before `#Include tempus.ahk` to load the DLL.
+
+```AutoHotkey
+; adjust these paths as necessary
+#DllLoad "path\to\ahk_tempus.dll"
+#Include "tempus.ahk"
+```
+
 
 See also: [Binary security](#binary-security).
 
