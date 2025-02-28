@@ -45,7 +45,7 @@ you may provide your own `DllLoad` directive before `#Include tempus.ahk` to loa
 
 ```AutoHotkey
 ; adjust these paths as necessary
-#DllLoad "path\to\ahk_tempus.dll"
+#DllLoad "path\to\tempus_ahk.dll"
 #Include "tempus.ahk"
 ```
 
