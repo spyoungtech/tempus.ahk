@@ -31,10 +31,10 @@ On its own, there are several use cases for DateTime handling that are not well-
 - Parsing datetime formats other than  `YYYYMMDDHH24MISS` (including any format with timezone information)
 - Outputting time in various datetime formats (most notably, zone-aware formats), like RFC3339
 - DST/timezone-aware objects and arithemetic
-- No primitives that describe unambiguous precise moments in time (e.g., timestamps)
+- Primitives that describe unambiguous precise moments in time (e.g., timestamps)
 - Time arithmetic in calendar units (e.g. ability to add weeks, months, or years to a datetime)
 
-Tempus (via _jiff_) solves these use cases and more for AutoHotkey users.
+Tempus (via _jiff_) solves these use cases and many more for AutoHotkey users.
 
 
 # Installation
