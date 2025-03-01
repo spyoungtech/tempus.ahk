@@ -187,6 +187,14 @@ RoundMode := {
 ```
 ### Zoned
 
+```AutoHotkey
+#Include "tempus.ahk"
+
+zdt := Zoned.parse("2024-07-11T01:14:00Z")
+
+MsgBox(zdt.to_string()) ; 2024-07-11T01:14:00Z
+```
+
 A `Zoned` can also be parsed from just a time zone aware date (but the time zone annotation is still required). In this case, the time is set to midnight:
 
 ```AutoHotkey
@@ -226,6 +234,12 @@ span1 := Span.new().hours(3).minutes(10)
 MsgBox(span1.total(Unit.Second)) ; 11400.0
 ```
 
+Spans can also be parsed from jiff's "friendly" format:
+
+```
+span1 := Span.parse("3h 10m")
+MsgBox(span1.total(Unit.Second)) ; 11400.0
+```
 
 Comparisons
 
